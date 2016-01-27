@@ -1,0 +1,352 @@
+package com.example.biezhi.videonew;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.Display;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.example.biezhi.videonew.CustomerClass.AES;
+import com.example.biezhi.videonew.CustomerClass.ImageService;
+import com.example.biezhi.videonew.CustomerClass.SysApplication;
+import com.example.biezhi.videonew.NetWorkServer.initNetWork;
+
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class initActivity extends AppCompatActivity {
+
+
+    int screenWidth;
+    int screenHeight;
+    Data appData;
+    List<String> nameList = new ArrayList<>();        //分类名list
+    List<String> urlList = new ArrayList<>();         //地址list
+    List<String> cateIdList = new ArrayList<>();      //cateIdList
+    List<Bitmap> bitmapList = new ArrayList<>();      //图片list
+    boolean isFirst = true; //第一次点击
+    private final static String loginMessage = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Message";   //登录信息保存路径
+    private final static String ALBUM_PATH = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Images";      //图片保存路径
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_init);
+        SysApplication.getInstance().addActivity(this);
+        appData = (Data) this.getApplicationContext();
+
+        initApp();
+    }
+
+    private void initApp()
+    {
+        getResourcesFromDefault();
+    }
+
+    private void getResourcesFromDefault()
+    {
+
+        //获取上一次登录信息
+        getSdCard();
+
+        //获取屏幕大小
+        if (Integer.valueOf(android.os.Build.VERSION.SDK) > 13 )
+        {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            screenHeight = size.y ;
+            screenWidth = size.x ;
+        }
+        else
+        {
+            screenWidth = getWindowManager().getDefaultDisplay().getWidth();
+            screenHeight = getWindowManager().getDefaultDisplay().getHeight();
+        }
+        appData.setHeight(screenHeight);
+        appData.setWidth(screenWidth);
+
+        //获取当前网络状态
+        if (!checkNetWork()) {
+            AlertDialog netWorkInfo = new AlertDialog.Builder(this).create();
+            netWorkInfo.setTitle("网络开小差了...");
+            netWorkInfo.setMessage("无网络连接，快去打开WIFI吧~");
+            netWorkInfo.setButton("好", listener);
+            netWorkInfo.show();
+        }
+        else
+        {
+            //todo 请求各个分类
+            new Thread(new getTabulation()).start();
+        }
+
+
+
+
+    }
+
+    /**
+     * 获取当前网络状态
+     * @return 网络情况变量
+     */
+    private boolean checkNetWork() {
+        boolean netInfo;
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo.State mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
+        NetworkInfo.State wifi = connectivityManager.getNetworkInfo(connectivityManager.TYPE_WIFI).getState();
+        if (mobile == NetworkInfo.State.CONNECTED && wifi == NetworkInfo.State.DISCONNECTED) {
+            netInfo = true;
+            Toast.makeText(this, "当前是3G/4G网络，请注意流量哦o(>﹏<)o", Toast.LENGTH_SHORT).show();
+        } else if (wifi == NetworkInfo.State.CONNECTED) {
+            netInfo = true;
+        } else {
+            netInfo = false;
+        }
+        return netInfo;
+    }
+    /**
+     * 网络状态弹窗点击listener
+     */
+    DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+            SysApplication.getInstance().exit();
+        }
+    };
+
+    /**
+     * 获取本地信息
+     */
+    protected void getSdCard() {
+        try {
+            File dirFile = new File(loginMessage);
+            if(!dirFile.exists()){
+                dirFile.mkdir();
+            }
+            File file = new File( loginMessage + "Message");
+            InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file),"UTF-8");
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String str = "";
+            String mimeTypeLine = null ;
+            while ((mimeTypeLine = bufferedReader.readLine()) != null) {
+                str = str+mimeTypeLine;
+            }
+            appData.setHtmlString(str);
+            //处理Json
+            AES aes = new AES();
+            String tempJson = appData.getHtmlString().substring(1, appData.getHtmlString().length() - 1);
+            tempJson = tempJson.substring(0, tempJson.length() - 1);
+            tempJson = tempJson.replaceAll("\"responseData\"", "");
+            tempJson = tempJson.substring(2, tempJson.length());
+            byte[] tempResult = aes.Decrypt(tempJson, "dd358748fcabdda1");
+            tempJson = new String(tempResult,"UTF-8");
+            JSONObject jsonObject = new JSONObject(tempJson);
+            appData.setUserName(jsonObject.optString("tel"));
+            appData.setUserPwd(jsonObject.optString("password"));
+            if (jsonObject.optString("vip") == "false")
+            {
+                appData.setUserVip(false);
+            }
+            else
+            {
+                appData.setUserVip(true);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        appData.setSourcePage("INIT");
+    }
+
+    //异步请求分类，同时请求图片
+    protected class getTabulation implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            initNetWork initNS = new initNetWork();
+            initNS.getTabulation();
+            String json = initNS.unlockJson;
+            if (json == "" || json.length() < 100)
+            {
+                //网络请求异常或者其他错误
+            }
+            else
+            {
+                //处理json
+                try {
+                    toMap(json);
+                }
+                catch (Exception ex)
+                {
+                    // TODO: 2016/1/26 处理转map失败
+                    //json转map失败，可能是服务器问题
+                }
+                if (urlList.size() != 0)
+                {
+                    try {
+                        for (int i = 0; i < urlList.size(); i++) {
+                            byte data[] = ImageService.getImage(urlList.get(i));
+                            bitmapList.add(BitmapFactory.decodeByteArray(data,0,data.length));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // TODO: 2016/1/26 图片获取失败
+                        e.printStackTrace();
+                    }
+                }
+                //处理完成通知主线程可以跳转了
+                Message message = Message.obtain();
+                message.what = 1;
+                initNetOK.sendMessage(message);
+            }
+        }
+    }
+
+
+    /**
+     * json转map
+     * @param tempJson 已被解密的json
+     * @throws Exception
+     */
+    protected void toMap(String tempJson) throws Exception
+    {
+        JSONObject jsonObject = new JSONObject(tempJson);
+        JSONArray jsonArray = jsonObject.getJSONArray("content");
+        for (int i = 0 ;i < jsonArray.length();i++)
+        {
+            nameList.add(jsonArray.getJSONObject(i).optString("name"));
+            urlList.add(jsonArray.getJSONObject(i).optString("cover"));
+            cateIdList.add(jsonArray.getJSONObject(i).optString("cateId"));
+
+        }
+    }
+
+    private Handler initNetOK = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            if (msg.what == 1)
+            {
+                //保存图片到本地
+                List<Bitmap> tempBitList = new ArrayList<>();
+                try
+                {
+                    for (int i = 0; i< bitmapList.size();i++)
+                    {
+                        Bitmap tempBit = bitmapList.get(i);
+                        saveFile(tempBit, nameList.get(i));
+                    }
+                }
+                catch (Exception e)
+                {
+                    // TODO: 2016/1/26 保存图片出现异常
+                    e.printStackTrace();
+                }
+
+                appData.setNameList(nameList);
+                appData.setImageUrlFromInitView(urlList);
+                appData.setCateIdList(cateIdList);
+                appData.setBitmapList(bitmapList);
+                startActivity(new Intent(initActivity.this, mainActivity.class));
+            }
+        }
+    };
+
+    /**
+     * 保存图片到本地
+     * @param bm 图片
+     * @param fileName 图片名
+     * @return 图片路径
+     * @throws IOException
+     */
+    public String saveFile(Bitmap bm, String fileName) throws IOException {
+        File dirFile = new File(ALBUM_PATH);
+        if(!dirFile.exists()){
+            dirFile.mkdir();
+        }
+        File myCaptureFile = new File(ALBUM_PATH + fileName + ".jpg");
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(myCaptureFile));
+        bm.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+        bos.flush();
+        bos.close();
+        return ALBUM_PATH+fileName + ".jpg";
+    }
+    @Override
+    public boolean onKeyDown(int KeyCode,KeyEvent event)
+    {
+        if (KeyCode == KeyEvent.KEYCODE_BACK)
+        {
+            if (isFirst)
+            {
+                isFirst = false;
+                Toast.makeText(this, "再按一次返回就退出了哟o(>﹏<)o", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                SysApplication.getInstance().exit();
+            }
+        }
+        else
+        {
+            isFirst = true;
+        }
+        return false;
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_init, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}

@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">VideoNew</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_init">initActivity</string>
+    <string name="chanel_description">分类</string>
+    <string name="home_description">推荐</string>
+    <string name="my_description">我的</string>
+    <string name="home_recom">recom</string>
+    <string name="home_cate">cate</string>
+    <string name="home_my">my</string>
+</resources>
