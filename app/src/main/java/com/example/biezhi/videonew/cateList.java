@@ -58,7 +58,7 @@ public class cateList extends AppCompatActivity {
         scrollView = (ScrollView) findViewById(R.id.scrollViewCate);
         searchButton = (ImageButton) findViewById(R.id.searchButton);
         downloadButton = (ImageButton) findViewById(R.id.downloadButton);
-        cateGrid = (GridLayout) findViewById(R.id.cateGrid);
+//        cateGrid = (GridLayout) findViewById(R.id.cateGrid);
     }
 
     /**
@@ -68,21 +68,22 @@ public class cateList extends AppCompatActivity {
         //计算有多少需要被初始化的频道
         //临时变量
         //为什么显示出来呢?
-        int rows = bitmapList.size() / 3 + 1;
-        cateGrid.setRowCount(rows);
-        cateGrid.setColumnCount(3);
-        int tempLoop = 0;
-        for (Bitmap bm : bitmapList) {
-            itemVIew item = new itemVIew(this);
-            item.setImageBitmap(bm);
-            item.setTitleText(nameList.get(tempLoop++));
-            item.setPadding(3, 3, 3, 3);
-            GridLayout.Spec rowSpec = GridLayout.spec(tempLoop / 3);
-            GridLayout.Spec columnSpec = GridLayout.spec(tempLoop % 3);
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
-            params.setGravity(Gravity.FILL);
-            cateGrid.addView(item, params);
-        }
+//        int rows = bitmapList.size() / 3 + 1;
+//        cateGrid.setRowCount(rows);
+//        cateGrid.setColumnCount(3);
+//        int tempLoop = 0;
+//        for (Bitmap bm : bitmapList) {
+//            itemVIew item = new itemVIew(this);
+//            item.setImageBitmap(bm);
+//            item.setTitleText(nameList.get(tempLoop++));
+//            item.setPadding(3, 3, 3, 3);
+//            GridLayout.Spec rowSpec = GridLayout.spec(tempLoop / 3);
+//            GridLayout.Spec columnSpec = GridLayout.spec(tempLoop % 3);
+//            GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
+//            params.setGravity(Gravity.FILL);
+//            cateGrid.addView(item, params);
+//        }
+
 
 
     }

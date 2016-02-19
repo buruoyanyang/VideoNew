@@ -3,13 +3,15 @@ package com.example.biezhi.videonew.NetWorkServer;
 /**
  * Created by biezhi on 2016/1/25.
  */
-import com.example.biezhi.videonew.CustomerClass.AES;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import com.example.biezhi.videonew.CustomerClass.AES;
+import com.example.biezhi.videonew.CustomerClass.AESCrypt;
 
 
 public class initNetWork {
@@ -55,6 +57,8 @@ public class initNetWork {
             AES aes = new AES();
             byte[] tempResult = aes.Decrypt(result,"C169F435FEA3530E");
             unlockJson = new String(tempResult,"UTF-8");
+//            unlockJson = AESCrypt.decrypt(result,"C169F435FEA3530E");
+
         }
         catch (Exception e)
         {
@@ -62,6 +66,7 @@ public class initNetWork {
             unlockJson = "";
         }
     }
+
 
 
 

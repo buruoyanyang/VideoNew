@@ -2,39 +2,39 @@
 <items version="2" >
 
     <item
-        jar="/Volumes/Mac/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
+        jar="/Users/xiaofeng/Desktop/android-sdk-macosx/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
         jumboMode="false"
         revision="23.0.2"
         sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="/Users/xhf/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.1-aaa16e265c54b9bb9bec2907e2052da8e23a4dda.jar" />
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/support-annotations-23.1.1-8ced9c18c31d3c4d189e4d7db23883a231bc2f24.jar" />
     </item>
     <item
-        jar="/Users/xhf/Desktop/VideoNew/app/libs/bcprov-jdk16-139.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="442c78011c2905a028ab64d223fc3582e13531ea">
-        <dex dex="/Users/xhf/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/bcprov-jdk16-139-3b674b51517ab9402c450d97bc540674716287ec.jar" />
-    </item>
-    <item
-        jar="/Users/xhf/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
-        <dex dex="/Users/xhf/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.1-66618eb4758f7994b41c2de3453d4fe3ebd41e79.jar" />
-    </item>
-    <item
-        jar="/Users/xhf/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
-        <dex dex="/Users/xhf/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-75d49cd06116872dc771420415dbc2f679e79ce1.jar" />
-    </item>
-    <item
-        jar="/Users/xhf/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
+        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
         jumboMode="false"
         revision="23.0.2"
         sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="/Users/xhf/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-0b49857b83faed94fc15e255d4abd82611b275cb.jar" />
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-9536ae1287a2c11831a177dcd40fd87b43e3ce04.jar" />
+    </item>
+    <item
+        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-bfa8016194ee41835d91011e2a1c0930057bb82a.jar" />
+    </item>
+    <item
+        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/internal_impl-23.1.1-c7aa321484a2f8e59b05f13f0e0f252f2951d3c3.jar" />
+    </item>
+    <item
+        jar="/Users/xiaofeng/Desktop/VideoNew/app/libs/bcprov-jdk16-139.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="442c78011c2905a028ab64d223fc3582e13531ea">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/bcprov-jdk16-139-a25ebbc10d45b34f1c288a9b6c4bb8b124dfdb68.jar" />
     </item>
 
 </items>
