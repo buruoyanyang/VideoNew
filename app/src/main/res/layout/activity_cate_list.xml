@@ -6,15 +6,13 @@
     android:layout_height="match_parent"
     tools:context="com.example.biezhi.videonew.cateList">
     <include layout="@layout/title_bar"/>
-    <ScrollView
+    <GridView
+        android:paddingTop="200px"
+        android:id="@+id/cate_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollViewCate">
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:numColumns="3">
+    </GridView>
 
-        </TableLayout>
-    </ScrollView>
 
 </RelativeLayout>

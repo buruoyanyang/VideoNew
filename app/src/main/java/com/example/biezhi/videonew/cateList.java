@@ -1,18 +1,25 @@
 package com.example.biezhi.videonew;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.widget.GridLayout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ScrollView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
-import com.example.biezhi.videonew.CustomerView.itemVIew;
+import com.example.biezhi.videonew.CustomerView.itemView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -20,10 +27,9 @@ import java.util.List;
  */
 public class cateList extends AppCompatActivity {
 
-    ScrollView scrollView;
     ImageButton searchButton;
     ImageButton downloadButton;
-    GridLayout cateGrid;
+    GridView gridView;
     Data appData;
     //跳转页面
     private String sourcePage;
@@ -34,7 +40,10 @@ public class cateList extends AppCompatActivity {
     List<Bitmap> bitmapList = new ArrayList<>();
     //分类名
     List<String> nameList = new ArrayList<>();
+    //分类id
+    List<String> cateIdList = new ArrayList<>();
 
+    private LayoutInflater inflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +64,11 @@ public class cateList extends AppCompatActivity {
         width = appData.getWidth();
         height = appData.getHeight();
         sourcePage = appData.getSourcePage();
-        scrollView = (ScrollView) findViewById(R.id.scrollViewCate);
+        cateIdList = appData.getCateIdList();
         searchButton = (ImageButton) findViewById(R.id.searchButton);
         downloadButton = (ImageButton) findViewById(R.id.downloadButton);
-//        cateGrid = (GridLayout) findViewById(R.id.cateGrid);
+        inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        gridView = (GridView) findViewById(R.id.cate_list);
     }
 
     /**
@@ -66,25 +76,84 @@ public class cateList extends AppCompatActivity {
      */
     private void initCate() {
         //计算有多少需要被初始化的频道
-        //临时变量
-        //为什么显示出来呢?
-//        int rows = bitmapList.size() / 3 + 1;
-//        cateGrid.setRowCount(rows);
-//        cateGrid.setColumnCount(3);
-//        int tempLoop = 0;
-//        for (Bitmap bm : bitmapList) {
-//            itemVIew item = new itemVIew(this);
-//            item.setImageBitmap(bm);
-//            item.setTitleText(nameList.get(tempLoop++));
-//            item.setPadding(3, 3, 3, 3);
-//            GridLayout.Spec rowSpec = GridLayout.spec(tempLoop / 3);
-//            GridLayout.Spec columnSpec = GridLayout.spec(tempLoop % 3);
-//            GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
-//            params.setGravity(Gravity.FILL);
-//            cateGrid.addView(item, params);
-//        }
-
-
+        GridViewAdapter gridViewAdapter = new GridViewAdapter();
+        gridView.setAdapter(gridViewAdapter);
 
     }
+
+    private class GridViewAdapter extends BaseAdapter
+    {
+        @Override
+        public int getCount()
+        {
+            return bitmapList.size();
+        }
+        @Override
+        public Object getItem(int position)
+        {
+            return  bitmapList.get(position);
+        }
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            ViewHolder holder;
+            if (convertView == null)
+            {
+                holder = new ViewHolder();
+                convertView = inflater.inflate(R.layout.cate_adpter,null);
+                holder.imageView = (ImageView)convertView.findViewById(R.id.cate_image);
+                holder.textView = (TextView)convertView.findViewById(R.id.cate_name);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder = (ViewHolder)convertView.getTag();
+            }
+            holder.imageView.setImageBitmap(bitmapList.get(position));
+            holder.textView.setText(nameList.get(position));
+            return convertView;
+        }
+
+    }
+
+    static class ViewHolder
+    {
+        ImageView imageView;
+        TextView textView;
+    }
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

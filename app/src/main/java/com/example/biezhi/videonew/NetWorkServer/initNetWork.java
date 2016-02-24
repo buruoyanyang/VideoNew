@@ -11,7 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.example.biezhi.videonew.CustomerClass.AES;
-import com.example.biezhi.videonew.CustomerClass.AESCrypt;
 
 
 public class initNetWork {
@@ -54,10 +53,8 @@ public class initNetWork {
             result = result.trim();
             result = result.substring(10, result.length());
             result = result.substring(0, result.length() - 2);
-            AES aes = new AES();
-            byte[] tempResult = aes.Decrypt(result,"C169F435FEA3530E");
+            byte[] tempResult = AES.Decrypt(result, "C169F435FEA3530E");
             unlockJson = new String(tempResult,"UTF-8");
-//            unlockJson = AESCrypt.decrypt(result,"C169F435FEA3530E");
 
         }
         catch (Exception e)

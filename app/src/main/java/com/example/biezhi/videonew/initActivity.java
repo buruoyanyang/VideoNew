@@ -19,15 +19,21 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.AES;
-import com.example.biezhi.videonew.CustomerClass.ImageService;
+import com.example.biezhi.videonew.CustomerClass.BitmapCut;
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
-import com.example.biezhi.videonew.NetWorkServer.initNetWork;
+import com.example.biezhi.videonew.DataModel.CateModel;
+import com.example.biezhi.videonew.NetWorkServer.GetServer;
+import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedOutputStream;
@@ -54,19 +60,26 @@ public class initActivity extends AppCompatActivity {
     boolean isFirst = true; //第一次点击
     private final static String loginMessage = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Message";   //登录信息保存路径
     private final static String ALBUM_PATH = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Images";      //图片保存路径
+    BitmapCut bitmapCut;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
         SysApplication.getInstance().addActivity(this);
         appData = (Data) this.getApplicationContext();
+        //创建默认的ImageLoader配置参数
+        ImageLoaderConfiguration configuration = ImageLoaderConfiguration
+                .createDefault(this);
 
+        //Initialize ImageLoader with configuration.
+        ImageLoader.getInstance().init(configuration);
         initApp();
     }
 
     private void initApp()
     {
         getResourcesFromDefault();
+        bitmapCut = new BitmapCut();
     }
 
     private void getResourcesFromDefault()
@@ -197,37 +210,50 @@ public class initActivity extends AppCompatActivity {
         @Override
         public void run()
         {
-            initNetWork initNS = new initNetWork();
-            initNS.getTabulation();
-            String json = initNS.unlockJson;
-            if (json == "" || json.length() < 100)
+            GetServer getServer = new GetServer();
+            getServer.getUrl = "http://www.biezhi360.cn:99/category.aspx?appid=1&version=1.0";
+            getServer.aesSecret = "C169F435FEA3530E";
+            String json = getServer.getInfoFromServer();
+            if (json.length() < 100)
             {
                 //网络请求异常或者其他错误
+                switch (json)
+                {
+                    case "0":
+                        //服务器连接失败
+                        break;
+                    case "1":
+                        //io读写错误
+                        break;
+                    case "2":
+                        //解密错误
+                        break;
+                }
             }
             else
             {
-                //处理json
-                try {
-                    toMap(json);
-                }
-                catch (Exception ex)
+                //用Gson处理json
+                final Gson gson = new Gson();
+                CateModel cateModel = gson.fromJson(json,CateModel.class);
+                List<CateModel.ContentEntity> contentEntities = cateModel.getContent();
+                for (int i = 0;i < contentEntities.size();i++)
                 {
-                    // TODO: 2016/1/26 处理转map失败
-                    //json转map失败，可能是服务器问题
-                }
-                if (urlList.size() != 0)
-                {
-                    try {
-                        for (int i = 0; i < urlList.size(); i++) {
-                            byte data[] = ImageService.getImage(urlList.get(i));
-                            bitmapList.add(BitmapFactory.decodeByteArray(data,0,data.length));
+                    CateModel.ContentEntity contentEntity = contentEntities.get(i);
+                    ImageSize imageSize = new ImageSize(screenWidth / 4,screenHeight / 6);
+                    //使用imageloader加载图片
+                    ImageLoader.getInstance().loadImage(contentEntity.getCover(), new SimpleImageLoadingListener() {
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            super.onLoadingComplete(imageUri, view, loadedImage);
+                            loadedImage = bitmapCut.setBitmapSize(loadedImage,screenWidth / 3,screenHeight / 7);
+                            bitmapList.add(loadedImage);
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        // TODO: 2016/1/26 图片获取失败
-                        e.printStackTrace();
-                    }
+                    });
+                    //将加载完成的图片写入本地
+                    urlList.add(contentEntity.getCover());
+                    cateIdList.add(String.valueOf(contentEntity.getCateId()));
+                    nameList.add(contentEntity.getName());
                 }
                 //处理完成通知主线程可以跳转了
                 Message message = Message.obtain();
@@ -243,18 +269,18 @@ public class initActivity extends AppCompatActivity {
      * @param tempJson 已被解密的json
      * @throws Exception
      */
-    protected void toMap(String tempJson) throws Exception
-    {
-        JSONObject jsonObject = new JSONObject(tempJson);
-        JSONArray jsonArray = jsonObject.getJSONArray("content");
-        for (int i = 0 ;i < jsonArray.length();i++)
-        {
-            nameList.add(jsonArray.getJSONObject(i).optString("name"));
-            urlList.add(jsonArray.getJSONObject(i).optString("cover"));
-            cateIdList.add(jsonArray.getJSONObject(i).optString("cateId"));
-
-        }
-    }
+//    protected void toMap(String tempJson) throws Exception
+//    {
+//        JSONObject jsonObject = new JSONObject(tempJson);
+//        JSONArray jsonArray = jsonObject.getJSONArray("content");
+//        for (int i = 0 ;i < jsonArray.length();i++)
+//        {
+//            nameList.add(jsonArray.getJSONObject(i).optString("name"));
+//            urlList.add(jsonArray.getJSONObject(i).optString("cover"));
+//            cateIdList.add(jsonArray.getJSONObject(i).optString("cateId"));
+//
+//        }
+//    }
 
     private Handler initNetOK = new Handler()
     {
@@ -264,7 +290,6 @@ public class initActivity extends AppCompatActivity {
             if (msg.what == 1)
             {
                 //保存图片到本地
-                List<Bitmap> tempBitList = new ArrayList<>();
                 try
                 {
                     for (int i = 0; i< bitmapList.size();i++)
@@ -328,6 +353,7 @@ public class initActivity extends AppCompatActivity {
         }
         return false;
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

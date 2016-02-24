@@ -1,8 +1,6 @@
 package com.example.biezhi.videonew.CustomerView;
 
-/**
- * Created by xiaofeng on 16/1/27.
- */
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -19,7 +17,10 @@ import android.view.View;
 
 import com.example.biezhi.videonew.R;
 
-public class itemVIew extends View {
+/**
+ * Created by xiaofeng on 16/2/24.
+ */
+public class itemView extends View {
     private static final String TAG = "CustomView";
 
     /** 图片Bitmap */
@@ -70,7 +71,8 @@ public class itemVIew extends View {
     /** 控件的高度 */
     private int mViewHeight;
 
-    public itemVIew(Context context, AttributeSet attrs, int defStyle) {
+    public itemView(Context context, AttributeSet attrs, int defStyle)
+    {
         super(context, attrs, defStyle);
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs, R.styleable.CustomView, defStyle, 0);
@@ -128,24 +130,21 @@ public class itemVIew extends View {
                 case R.styleable.CustomView_titlePaddingBottom:
                     titlePaddingBottom = a.getDimensionPixelSize(attr, 0);
                     break;
-
             }
         }
         a.recycle();
-
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint = new TextPaint(paint);
         rect = new Rect();
     }
-
-    public itemVIew(Context context, AttributeSet attrs) {
+    public itemView(Context context, AttributeSet attrs)
+    {
         this(context, attrs, 0);
     }
-
-    public itemVIew(Context context) {
+    public itemView(Context context)
+    {
         this(context, null);
     }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -167,7 +166,6 @@ public class itemVIew extends View {
                 width = Math.min(desired, widthSize);
             }
         }
-
         if (heightMode == MeasureSpec.EXACTLY) {
             height = heightSize;
         } else {
@@ -180,14 +178,11 @@ public class itemVIew extends View {
                 int textHeight = (int) Math.ceil(fm.descent - fm.ascent);
                 desired += (textHeight + titlePaddingTop + titlePaddingBottom);
             }
-
-
             height = Math.max(MIN_SIZE, desired);
             if (heightMode == MeasureSpec.AT_MOST) {
                 height = Math.min(desired, heightSize);
             }
         }
-
         setMeasuredDimension(width, height);
     }
 
@@ -198,7 +193,6 @@ public class itemVIew extends View {
         System.out.println("mViewWidth:" + mViewWidth + ",mViewHeight:" + mViewHeight);
         super.onSizeChanged(w, h, oldw, oldh);
     }
-
     @Override
     protected void onDraw(Canvas canvas) {
         rect.left = getPaddingLeft();
@@ -207,7 +201,6 @@ public class itemVIew extends View {
         rect.bottom = mViewHeight - getPaddingBottom();
 
         paint.setAlpha(255);
-
 
         if (titleText != null) {
             paint.setTextSize(titleTextSize);
@@ -268,4 +261,52 @@ public class itemVIew extends View {
         invalidate();
     }
 
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
