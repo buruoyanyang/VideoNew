@@ -1,9 +1,11 @@
 package com.example.biezhi.videonew;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.CustomerView.itemView;
@@ -99,7 +102,7 @@ public class cateList extends AppCompatActivity {
             return position;
         }
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
+        public View getView(final int position, View convertView, ViewGroup parent)
         {
             ViewHolder holder;
             if (convertView == null)
@@ -116,10 +119,23 @@ public class cateList extends AppCompatActivity {
             }
             holder.imageView.setImageBitmap(bitmapList.get(position));
             holder.textView.setText(nameList.get(position));
+            final int postNum = position;
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //添加点击事件获取cateId
+                    //准备跳转页面的内容
+                    appData.setClickedCateId(String.valueOf(cateIdList.get(postNum)));
+                    appData.setSourcePage("CateList");
+                    startActivity(new Intent(cateList.this, videoList.class));
+
+                }
+            });
             return convertView;
         }
 
     }
+
 
     static class ViewHolder
     {

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -30,7 +31,7 @@ import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageSize;
+
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 
@@ -50,8 +51,8 @@ import java.util.List;
 public class initActivity extends AppCompatActivity {
 
 
-    int screenWidth;
-    int screenHeight;
+    static int screenWidth;
+    static int screenHeight;
     Data appData;
     List<String> nameList = new ArrayList<>();        //分类名list
     List<String> urlList = new ArrayList<>();         //地址list
@@ -238,22 +239,27 @@ public class initActivity extends AppCompatActivity {
                 List<CateModel.ContentEntity> contentEntities = cateModel.getContent();
                 for (int i = 0;i < contentEntities.size();i++)
                 {
-                    CateModel.ContentEntity contentEntity = contentEntities.get(i);
-                    ImageSize imageSize = new ImageSize(screenWidth / 4,screenHeight / 6);
+                    final CateModel.ContentEntity contentEntity = contentEntities.get(i);
+//                    ImageSize imageSize = new ImageSize(screenWidth / 3,screenHeight / 7);
                     //使用imageloader加载图片
                     ImageLoader.getInstance().loadImage(contentEntity.getCover(), new SimpleImageLoadingListener() {
 
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             super.onLoadingComplete(imageUri, view, loadedImage);
-                            loadedImage = bitmapCut.setBitmapSize(loadedImage,screenWidth / 3,screenHeight / 7);
+                            if (loadedImage == null) {
+                                Resources resources = getResources();
+                                loadedImage = BitmapFactory.decodeResource(resources, R.drawable.item_bg);
+                            }
+                            loadedImage = bitmapCut.setBitmapSize(loadedImage, screenHeight / 7, screenWidth / 3);
                             bitmapList.add(loadedImage);
+                            urlList.add(contentEntity.getCover());
+                            cateIdList.add(String.valueOf(contentEntity.getCateId()));
+                            nameList.add(contentEntity.getName());
                         }
                     });
                     //将加载完成的图片写入本地
-                    urlList.add(contentEntity.getCover());
-                    cateIdList.add(String.valueOf(contentEntity.getCateId()));
-                    nameList.add(contentEntity.getName());
+
                 }
                 //处理完成通知主线程可以跳转了
                 Message message = Message.obtain();
@@ -308,6 +314,12 @@ public class initActivity extends AppCompatActivity {
                 appData.setImageUrlFromInitView(urlList);
                 appData.setCateIdList(cateIdList);
                 appData.setBitmapList(bitmapList);
+                //等待1s
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 startActivity(new Intent(initActivity.this, mainActivity.class));
             }
         }

@@ -16,7 +16,7 @@ public class BitmapCut {
         {
             //原始大小太小 拉伸
             BitmapResize bitmapResize = new BitmapResize();
-            bm = bitmapResize.setBitmapSize(bm,widthNew,heightNew);
+            bm = bitmapResize.setBitmapSize(bm,heightNew,widthNew);
             return bm;
         }
         int scaleWidth = (widthOrg - widthNew) / 2;

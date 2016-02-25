@@ -28,7 +28,8 @@
         <activity android:name=".cateList" />
         <activity android:name=".episodeList" />
         <activity android:name=".myList" />
-        <activity android:name=".recomList"></activity>
+        <activity android:name=".recomList" />
+        <activity android:name=".videoList"></activity>
     </application>
 
 </manifest>

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="pulltorefresh-1.0.0-beta3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.biao/pulltorefresh/1.0.0-beta3/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.biao/pulltorefresh/1.0.0-beta3/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.biao/pulltorefresh/1.0.0-beta3/bb2ad786abfaf1a5e2713f0e7fd8f92f643bae7/pulltorefresh-1.0.0-beta3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
