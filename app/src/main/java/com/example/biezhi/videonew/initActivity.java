@@ -258,8 +258,12 @@ public class initActivity extends AppCompatActivity {
                             nameList.add(contentEntity.getName());
                         }
                     });
-                    //将加载完成的图片写入本地
-
+//                    //将加载完成的图片写入本地
+//                    Resources resources = getResources();
+//                    bitmapList.add(BitmapFactory.decodeResource(resources, R.drawable.item_bg));
+//                    urlList.add(contentEntity.getCover());
+//                    cateIdList.add(String.valueOf(contentEntity.getCateId()));
+//                    nameList.add(contentEntity.getName());
                 }
                 //处理完成通知主线程可以跳转了
                 Message message = Message.obtain();
@@ -270,23 +274,6 @@ public class initActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * json转map
-     * @param tempJson 已被解密的json
-     * @throws Exception
-     */
-//    protected void toMap(String tempJson) throws Exception
-//    {
-//        JSONObject jsonObject = new JSONObject(tempJson);
-//        JSONArray jsonArray = jsonObject.getJSONArray("content");
-//        for (int i = 0 ;i < jsonArray.length();i++)
-//        {
-//            nameList.add(jsonArray.getJSONObject(i).optString("name"));
-//            urlList.add(jsonArray.getJSONObject(i).optString("cover"));
-//            cateIdList.add(jsonArray.getJSONObject(i).optString("cateId"));
-//
-//        }
-//    }
 
     private Handler initNetOK = new Handler()
     {
@@ -316,11 +303,13 @@ public class initActivity extends AppCompatActivity {
                 appData.setBitmapList(bitmapList);
                 //等待1s
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 startActivity(new Intent(initActivity.this, mainActivity.class));
+                //销毁页面
+//                onDestroy();
             }
         }
     };

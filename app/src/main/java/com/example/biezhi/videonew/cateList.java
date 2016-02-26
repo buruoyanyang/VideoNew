@@ -128,7 +128,6 @@ public class cateList extends AppCompatActivity {
                     appData.setClickedCateId(String.valueOf(cateIdList.get(postNum)));
                     appData.setSourcePage("CateList");
                     startActivity(new Intent(cateList.this, videoList.class));
-
                 }
             });
             return convertView;

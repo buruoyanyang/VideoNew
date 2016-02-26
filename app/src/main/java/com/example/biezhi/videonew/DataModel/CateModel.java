@@ -17,6 +17,7 @@ public class CateModel {
      * kindId : 0
      */
 
+
     private List<ContentEntity> content;
 
     public void setContent(List<ContentEntity> content) {

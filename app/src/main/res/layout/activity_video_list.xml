@@ -4,11 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.biezhi.videonew.videoList">
+    <include layout="@layout/title_bar"/>
     <com.biao.pulltorefresh.PtrLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/main_ptr">
+        android:id="@+id/main_ptr"
+        android:paddingTop="200px">
         <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
