@@ -296,17 +296,11 @@ public class initActivity extends AppCompatActivity {
                     // TODO: 2016/1/26 保存图片出现异常
                     e.printStackTrace();
                 }
-
                 appData.setNameList(nameList);
                 appData.setImageUrlFromInitView(urlList);
                 appData.setCateIdList(cateIdList);
                 appData.setBitmapList(bitmapList);
-                //等待1s
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 startActivity(new Intent(initActivity.this, mainActivity.class));
                 //销毁页面
 //                onDestroy();

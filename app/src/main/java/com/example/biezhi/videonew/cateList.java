@@ -126,6 +126,7 @@ public class cateList extends AppCompatActivity {
                     //添加点击事件获取cateId
                     //准备跳转页面的内容
                     appData.setClickedCateId(String.valueOf(cateIdList.get(postNum)));
+                    appData.setCateName(nameList.get(postNum));
                     appData.setSourcePage("CateList");
                     startActivity(new Intent(cateList.this, videoList.class));
                 }

@@ -1,8 +1,6 @@
 package com.example.biezhi.videonew;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +21,7 @@ import com.example.biezhi.videonew.DataModel.VideoModel;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,9 +60,12 @@ public class videoList extends AppCompatActivity {
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gridView = (GridView) findViewById(R.id.video_grid);
         ptrLayout = (PtrLayout) findViewById(R.id.main_ptr);
-        titleText = (TextView)findViewById(R.id.title_text);
-        titleText.setText("123");
+        titleText = (TextView) findViewById(R.id.title_text);
         sourcePage = appData.getSourcePage();
+        titleText.setText(appData.getCateName());
+        channelsEntityList = new ArrayList<>();
+        contentEntityList = new ArrayList<>();
+
     }
 
     private void initVideo() {
@@ -83,11 +85,9 @@ public class videoList extends AppCompatActivity {
                     "&district=" + defaultDistrict + "&kind=" + defaultKind + "&appid=" + defaultAppid + "&version=" + defaultVersion;
             getServer.aesSecret = "dd358748fcabdda1";
             String json = getServer.getInfoFromServer();
-            if (json.length() < 10)
-            {
+            if (json.length() < 10) {
                 //网络请求异常或者其他错误
-                switch (json)
-                {
+                switch (json) {
                     case "0":
                         //服务器连接失败
                         break;
@@ -101,14 +101,12 @@ public class videoList extends AppCompatActivity {
                         break;
                 }
 
-            }
-            else
-            {
+            } else {
                 final Gson gson = new Gson();
-                VideoModel videoModel = gson.fromJson(json,VideoModel.class);
+                VideoModel videoModel = gson.fromJson(json, VideoModel.class);
                 //获取所有的list
-                channelsEntityList = videoModel.getChannels();
-                contentEntityList = videoModel.getContent();
+                channelsEntityList.addAll(videoModel.getChannels());
+                contentEntityList.addAll(videoModel.getContent());
                 has_next = Boolean.valueOf(videoModel.getHas_next());
                 Message message = Message.obtain();
                 message.what = 1;
@@ -118,22 +116,24 @@ public class videoList extends AppCompatActivity {
         }
     }
 
-    private Handler getListOk = new Handler()
-    {
+    private Handler getListOk = new Handler() {
         @Override
-        public void handleMessage(Message msg)
-        {
-            if (msg.what == 1)
-            {
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                //想将所有的video加上默认的背景
                 //准备异步加载图片
                 GridViewAdapter gridViewAdapter = new GridViewAdapter();
                 gridView.setAdapter(gridViewAdapter);
                 //先将所有的名字和页面加载出来，然后在来加载videoBitmap
+                //然后重新异步加载所有的图片
+                //添加菊花
+
+
+
 
             }
         }
     };
-
 
 
     private class GridViewAdapter extends BaseAdapter {
@@ -154,42 +154,28 @@ public class videoList extends AppCompatActivity {
 
         @Override
         public View getView(final int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
             if (convertView == null) {
-//                holder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.cate_adpter,parent, false);
-
-//                holder.imageView = (ImageView) convertView.findViewById(R.id.cate_image);
-//                holder.textView = (TextView) convertView.findViewById(R.id.cate_name);
-//                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
+                convertView = inflater.inflate(R.layout.cate_adpter, parent, false);
             }
-//            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.item_bg_loading));
-//            holder.textView.setText(contentEntityList.get(position).getName());
-//            holder.textView.setText("111");
+            ImageView imageView = ViewHolder.get(convertView, R.id.cate_image);
+            TextView textView = ViewHolder.get(convertView, R.id.cate_name);
+            imageView.setImageResource(R.drawable.item_bg_loading);
+            textView.setText(contentEntityList.get(position).getName());
             return convertView;
         }
-
     }
 
-    public class ViewHolder
-    {
-        @SuppressWarnings("unchecked")
-        public <T extends View> T get(View view, int id)
-        {
+    static class ViewHolder {
+        public static <T extends View> T get(View view, int id) {
             SparseArray<View> viewHolder = (SparseArray<View>) view.getTag();
-            if (viewHolder == null)
-            {
+            if (viewHolder == null) {
                 viewHolder = new SparseArray<>();
                 view.setTag(viewHolder);
             }
             View childView = viewHolder.get(id);
-            if (childView == null)
-            {
+            if (childView == null) {
                 childView = view.findViewById(id);
-                viewHolder.put(id,childView);
-
+                viewHolder.put(id, childView);
             }
             return (T) childView;
         }
@@ -200,5 +186,6 @@ public class videoList extends AppCompatActivity {
         TextView textView;
     }
     */
+
 
 }
