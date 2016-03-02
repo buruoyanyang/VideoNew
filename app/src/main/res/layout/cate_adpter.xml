@@ -9,14 +9,23 @@
         android:layout_height="wrap_content"
         android:src="@drawable/item_bg"
         android:id="@+id/cate_image"
-        android:padding="1px"
+        android:padding="5px"
         android:layout_gravity="center" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cate_name"
         android:text="123"
-        android:paddingTop="1px"
-        android:gravity="center"
-        android:layout_below="@+id/cate_image"/>
+        android:paddingTop="3px"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/cate_image"
+        android:lines="3"/>
+    <ProgressBar
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:indeterminateDrawable="@anim/loding_juhua"
+        android:layout_centerInParent="true"
+        android:id="@+id/lodingProgressBar"
+        android:indeterminateDuration="500"/>
+
 </RelativeLayout>

@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -111,6 +112,7 @@ public class cateList extends AppCompatActivity {
                 convertView = inflater.inflate(R.layout.cate_adpter,null);
                 holder.imageView = (ImageView)convertView.findViewById(R.id.cate_image);
                 holder.textView = (TextView)convertView.findViewById(R.id.cate_name);
+                holder.progressBar = (ProgressBar)convertView.findViewById(R.id.lodingProgressBar);
                 convertView.setTag(holder);
             }
             else
@@ -119,6 +121,7 @@ public class cateList extends AppCompatActivity {
             }
             holder.imageView.setImageBitmap(bitmapList.get(position));
             holder.textView.setText(nameList.get(position));
+            holder.progressBar.setVisibility(View.INVISIBLE);
             final int postNum = position;
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,6 +144,7 @@ public class cateList extends AppCompatActivity {
     {
         ImageView imageView;
         TextView textView;
+        ProgressBar progressBar;
     }
 
 

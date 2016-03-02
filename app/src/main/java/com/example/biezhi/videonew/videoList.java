@@ -1,6 +1,7 @@
 package com.example.biezhi.videonew;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
@@ -13,13 +14,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.biao.pulltorefresh.PtrLayout;
+import com.example.biezhi.videonew.CustomerClass.BitmapCut;
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.VideoModel;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +46,16 @@ public class videoList extends AppCompatActivity {
     int defaultKind = 0;
     int defaultAppid = 74;
     double defaultVersion = 1.0;
+    int currentLoadedImage = 0;
+    int viewTag = 0;
+    int imageWidth = 0;
+    int imageHeight = 0;
     List<VideoModel.ChannelsEntity> channelsEntityList;
     List<VideoModel.ContentEntity> contentEntityList;
     Boolean has_next;
-
+    BitmapCut bitmapCut;
+    static int screenWidth;
+    static int screenHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +77,9 @@ public class videoList extends AppCompatActivity {
         titleText.setText(appData.getCateName());
         channelsEntityList = new ArrayList<>();
         contentEntityList = new ArrayList<>();
+        bitmapCut = new BitmapCut();
+        screenHeight = appData.getHeight();
+        screenWidth = appData.getWidth();
 
     }
 
@@ -122,14 +137,12 @@ public class videoList extends AppCompatActivity {
             if (msg.what == 1) {
                 //想将所有的video加上默认的背景
                 //准备异步加载图片
-                GridViewAdapter gridViewAdapter = new GridViewAdapter();
+                final GridViewAdapter gridViewAdapter = new GridViewAdapter();
                 gridView.setAdapter(gridViewAdapter);
-                //先将所有的名字和页面加载出来，然后在来加载videoBitmap
-                //然后重新异步加载所有的图片
-                //添加菊花
-
-
-
+                //先将所有的名字和页面加载出来，然后在来加载videoBitmap 解决
+                //然后重新异步加载所有的图片 解决
+                //添加菊花动画 解决
+                // TODO: 16/3/2 图片错位 已解决
 
             }
         }
@@ -144,7 +157,7 @@ public class videoList extends AppCompatActivity {
 
         @Override
         public Object getItem(int position) {
-            return BitmapFactory.decodeResource(getResources(), R.drawable.item_bg_loading);
+            return BitmapFactory.decodeResource(getResources(), R.drawable.item_bg);
         }
 
         @Override
@@ -157,10 +170,26 @@ public class videoList extends AppCompatActivity {
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.cate_adpter, parent, false);
             }
-            ImageView imageView = ViewHolder.get(convertView, R.id.cate_image);
+
+            final ImageView imageView = ViewHolder.get(convertView, R.id.cate_image);
             TextView textView = ViewHolder.get(convertView, R.id.cate_name);
-            imageView.setImageResource(R.drawable.item_bg_loading);
+            final ProgressBar progressBar = ViewHolder.get(convertView, R.id.lodingProgressBar);
             textView.setText(contentEntityList.get(position).getName());
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .showImageOnFail(R.drawable.item_bg)
+                    .showImageOnLoading(R.drawable.item_bg)
+                    .cacheInMemory(true)
+                    .cacheOnDisk(true)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .build();
+            ImageLoader.getInstance().displayImage(contentEntityList.get(position).getCover(), imageView, options, new SimpleImageLoadingListener() {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    loadedImage = bitmapCut.setBitmapSize(loadedImage, screenHeight / 7, screenWidth / 3);
+                    imageView.setImageBitmap(loadedImage);
+                }
+            });
             return convertView;
         }
     }
@@ -180,12 +209,6 @@ public class videoList extends AppCompatActivity {
             return (T) childView;
         }
     }
-    /*
-    static class ViewHolder {
-        ImageView imageView;
-        TextView textView;
-    }
-    */
 
 
 }
