@@ -2,81 +2,25 @@
 <items version="2" >
 
     <item
-        jar="/Users/xiaofeng/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.1.2/7052283359001bb108753cb0583a887d3bf94c82/okhttp-3.1.2.jar"
+        jar="/Users/xiaofeng/.gradle/caches/modules-2/files-2.1/org.greenrobot/eventbus/3.0.0/ddd99896e9569eaababbe81b35d80e1b91c4ad85/eventbus-3.0.0.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="7052283359001bb108753cb0583a887d3bf94c82">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/okhttp-3.1.2-d1104a14776d10d9ca6cfca35c88220f7cf8a2fd.jar" />
+        sha1="ddd99896e9569eaababbe81b35d80e1b91c4ad85">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/eventbus-3.0.0-f2c7c607f75afa8883ac88b2b208318330142b85.jar" />
     </item>
     <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/classes.jar"
+        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/in.srain.cube/cube-sdk/1.0.44/jars/classes.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="6cbc7773921fcfedbe55657578f0cbfe614778dc">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/classes-bfa8016194ee41835d91011e2a1c0930057bb82a.jar" />
+        sha1="ab3e30bc50e6b7f859b4971bfc897cd107a7b6c5">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-4f211fe7781d6909c340b4dd2ed1c308e64b4bf5.jar" />
     </item>
     <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.1.1/jars/classes.jar"
+        jar="/Users/xiaofeng/.gradle/caches/modules-2/files-2.1/in.srain.cube/clog/1.0.2/4b857e5d62a7243e74fd0307639fff5a54f8f030/clog-1.0.2.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/classes-9536ae1287a2c11831a177dcd40fd87b43e3ce04.jar" />
-    </item>
-    <item
-        jar="/Users/xiaofeng/Desktop/android-sdk-macosx/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="8d680ba5a623724d1fb0e81c36a790f023a6cede">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/support-annotations-23.1.1-8ced9c18c31d3c4d189e4d7db23883a231bc2f24.jar" />
-    </item>
-    <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/libs/mockwebserver-3.1.2.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="0860e28703ea8c0ffeb29e1e3d1eea9fc1a2d857">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/mockwebserver-3.1.2-1e67421d10ff23e32a487d14f3e8f0f04d1d465a.jar" />
-    </item>
-    <item
-        jar="/Users/xiaofeng/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.6.0/98476622f10715998eacf9240d6b479f12c66143/okio-1.6.0.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="98476622f10715998eacf9240d6b479f12c66143">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/okio-1.6.0-0109f57410af59211094323630247781c3ecc289.jar" />
-    </item>
-    <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.biao/pulltorefresh/1.0.0-beta3/jars/classes.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="dd4566914b6d2d47f971a614042f2670bcffd0a3">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/classes-8d1ac4d6a21412c15cc127cbb519d055fe64d50b.jar" />
-    </item>
-    <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.1.1/jars/libs/internal_impl-23.1.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/internal_impl-23.1.1-c7aa321484a2f8e59b05f13f0e0f252f2951d3c3.jar" />
-    </item>
-    <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/libs/universal-image-loader-1.9.5.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="442dbfb517b9ab5cb5c6da7ebf8cc28ec5bd0375">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/universal-image-loader-1.9.5-735162165d9dc2a1882eb21de297878ae8204d07.jar" />
-    </item>
-    <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/libs/bcprov-jdk16-139.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="442c78011c2905a028ab64d223fc3582e13531ea">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/bcprov-jdk16-139-a25ebbc10d45b34f1c288a9b6c4bb8b124dfdb68.jar" />
-    </item>
-    <item
-        jar="/Users/xiaofeng/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3.1/ecb6e1f8e4b0e84c4b886c2f14a1500caf309757/gson-2.3.1.jar"
-        jumboMode="false"
-        revision="23.0.2"
-        sha1="ecb6e1f8e4b0e84c4b886c2f14a1500caf309757">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/release/gson-2.3.1-4a650d9e804a551ad342e05e527e2ae1cf57f534.jar" />
+        sha1="4b857e5d62a7243e74fd0307639fff5a54f8f030">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/clog-1.0.2-5ac8b0fd8d039c47aa56a72f460178ba406f5028.jar" />
     </item>
 
 </items>

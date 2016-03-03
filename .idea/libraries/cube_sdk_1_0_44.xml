@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="cube-sdk-1.0.44">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/in.srain.cube/cube-sdk/1.0.44/res" />
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/in.srain.cube/cube-sdk/1.0.44/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/in.srain.cube/cube-sdk/1.0.44/1ce0029da967cb68f7688081724ca9a51427df31/cube-sdk-1.0.44-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

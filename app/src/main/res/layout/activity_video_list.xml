@@ -5,18 +5,37 @@
     android:layout_height="match_parent"
     tools:context="com.example.biezhi.videonew.videoList">
     <include layout="@layout/title_bar"/>
-    <com.biao.pulltorefresh.PtrLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/main_ptr"
+    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+        android:id="@+id/ptr_refresh"
+        xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        cube_ptr:ptr_resistance="1.7"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_duration_to_close="300"
+        cube_ptr:ptr_duration_to_close_header="2000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
         android:paddingTop="200px">
-        <GridView
+        <in.srain.cube.views.loadmore.LoadMoreGridViewContainer
+            android:id="@+id/load_more_grid_view_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/video_grid"
-            android:numColumns="3">
-        </GridView>
-    </com.biao.pulltorefresh.PtrLayout>
-
+            android:background="@color/cube_mints_white">
+            <in.srain.cube.views.GridViewWithHeaderAndFooter
+                android:id="@+id/load_more_grid_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fadingEdge="none"
+                android:focusable="false"
+                android:horizontalSpacing="10dp"
+                android:listSelector="@android:color/transparent"
+                android:numColumns="3"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:scrollbarStyle="outsideOverlay"
+                android:stretchMode="columnWidth">
+            </in.srain.cube.views.GridViewWithHeaderAndFooter>
+        </in.srain.cube.views.loadmore.LoadMoreGridViewContainer>
+    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 </RelativeLayout>

@@ -51,6 +51,8 @@ public class Data extends Application {
     //点击的ImageViewID 用来返回的时候回归位置
     int clickedImageID = 0;
 
+    String videoCover = "";
+
     public void setWidth(int _width) {
         width = _width;
     }
@@ -246,6 +248,15 @@ public class Data extends Application {
     public List<String> getImageUrlFromInitView()
     {
         return imageUrlFromInitView;
+    }
+
+    public void setVideoCover(String _videoCover)
+    {
+        videoCover = _videoCover;
+    }
+    public String getVideoCover()
+    {
+        return videoCover;
     }
 
     @Override

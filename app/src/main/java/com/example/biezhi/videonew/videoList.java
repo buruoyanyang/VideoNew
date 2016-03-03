@@ -17,25 +17,35 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.biao.pulltorefresh.PtrLayout;
+
 import com.example.biezhi.videonew.CustomerClass.BitmapCut;
+import com.example.biezhi.videonew.CustomerClass.BitmapResize;
+import com.example.biezhi.videonew.CustomerClass.LocalDisplay;
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.VideoModel;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import in.srain.cube.util.CLog;
+import in.srain.cube.views.GridViewWithHeaderAndFooter;
+import in.srain.cube.views.loadmore.LoadMoreContainer;
+import in.srain.cube.views.loadmore.LoadMoreGridViewContainer;
+import in.srain.cube.views.loadmore.LoadMoreHandler;
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+
 
 public class videoList extends AppCompatActivity {
 
     private LayoutInflater inflater;
-    GridView gridView;
-    PtrLayout ptrLayout;
     Data appData;
     TextView titleText;
     private String sourcePage;
@@ -46,16 +56,17 @@ public class videoList extends AppCompatActivity {
     int defaultKind = 0;
     int defaultAppid = 74;
     double defaultVersion = 1.0;
-    int currentLoadedImage = 0;
-    int viewTag = 0;
-    int imageWidth = 0;
-    int imageHeight = 0;
     List<VideoModel.ChannelsEntity> channelsEntityList;
     List<VideoModel.ContentEntity> contentEntityList;
     Boolean has_next;
     BitmapCut bitmapCut;
     static int screenWidth;
     static int screenHeight;
+    PtrClassicFrameLayout ptrFrame;
+    GridViewWithHeaderAndFooter mGridView;
+    LoadMoreGridViewContainer loadMoreContainer;
+    BitmapResize bitmapResize;
+    boolean isLoadMore = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +74,13 @@ public class videoList extends AppCompatActivity {
         setContentView(R.layout.activity_video_list);
         initClass();
         initVideo();
-
     }
 
     private void initClass() {
         appData = (Data) this.getApplicationContext();
         SysApplication.getInstance().addActivity(this);
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        gridView = (GridView) findViewById(R.id.video_grid);
-        ptrLayout = (PtrLayout) findViewById(R.id.main_ptr);
+        mGridView = (GridViewWithHeaderAndFooter) findViewById(R.id.load_more_grid_view);
         titleText = (TextView) findViewById(R.id.title_text);
         sourcePage = appData.getSourcePage();
         titleText.setText(appData.getCateName());
@@ -80,7 +89,41 @@ public class videoList extends AppCompatActivity {
         bitmapCut = new BitmapCut();
         screenHeight = appData.getHeight();
         screenWidth = appData.getWidth();
+        bitmapResize = new BitmapResize();
+        ptrFrame = (PtrClassicFrameLayout) findViewById(R.id.ptr_refresh);
+        ptrFrame.setLastUpdateTimeRelateObject(this);
+        ptrFrame.disableWhenHorizontalMove(false);
+        ptrFrame.setPtrHandler(new PtrDefaultHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                frame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //异步请求网络
+                        isLoadMore = false;
+                        currentPageNum = 1;
+                        new Thread(new getVideoList()).start();
+                    }
+                }, 1000);
+            }
 
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, mGridView, header);
+            }
+        });
+        loadMoreContainer = (LoadMoreGridViewContainer) findViewById(R.id.load_more_grid_view_container);
+        loadMoreContainer.setAutoLoadMore(true);
+        loadMoreContainer.useDefaultHeader();
+        loadMoreContainer.setLoadMoreHandler(new LoadMoreHandler() {
+            @Override
+            public void onLoadMore(LoadMoreContainer loadMoreContainer) {
+                //处理加载更多函数
+                isLoadMore = true;
+                currentPageNum++;
+                new Thread(new getVideoList()).start();
+            }
+        });
     }
 
     private void initVideo() {
@@ -88,8 +131,8 @@ public class videoList extends AppCompatActivity {
         //http://115.29.190.54:99/Videos.aspx?page=0&cat=26&size=30&order=2&district=0&kind=0&appid=74&version=1.0
         //dd358748fcabdda1
         new Thread(new getVideoList()).start();
-
     }
+
 
     protected class getVideoList implements Runnable {
         @Override
@@ -120,8 +163,16 @@ public class videoList extends AppCompatActivity {
                 final Gson gson = new Gson();
                 VideoModel videoModel = gson.fromJson(json, VideoModel.class);
                 //获取所有的list
-                channelsEntityList.addAll(videoModel.getChannels());
-                contentEntityList.addAll(videoModel.getContent());
+                if (isLoadMore) {
+                    channelsEntityList.addAll(videoModel.getChannels());
+                    contentEntityList.addAll(videoModel.getContent());
+
+                }
+                else
+                {
+                    channelsEntityList = videoModel.getChannels();
+                    contentEntityList = videoModel.getContent();
+                }
                 has_next = Boolean.valueOf(videoModel.getHas_next());
                 Message message = Message.obtain();
                 message.what = 1;
@@ -138,12 +189,14 @@ public class videoList extends AppCompatActivity {
                 //想将所有的video加上默认的背景
                 //准备异步加载图片
                 final GridViewAdapter gridViewAdapter = new GridViewAdapter();
-                gridView.setAdapter(gridViewAdapter);
+                mGridView.setAdapter(gridViewAdapter);
                 //先将所有的名字和页面加载出来，然后在来加载videoBitmap 解决
                 //然后重新异步加载所有的图片 解决
                 //添加菊花动画 解决
                 // TODO: 16/3/2 图片错位 已解决
-
+                ptrFrame.refreshComplete();
+                loadMoreContainer.loadMoreFinish(false, has_next);
+                mGridView.setSelection(currentPageNum * 20);
             }
         }
     };
@@ -173,11 +226,19 @@ public class videoList extends AppCompatActivity {
 
             final ImageView imageView = ViewHolder.get(convertView, R.id.cate_image);
             TextView textView = ViewHolder.get(convertView, R.id.cate_name);
-            final ProgressBar progressBar = ViewHolder.get(convertView, R.id.lodingProgressBar);
+//            final ProgressBar progressBar = ViewHolder.get(convertView, R.id.lodingProgressBar);
             textView.setText(contentEntityList.get(position).getName());
+            //添加ImageView的点击事件
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //准备跳转内容和数据
+                    appData.setClickedVideoID(String.valueOf(contentEntityList.get(position).getId()));
+                    appData.setVideoCover(String.valueOf(contentEntityList.get(position).getCover()));
+
+                }
+            });
             DisplayImageOptions options = new DisplayImageOptions.Builder()
-                    .showImageOnFail(R.drawable.item_bg)
-                    .showImageOnLoading(R.drawable.item_bg)
                     .cacheInMemory(true)
                     .cacheOnDisk(true)
                     .bitmapConfig(Bitmap.Config.RGB_565)
@@ -185,9 +246,14 @@ public class videoList extends AppCompatActivity {
             ImageLoader.getInstance().displayImage(contentEntityList.get(position).getCover(), imageView, options, new SimpleImageLoadingListener() {
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    progressBar.setVisibility(View.INVISIBLE);
+//                    progressBar.setVisibility(View.INVISIBLE);
                     loadedImage = bitmapCut.setBitmapSize(loadedImage, screenHeight / 7, screenWidth / 3);
                     imageView.setImageBitmap(loadedImage);
+                }
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason)
+                {
+                    imageView.setImageBitmap(bitmapCut.setBitmapSize(BitmapFactory.decodeResource(getResources(), R.drawable.item_bg), screenHeight / 7, screenWidth / 3));
                 }
             });
             return convertView;
