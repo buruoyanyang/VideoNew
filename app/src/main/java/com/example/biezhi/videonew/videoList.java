@@ -1,6 +1,7 @@
 package com.example.biezhi.videonew;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -235,6 +236,7 @@ public class videoList extends AppCompatActivity {
                     //准备跳转内容和数据
                     appData.setClickedVideoID(String.valueOf(contentEntityList.get(position).getId()));
                     appData.setVideoCover(String.valueOf(contentEntityList.get(position).getCover()));
+                    startActivity(new Intent(videoList.this, videoInfo.class));
 
                 }
             });
