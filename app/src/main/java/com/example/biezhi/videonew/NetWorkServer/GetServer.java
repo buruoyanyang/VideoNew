@@ -17,7 +17,7 @@ import java.io.IOException;
 public class GetServer {
     //服务器状态
     public boolean serverIsOnline = true;
-//    服务器timeout
+    //    服务器timeout
 //    public int serverTimeout = 5000;
     //密钥
     public String aesSecret = "";
@@ -26,35 +26,24 @@ public class GetServer {
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
 
-    //获取信息
-    public String getInfoFromServer()
-    {
+
+    public String getInfoFromServerWithNoData() {
         Request request = new Request.Builder().url(getUrl).build();
-        Response response = null;
+        Response response;
         try {
             response = client.newCall(request).execute();
-            if (!response.isSuccessful())
-            {
-                //获取失败，可能是服务器异常
+            if (!response.isSuccessful()) {
                 serverIsOnline = false;
                 return "0";
-            }
-            else
-            {
+            } else {
                 //处理
                 String result = response.body().string();
-                final Data resultData = gson.fromJson(result, Data.class);
-                //解密
-                byte[] tempResult = AES.Decrypt(resultData.data, aesSecret);
-                if (tempResult != null)
-                {
-//                    String result1 = new String(tempResult,"UTF-8");
-                    return new String(tempResult,"UTF-8");
+                byte[] tempResult = AES.Decrypt(result, aesSecret);
+                if (tempResult != null) {
+                    return new String(tempResult, "UTF-8");
                 }
-
             }
-        } catch (IOException e)
-        {
+        } catch (IOException e) {
             //io读写错误
             e.printStackTrace();
             return "1";
@@ -66,8 +55,47 @@ public class GetServer {
 
         return "3";
     }
-    static class Data
-    {
+
+    /**
+     * 获取信息
+     *
+     * @return
+     */
+    public String getInfoFromServer() {
+        Request request = new Request.Builder().url(getUrl).build();
+        Response response;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                //获取失败，可能是服务器异常
+                serverIsOnline = false;
+                return "0";
+            } else {
+                //处理
+                String result = response.body().string();
+                final Data resultData = gson.fromJson(result, Data.class);
+                //解密
+                byte[] tempResult = AES.Decrypt(resultData.data, aesSecret);
+                if (tempResult != null) {
+//                    String result1 = new String(tempResult,"UTF-8");
+                    return new String(tempResult, "UTF-8");
+                }
+
+            }
+        } catch (IOException e) {
+            //io读写错误
+            e.printStackTrace();
+            return "1";
+        } catch (Exception e) {
+            //解密失败
+            e.printStackTrace();
+            return "2";
+        }
+
+        return "3";
+    }
+
+    static class Data {
         String data;
     }
 
@@ -79,12 +107,6 @@ public class GetServer {
 //    {
 //        String content;
 //    }
-
-
-
-
-
-
 
 
 }

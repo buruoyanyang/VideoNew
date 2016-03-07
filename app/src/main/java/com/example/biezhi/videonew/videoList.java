@@ -236,6 +236,8 @@ public class videoList extends AppCompatActivity {
                     //准备跳转内容和数据
                     appData.setClickedVideoID(String.valueOf(contentEntityList.get(position).getId()));
                     appData.setVideoCover(String.valueOf(contentEntityList.get(position).getCover()));
+                    appData.setAppId("43");
+                    appData.setVersion("6.0");
                     startActivity(new Intent(videoList.this, videoInfo.class));
 
                 }

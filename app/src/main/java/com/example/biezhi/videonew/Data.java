@@ -53,6 +53,10 @@ public class Data extends Application {
 
     String videoCover = "";
 
+    String appId = "43";
+
+    String version = "6.0";
+
     public void setWidth(int _width) {
         width = _width;
     }
@@ -257,6 +261,26 @@ public class Data extends Application {
     public String getVideoCover()
     {
         return videoCover;
+    }
+
+    public void setAppId(String _appid)
+    {
+        appId = _appid;
+    }
+
+    public String getAppid()
+    {
+        return appId;
+    }
+
+    public void setVersion(String _version)
+    {
+        version = _version;
+    }
+
+    public String getVersion()
+    {
+        return version;
     }
 
     @Override
