@@ -31,7 +31,9 @@ import android.widget.TextView;
 
 import com.example.biezhi.videonew.CustomerClass.BitmapResize;
 import com.example.biezhi.videonew.CustomerClass.Constants;
+import com.example.biezhi.videonew.DataModel.EpisodeModel;
 import com.example.biezhi.videonew.DataModel.SourceModel;
+import com.example.biezhi.videonew.DataModel.VideoInfoModel;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 
@@ -71,7 +73,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
     /**
      * 播放或者暂停标识
      */
-    private boolean isFullScreen = true;
+    private boolean isFullScreen = false;
 
     //设置seekBar是否可以拖动
     private boolean seekBarAutoFlag = false;
@@ -103,9 +105,59 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
      */
     private boolean controlShow;
 
+    /**
+     * appId
+     */
     String appId;
 
+    /**
+     * appVersion
+     */
     String version;
+
+    /**
+     * 当前选中的Video
+     */
+    String currentVideo;
+
+    /**
+     * 保存了当前video的信息
+     */
+    List<VideoInfoModel.ContentEntity> contentEntity;
+
+    /**
+     * video的简介
+     */
+    String videoIntro;
+
+    /**
+     * video的CateId
+     */
+    String videoCateId;
+
+    /**
+     * episode信息
+     */
+
+    List<EpisodeModel.ContentEntity> episodeContent;
+
+    /**
+     * 视频是否是vip
+     */
+    boolean isVipVidep;
+
+    /**
+     * 视频的episodeId
+     */
+    String episodeId;
+
+    /**
+     * 当前视频的播放地址
+     */
+    String currentVideoPlayUrl;
+
+    String videoSitdId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +189,18 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         appId = appData.getAppid();
         version = appData.getVersion();
         sourceData = new ArrayList<>();
+        currentVideo = appData.getClickedVideoID();
+        contentEntity = new ArrayList<>();
+        videoIntro = "";
+        videoCateId = "";
+        episodeContent = new ArrayList<>();
+        isVipVidep = false;
+        episodeId = "";
+        currentVideoPlayUrl = "";
+        videoSitdId = "";
         //获取播放地址
+        //获取来源信息
+        new Thread(new getPlaySource()).start();
         new Thread(new getPlayUrl()).start();
         controlShow = true;
 
@@ -180,8 +243,8 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         }
     }
 
-    //获取播放地址
-    private class getPlayUrl implements Runnable {
+    //获取播放源VideoId
+    private class getPlaySource implements Runnable {
 
         @Override
         public void run() {
@@ -217,7 +280,127 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                 msg.what = 2;
                 sourceOK.sendMessage(msg);
             }
-            GetServer getServer2 = new GetServer();
+        }
+    }
+
+
+    /**
+     * 来源
+     */
+    private Handler sourceOK = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 2) {
+                //修改来源UI
+                for (int i = 0; i < sourceCount; i++) {
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    final ImageButton imageButton = new ImageButton(videoInfo.this);
+                    imageButton.setPadding(3, 3, 3, 3);
+                    imageButton.setId(i);
+//                    imageButton.setBackgroundColor();
+                    imageButton.getBackground().setAlpha(0);
+                    Bitmap tempBit = bitmapResize.setBitmapSize(BitmapFactory.decodeResource(getResources(), bitmapResource[i]), 75, 75);
+                    lp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+                    if (i == 0) {
+                        lp.addRule(RelativeLayout.RIGHT_OF, R.id.video_sourceLabel);
+                    } else {
+                        lp.addRule(RelativeLayout.RIGHT_OF, i - 1);
+                    }
+                    imageButton.setImageBitmap(tempBit);
+                    videoSourceLayout.addView(imageButton, lp);
+                    imageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //监听点击事件
+                            changeSource(imageButton.getId());
+                        }
+                    });
+                    //添加图片
+                }
+            }
+        }
+    };
+
+    /**
+     * 切换来源
+     *
+     * @param sourceId
+     */
+    private void changeSource(int sourceId) {
+        //添加选中标志
+        currentVideo = String.valueOf(sourceData.get(sourceId).getVideoId());
+        Bitmap choicedBit = BitmapFactory.decodeResource(getResources(), R.drawable.xuanzhong);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ImageView imageView = new ImageView(videoInfo.this);
+        imageView.setPadding(1, 1, 1, 1);
+//        imageView.getBackground().setAlpha(0);
+        lp.addRule(RelativeLayout.ALIGN_BOTTOM, sourceId);
+        lp.addRule(RelativeLayout.ALIGN_RIGHT, sourceId);
+        imageView.setImageBitmap(choicedBit);
+        videoSourceLayout.addView(imageView, lp);
+        //显示缓冲标志
+        videoProgressBar.setVisibility(View.VISIBLE);
+        //获取播放地址
+        new Thread(new getPlayUrl()).start();
+
+
+    }
+
+    /**
+     * 获取播放地址
+     */
+    private class getPlayUrl implements Runnable {
+        @Override
+        public void run() {
+            GetServer getServer = new GetServer();
+            getServer.getUrl = "http://115.29.190.54:99/Video.aspx?videoid=" + currentVideo + "&appid=" + appId + "&version=" + version;
+            getServer.aesSecret = "dd358748fcabdda1";
+            String json = getServer.getInfoFromServer();
+            if (json.length() < 10) {
+                switch (json) {
+                    case "0":
+                        break;
+                    case "1":
+                        break;
+                    case "2":
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                Gson gson = new Gson();
+                VideoInfoModel videoInfoModel = gson.fromJson(json, VideoInfoModel.class);
+                //请求播放地址，记录信息，准备修改UI
+                contentEntity.addAll(videoInfoModel.getContent());
+                videoCateId = String.valueOf(videoInfoModel.getCateId());
+                videoIntro = videoInfoModel.getIntro();
+                GetServer getServer1 = new GetServer();
+                getServer1.getUrl = "http://115.29.190.54:99/Episode.aspx?videoid=" + currentVideo + "&siteid=" + contentEntity.get(0).getId() + "&appid=" + appId + "&version=" + version;
+                getServer1.aesSecret = "dd358748fcabdda1";
+                String json1 = getServer1.getInfoFromServer();
+                if (json1.length() < 10) {
+                    switch (json) {
+                        case "0":
+                            break;
+                        case "1":
+                            break;
+                        case "2":
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    Gson gson1 = new Gson();
+                    EpisodeModel episodeModel = gson1.fromJson(json1, EpisodeModel.class);
+                    episodeContent.addAll(episodeModel.getContent());
+                    videoSitdId = String.valueOf(episodeModel.getSiteId());
+                    //获取信息完毕，通知修改UI
+                    
+
+
+                }
+
+            }
         }
     }
 
@@ -239,51 +422,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
             }
         }
     };
-    /**
-     * 来源UI
-     */
-    private Handler sourceOK = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 2) {
-                //修改来源UI
-                for (int i = 0; i < sourceCount; i++) {
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    final ImageButton imageButton = new ImageButton(videoInfo.this);
-                    imageButton.setPadding(3, 3, 3, 3);
-                    imageButton.setId(i);
-//                    imageButton.setBackgroundColor();
-                    imageButton.getBackground().setAlpha(0);
-                    Bitmap tempBit = bitmapResize.setBitmapSize(BitmapFactory.decodeResource(getResources(),bitmapResource[i]),75,75);
-                    lp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                    if (i == 0) {
-                        lp.addRule(RelativeLayout.RIGHT_OF, R.id.video_sourceLabel);
-                    } else {
-                        lp.addRule(RelativeLayout.RIGHT_OF,i - 1);
-                    }
-                    imageButton.setImageBitmap(tempBit);
-                    imageButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            //监听点击事件
-                            changeSource(imageButton.getId());
 
-                        }
-                    });
-                    videoSourceLayout.addView(imageButton, lp);
-                    //添加图片
-
-                }
-
-
-            }
-        }
-    };
-
-    private void changeSource(int sourceId)
-    {
-
-    }
 
     private void playVideo() throws IOException {
         //播放视频
