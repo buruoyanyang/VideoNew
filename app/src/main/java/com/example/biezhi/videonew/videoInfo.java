@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.example.biezhi.videonew.CustomerClass.BitmapResize;
 import com.example.biezhi.videonew.CustomerClass.Constants;
+import com.example.biezhi.videonew.CustomerClass.GetPlayUrl;
 import com.example.biezhi.videonew.DataModel.EpisodeModel;
 import com.example.biezhi.videonew.DataModel.SourceModel;
 import com.example.biezhi.videonew.DataModel.VideoInfoModel;
@@ -161,6 +162,14 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
     /**
      * 解析播放地址
      */
+    GetPlayUrl getPlayUrl;
+
+    /**
+     * 当前的episode，就是第几集
+     */
+    int episodeNum;
+
+    String videoQuality;
 
 
     @Override
@@ -202,6 +211,9 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         episodeId = "";
         currentVideoPlayUrl = "";
         videoSitdId = "";
+        getPlayUrl = new GetPlayUrl();
+        episodeNum = 1;
+        videoQuality = "normal";
         //获取播放地址
         //获取来源信息
         new Thread(new getPlaySource()).start();
@@ -221,6 +233,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         surfaceHolder.addCallback(new SurfaceCallback());
         videoProgressBar.setVisibility(View.VISIBLE);
     }
+
 
     private class SurfaceCallback implements SurfaceHolder.Callback {
 
@@ -299,7 +312,6 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                     final ImageButton imageButton = new ImageButton(videoInfo.this);
                     imageButton.setPadding(3, 3, 3, 3);
                     imageButton.setId(i);
-//                    imageButton.setBackgroundColor();
                     imageButton.getBackground().setAlpha(0);
                     Bitmap tempBit = bitmapResize.setBitmapSize(BitmapFactory.decodeResource(getResources(), bitmapResource[i]), 75, 75);
                     lp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
@@ -375,6 +387,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                 contentEntity.addAll(videoInfoModel.getContent());
                 videoCateId = String.valueOf(videoInfoModel.getCateId());
                 videoIntro = videoInfoModel.getIntro();
+                videoSitdId = String.valueOf(contentEntity.get(0).getId());
                 GetServer getServer1 = new GetServer();
                 getServer1.getUrl = "http://115.29.190.54:99/Episode.aspx?videoid=" + currentVideo + "&siteid=" + contentEntity.get(0).getId() + "&appid=" + appId + "&version=" + version;
                 getServer1.aesSecret = "dd358748fcabdda1";
@@ -396,13 +409,15 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                     episodeContent.addAll(episodeModel.getContent());
                     videoSitdId = String.valueOf(episodeModel.getSiteId());
                     //getplayUrl.episode就是1 2 3 4 5 集
+                    getPlayUrl.setValue(Integer.parseInt(videoSitdId), episodeNum, screenWidth, screenHeight);
+                    getPlayUrl.ua = "iPhone";
+                    getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
+                    getPlayUrl.quality = videoQuality;
+                    uri = Uri.parse(getPlayUrl.getUrl());
                     //获取信息完毕，通知修改UI
                     Message msg = Message.obtain();
                     msg.what = 1;
                     playUrlOK.sendMessage(msg);
-
-
-
                 }
 
             }
@@ -419,17 +434,15 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                 //获取播放地址完毕，准备播放视频
                 //隐藏按钮
                 //设置播放地址
-                if (episodeContent.size()>0) {
-                    uri = Uri.parse(episodeContent.get(1).getPlayUrl());
+                if (episodeContent.size() > 0) {
                     videoControlLayout.setVisibility(View.VISIBLE);
                     try {
                         playVideo();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-                else
-                {
+                } else {
+
                     // TODO: 16/3/9 没获取到播放地址
                 }
             }
@@ -527,8 +540,9 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
 
     }
 
+    // TODO: 16/3/9 所有的视频播放失败，都加载出错了应该~
     /**
-     * 错误监听
+     * 错误监听 
      *
      * @param mp
      * @param what

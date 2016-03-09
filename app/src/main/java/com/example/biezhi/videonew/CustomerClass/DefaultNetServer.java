@@ -1,6 +1,7 @@
 package com.example.biezhi.videonew.CustomerClass;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -60,12 +61,26 @@ public class DefaultNetServer {
         String value = "";
         try {
             JSONObject jsonObject = new JSONObject(result);
-            jsonObject = jsonObject.getJSONObject("data").getJSONObject("video_list").getJSONObject(videoQuality);
-            value = jsonObject.optString("main_url");
+            JSONObject  jsonObject1 = jsonObject.getJSONObject("data").getJSONObject("video_list").getJSONObject(videoQuality);
+            if (jsonObject1.toString() == "" )
+            {
+                String default_play = jsonObject.getJSONObject("data").getJSONObject("video_list").getJSONObject("default_play").toString();
+                jsonObject1 =  jsonObject.getJSONObject("data").getJSONObject("video_list").getJSONObject(default_play);
+            }
+            value = jsonObject1.optString("main_url");
 
         }
         catch (Exception e)
         {
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                String default_play = jsonObject.getJSONObject("data").getJSONObject("video_list").get("default_play").toString();
+                JSONObject  jsonObject1 = jsonObject.getJSONObject("data").getJSONObject("video_list").getJSONObject(default_play);
+                value = jsonObject1.optString("main_url");
+
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
         }
         return value;
