@@ -158,6 +158,10 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
 
     String videoSitdId;
 
+    /**
+     * 解析播放地址
+     */
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,8 +220,6 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         //设置surface的回调
         surfaceHolder.addCallback(new SurfaceCallback());
         videoProgressBar.setVisibility(View.VISIBLE);
-
-
     }
 
     private class SurfaceCallback implements SurfaceHolder.Callback {
@@ -342,8 +344,6 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         videoProgressBar.setVisibility(View.VISIBLE);
         //获取播放地址
         new Thread(new getPlayUrl()).start();
-
-
     }
 
     /**
@@ -368,6 +368,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                         break;
                 }
             } else {
+                //再请求当前播放地址
                 Gson gson = new Gson();
                 VideoInfoModel videoInfoModel = gson.fromJson(json, VideoInfoModel.class);
                 //请求播放地址，记录信息，准备修改UI
@@ -394,8 +395,12 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                     EpisodeModel episodeModel = gson1.fromJson(json1, EpisodeModel.class);
                     episodeContent.addAll(episodeModel.getContent());
                     videoSitdId = String.valueOf(episodeModel.getSiteId());
+                    //getplayUrl.episode就是1 2 3 4 5 集
                     //获取信息完毕，通知修改UI
-                    
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+                    playUrlOK.sendMessage(msg);
+
 
 
                 }
@@ -413,11 +418,19 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
             if (msg.what == 1) {
                 //获取播放地址完毕，准备播放视频
                 //隐藏按钮
-                videoControlLayout.setVisibility(View.INVISIBLE);
-                try {
-                    playVideo();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                //设置播放地址
+                if (episodeContent.size()>0) {
+                    uri = Uri.parse(episodeContent.get(1).getPlayUrl());
+                    videoControlLayout.setVisibility(View.VISIBLE);
+                    try {
+                        playVideo();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    // TODO: 16/3/9 没获取到播放地址
                 }
             }
         }

@@ -31,4 +31,5 @@ dependencies {
     compile 'in.srain.cube:clog:1.0.2'
     compile 'in.srain.cube:cube-sdk:1.0.44@aar'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }
