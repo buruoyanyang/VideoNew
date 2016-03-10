@@ -30,7 +30,8 @@
         <activity android:name=".myList" />
         <activity android:name=".recomList" />
         <activity android:name=".videoList" />
-        <activity android:name=".videoInfo"></activity>
+        <activity android:name=".videoInfo" />
+        <activity android:name=".videoPlay"></activity>
     </application>
 
 </manifest>

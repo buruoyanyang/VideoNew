@@ -171,6 +171,8 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
 
     String videoQuality;
 
+    String path = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,8 +218,6 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         videoQuality = "normal";
         //获取播放地址
         //获取来源信息
-        new Thread(new getPlaySource()).start();
-        new Thread(new getPlayUrl()).start();
         controlShow = true;
 
         // 获取屏幕的宽度和高度
@@ -232,6 +232,9 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         //设置surface的回调
         surfaceHolder.addCallback(new SurfaceCallback());
         videoProgressBar.setVisibility(View.VISIBLE);
+        new Thread(new getPlaySource()).start();
+        new Thread(new getPlayUrl()).start();
+
     }
 
 
@@ -413,7 +416,9 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                     getPlayUrl.ua = "iPhone";
                     getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
                     getPlayUrl.quality = videoQuality;
-                    uri = Uri.parse(getPlayUrl.getUrl());
+
+//                    uri = Uri.parse(getPlayUrl.getUrl());
+                    path = getPlayUrl.getUrl();
                     //获取信息完毕，通知修改UI
                     Message msg = Message.obtain();
                     msg.what = 1;
@@ -466,7 +471,8 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         //设置缓存变化监听
         mediaPlayer.setOnBufferingUpdateListener(this);
         //设置播放路径
-        mediaPlayer.setDataSource(this, uri);
+        mediaPlayer.setDataSource(path);
+//        mediaPlayer.setDataSource(this, uri);
         //设置异步加载视频
         mediaPlayer.prepareAsync();
     }
@@ -552,6 +558,35 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
     @Override
     public boolean onError(MediaPlayer mp, int what, int extra) {
         //需要处理一些错误信息
+        String TAG2 = "mediaError";
+        switch (what){
+            case MediaPlayer.MEDIA_ERROR_UNKNOWN:
+                Log.e(TAG2, "unknown media playback error");
+                break;
+            case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
+                Log.e(TAG2, "server connection died");
+            default:
+                Log.e(TAG2, "generic audio playback error");
+                break;
+        }
+
+        switch (extra) {
+            case MediaPlayer.MEDIA_ERROR_IO:
+                Log.e(TAG2, "IO media error");
+                break;
+            case MediaPlayer.MEDIA_ERROR_MALFORMED:
+                Log.e(TAG2, "media error, malformed");
+                break;
+            case MediaPlayer.MEDIA_ERROR_UNSUPPORTED:
+                Log.e(TAG2, "unsupported media content");
+                break;
+            case MediaPlayer.MEDIA_ERROR_TIMED_OUT:
+                Log.e(TAG2, "media timeout error");
+                break;
+            default:
+                Log.e(TAG2, "unknown playback error");
+                break;
+        }
         return false;
     }
 
@@ -696,7 +731,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
 
                     if (null != videoInfo.this.mediaPlayer
                             && videoInfo.this.mediaPlayer.isPlaying()) {
-                        videoSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+//                        videoSeekBar.setProgress(mediaPlayer.getCurrentPosition());
                     }
                 }
             } catch (Exception e) {

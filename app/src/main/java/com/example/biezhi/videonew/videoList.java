@@ -164,9 +164,7 @@ public class videoList extends AppCompatActivity {
                     channelsEntityList.addAll(videoModel.getChannels());
                     contentEntityList.addAll(videoModel.getContent());
 
-                }
-                else
-                {
+                } else {
                     channelsEntityList = videoModel.getChannels();
                     contentEntityList = videoModel.getContent();
                 }
@@ -179,6 +177,7 @@ public class videoList extends AppCompatActivity {
         }
     }
 
+
     private Handler getListOk = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -190,7 +189,7 @@ public class videoList extends AppCompatActivity {
                 //先将所有的名字和页面加载出来，然后在来加载videoBitmap 解决
                 //然后重新异步加载所有的图片 解决
                 //添加菊花动画 解决
-                // TODO: 16/3/2 图片错位 已解决
+                // TODO: 16/3/2 图片错位 未解决
                 ptrFrame.refreshComplete();
                 loadMoreContainer.loadMoreFinish(false, has_next);
                 mGridView.setSelection(currentPageNum * 20);
@@ -234,7 +233,8 @@ public class videoList extends AppCompatActivity {
                     appData.setVideoCover(String.valueOf(contentEntityList.get(position).getCover()));
                     appData.setAppId("43");
                     appData.setVersion("6.0");
-                    startActivity(new Intent(videoList.this, videoInfo.class));
+                    startActivity(new Intent(videoList.this, videoPlay.class));
+//                    startActivity(new Intent(videoList.this, videoInfo.class));
 
                 }
             });
@@ -250,9 +250,9 @@ public class videoList extends AppCompatActivity {
                     loadedImage = bitmapCut.setBitmapSize(loadedImage, screenHeight / 7, screenWidth / 3);
                     imageView.setImageBitmap(loadedImage);
                 }
+
                 @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason)
-                {
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                     imageView.setImageBitmap(bitmapCut.setBitmapSize(BitmapFactory.decodeResource(getResources(), R.drawable.item_bg), screenHeight / 7, screenWidth / 3));
                 }
             });
