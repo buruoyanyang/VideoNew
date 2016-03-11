@@ -235,6 +235,7 @@ public class videoList extends AppCompatActivity {
                     appData.setVersion("6.0");
                     startActivity(new Intent(videoList.this, videoPlay.class));
 //                    startActivity(new Intent(videoList.this, videoInfo.class));
+//                    startActivity(new Intent(videoList.this, videoTest.class));
 
                 }
             });

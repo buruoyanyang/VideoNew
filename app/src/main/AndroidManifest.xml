@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> -->
     <application
         android:name=".Data"
         android:allowBackup="true"
@@ -31,7 +32,8 @@
         <activity android:name=".recomList" />
         <activity android:name=".videoList" />
         <activity android:name=".videoInfo" />
-        <activity android:name=".videoPlay"></activity>
+        <activity android:name=".videoPlay" />
+        <activity android:name=".videoTest" />
     </application>
 
 </manifest>

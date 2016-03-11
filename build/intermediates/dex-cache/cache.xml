@@ -2,11 +2,11 @@
 <items version="2" >
 
     <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/de.mrmaffen/vlc-android-sdk/1.9.0/jars/classes.jar"
+        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/me.neavo/vitamio/4.2.2/jars/classes.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="58b31196da1fbcf289db788db04f2fc104549125">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-96ee4713bd2e76f604b31e1898a97acf285533f7.jar" />
+        sha1="42758c720605ffd5916f008ae3cbdee5617afbd3">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-e37ef971a27001ce10cff44def316224eedf4ee3.jar" />
     </item>
 
 </items>
