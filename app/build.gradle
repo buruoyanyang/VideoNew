@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.biezhi.videonew"
-        minSdkVersion 15
+        minSdkVersion 14
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -32,6 +32,7 @@ dependencies {
     compile 'in.srain.cube:clog:1.0.2'
     compile 'in.srain.cube:cube-sdk:1.0.44@aar'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile project(':vitamio')
 //    compile 'me.neavo:vitamio:4.2.2'
 //    compile "de.mrmaffen:vlc-android-sdk:1.9.0"
 }

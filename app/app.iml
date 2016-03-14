@@ -110,5 +110,6 @@
     <orderEntry type="library" exported="" name="clog-1.0.2" level="project" />
     <orderEntry type="library" exported="" name="eventbus-3.0.0" level="project" />
     <orderEntry type="library" exported="" name="mockwebserver-3.1.2" level="project" />
+    <orderEntry type="module" module-name="vitamio" exported="" />
   </component>
 </module>

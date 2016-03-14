@@ -2,11 +2,11 @@
 <items version="2" >
 
     <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/me.neavo/vitamio/4.2.2/jars/classes.jar"
+        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/VideoNew/vitamio/unspecified/jars/classes.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="42758c720605ffd5916f008ae3cbdee5617afbd3">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-e37ef971a27001ce10cff44def316224eedf4ee3.jar" />
+        sha1="be2bd1493c1b5a53d48e0c74a76eb4c5fdd07e8e">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-a95538262b03dbbdedd1b0368072bd9b36c2357c.jar" />
     </item>
 
 </items>

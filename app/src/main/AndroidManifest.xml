@@ -33,7 +33,6 @@
         <activity android:name=".videoList" />
         <activity android:name=".videoInfo" />
         <activity android:name=".videoPlay" />
-        <activity android:name=".videoTest" />
     </application>
 
 </manifest>
