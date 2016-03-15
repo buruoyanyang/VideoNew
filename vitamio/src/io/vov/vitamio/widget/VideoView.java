@@ -464,7 +464,9 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
       if (mUri != null) {
         List<String> paths = mUri.getPathSegments();
         String name = paths == null || paths.isEmpty() ? "null" : paths.get(paths.size() - 1);
-        mMediaController.setFileName(name);
+
+        // TODO: 16/3/15 取消显示文件名
+//        mMediaController.setFileName(name);
       }
     }
   }

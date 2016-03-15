@@ -52,7 +52,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
     TextView videoCurrentTimeLabel;
     SeekBar videoSeekBar;
     TextView videoTotalTimeLabel;
-    ImageView videoFullScreen;
+    ImageButton videoFullScreen;
     TextView videoSourceLabel;
     ImageButton videoDownloadButton;
     ImageButton videoFavorateButton;
@@ -63,7 +63,6 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
     ProgressBar videoProgressBar;
     Data appData;
     MediaPlayer mediaPlayer;
-    Uri uri;
     RelativeLayout videoControlLayout;
     List<SourceModel.DataEntity> sourceData;
     int sourceCount;
@@ -190,7 +189,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         videoCurrentTimeLabel = (TextView) findViewById(R.id.video_currentTime);
         videoSeekBar = (SeekBar) findViewById(R.id.video_seekBar);
         videoTotalTimeLabel = (TextView) findViewById(R.id.video_totalTime);
-        videoFullScreen = (ImageView) findViewById(R.id.video_fullScreen);
+        videoFullScreen = (ImageButton) findViewById(R.id.video_fullScreen);
         videoSourceLabel = (TextView) findViewById(R.id.video_sourceLabel);
         videoDownloadButton = (ImageButton) findViewById(R.id.video_download);
         videoFavorateButton = (ImageButton) findViewById(R.id.video_favorate);

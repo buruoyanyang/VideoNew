@@ -7,7 +7,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="650px"
-        android:id="@+id/video_playView">
+        android:id="@+id/video_playView"
+        android:background="#000000">
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -16,8 +17,61 @@
         <io.vov.vitamio.widget.VideoView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/video_surface"/>
+            android:id="@+id/video_surface"
+            android:layout_centerInParent="true" />
     </RelativeLayout>
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100px"-->
+        <!--android:layout_alignBottom="@+id/video_playView"-->
+        <!--android:background="#404040"-->
+        <!--android:alpha="0.6"-->
+        <!--android:id="@+id/video_control">-->
+        <!--<ImageButton-->
+            <!--android:layout_width="75px"-->
+            <!--android:layout_height="75px"-->
+            <!--android:src="@drawable/video_play"-->
+            <!--android:scaleType="fitXY"-->
+            <!--android:background="#00000000"-->
+            <!--android:id="@+id/videoPlayOrPause"-->
+            <!--android:paddingLeft="5px"-->
+            <!--android:layout_centerVertical="true"/>-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toRightOf="@id/videoPlayOrPause"-->
+            <!--android:id="@+id/video_currentTime"-->
+            <!--android:text="00:00"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:paddingLeft="5px"-->
+            <!--android:textColor="#ffffff"/>-->
+        <!--<SeekBar-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="75px"-->
+            <!--android:layout_toRightOf="@+id/video_currentTime"-->
+            <!--android:layout_toLeftOf="@+id/video_totalTime"-->
+            <!--android:id="@+id/video_seekBar"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:paddingRight="5px"/>-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toLeftOf="@+id/video_fullScreen"-->
+            <!--android:text="00:00"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:textColor="#ffffff"-->
+            <!--android:id="@+id/video_totalTime" />-->
+        <!--<ImageButton-->
+            <!--android:layout_width="75px"-->
+            <!--android:layout_height="75px"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:src="@drawable/full_screen"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:id="@+id/video_fullScreen"-->
+            <!--android:background="#00000000"-->
+            <!--android:alpha="0.6"-->
+            <!--android:scaleType="fitXY"/>-->
+    <!--</RelativeLayout>-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="120px"
