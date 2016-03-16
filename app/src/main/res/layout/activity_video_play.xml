@@ -6,7 +6,7 @@
     tools:context="com.example.biezhi.videonew.videoPlay">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="650px"
+        android:layout_height="300dp"
         android:id="@+id/video_playView"
         android:background="#000000">
         <ProgressBar
@@ -16,7 +16,7 @@
             android:id="@+id/video_loadingBar"/>
         <io.vov.vitamio.widget.VideoView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="300dp"
             android:id="@+id/video_surface"
             android:layout_centerInParent="true" />
     </RelativeLayout>

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="74dp"
+    android:layout_height="50dp"
     android:background="@color/mediacontroller_bg"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:id="@+id/controller_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
 
         <ImageButton
             android:id="@+id/mediacontroller_play_pause"
@@ -57,6 +59,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:ellipsize="marquee"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:visibility="invisible"/>
 
-</LinearLayout><!-- From: file:/Users/xiaofeng/Desktop/VideoNew/vitamio/res/layout/mediacontroller.xml -->
+</RelativeLayout><!-- From: file:/Users/xiaofeng/Desktop/VideoNew/vitamio/res/layout/mediacontroller.xml -->

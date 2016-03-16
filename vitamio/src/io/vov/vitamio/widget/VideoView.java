@@ -36,6 +36,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.RelativeLayout;
 
 import io.vov.vitamio.MediaFormat;
 import io.vov.vitamio.MediaPlayer;
@@ -460,6 +461,11 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
       View anchorView = this.getParent() instanceof View ? (View) this.getParent() : this;
       mMediaController.setAnchorView(anchorView);
       mMediaController.setEnabled(isInPlaybackState());
+
+//      RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//      layoutParams.addRule(RelativeLayout.BELOW,anchorView.getId());
+//      mMediaController.setLayoutParams(layoutParams);
+
 
       if (mUri != null) {
         List<String> paths = mUri.getPathSegments();

@@ -13,11 +13,12 @@ int drawable scrubber_primary_holo 0x7f020008
 int drawable scrubber_progress_horizontal_holo_dark 0x7f020009
 int drawable scrubber_secondary_holo 0x7f02000a
 int drawable scrubber_track_holo_dark 0x7f02000b
-int id mediacontroller_file_name 0x7f080004
-int id mediacontroller_play_pause 0x7f080000
-int id mediacontroller_seekbar 0x7f080003
-int id mediacontroller_time_current 0x7f080001
-int id mediacontroller_time_total 0x7f080002
+int id controller_layout 0x7f080000
+int id mediacontroller_file_name 0x7f080005
+int id mediacontroller_play_pause 0x7f080001
+int id mediacontroller_seekbar 0x7f080004
+int id mediacontroller_time_current 0x7f080002
+int id mediacontroller_time_total 0x7f080003
 int layout mediacontroller 0x7f030000
 int raw libarm 0x7f040000
 int string VideoView_error_button 0x7f060000

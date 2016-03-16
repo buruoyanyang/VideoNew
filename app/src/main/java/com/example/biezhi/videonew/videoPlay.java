@@ -8,9 +8,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -209,8 +211,14 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     private void initPlayer() {
         Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
-        videoView.setVideoURI(Uri.parse("http://play.g3proxy.lecloud.com/vod/v2/MTgzLzUyLzExMS9sZXR2LXV0cy8yMC92ZXJfMDBfMjItMTAzMTU5MTQwNy1hdmMtNDE0NDU5LWFhYy0zMjAwMC01ODA5MzIwLTMzMDYxMDkzNi0wOWIwM2EwMWEzMTk3MDE4MDFkMzNmMjRhMmQxMDVkOS0xNDU3ODUyMzM0Njc3Lm1wNA==?b=455&mmsid=48400688&tm=1457929491&key=06124a5108b4f698b9f5edf9af2b9d51&platid=14&splatid=1403&playid=0&tss=ios&vtype=13&cvid=65418574921&payff=0&pip=d63fd5ef507e6b0cf5b10d9d660984a3&tag=macos&sign=webdisk_165961447&termid=2&pay=0&ostype=macos&hwtype=un&uid=165961447&token=6a63be768ae75c158ffee2ec2349be20"));
+        videoView.setVideoURI(Uri.parse("http://vplay.aixifan.com/des/20160304/3251926_mp4/3251926_lvbr.mp4?k=f0d230e08c8af6c131390bec52390a6a&t=1458114898"));
+        videoView.setVideoLayout(1,1080/650);
         MediaController mediaPlayerControl = new MediaController(this);
+        mediaPlayerControl.setAnchorView(videoView);
+        mediaPlayerControl.setAnimationStyle(-1);
+//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM,R.id.video_surface);
+//        mediaPlayerControl.setLayoutParams(layoutParams);
         videoView.setMediaController(mediaPlayerControl);
         videoView.setOnPreparedListener(this);
         videoView.setOnClickListener(new View.OnClickListener() {
@@ -219,6 +227,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
                 changeToFullScreen();
             }
         });
+
     }
 
     @Override
