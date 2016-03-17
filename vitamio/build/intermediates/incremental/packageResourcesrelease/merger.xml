@@ -15,4 +15,4 @@
         <item name="android:thumbOffset">16dip</item>
         <item name="android:paddingLeft">16dip</item>
         <item name="android:paddingRight">16dip</item>
-    </style></file></source><source path="/Users/xiaofeng/Desktop/VideoNew/vitamio/build/generated/res/rs/release"/><source path="/Users/xiaofeng/Desktop/VideoNew/vitamio/build/generated/res/resValues/release"/></dataSet><dataSet config="release"><source path="/Users/xiaofeng/Desktop/VideoNew/vitamio/src/release/res"/></dataSet><mergedItems/></merger>
+    </style></file><file name="full_screen" path="/Users/xiaofeng/Desktop/VideoNew/vitamio/res/drawable/full_screen.png" qualifiers="" type="drawable"/></source><source path="/Users/xiaofeng/Desktop/VideoNew/vitamio/build/generated/res/rs/release"/><source path="/Users/xiaofeng/Desktop/VideoNew/vitamio/build/generated/res/resValues/release"/></dataSet><dataSet config="release"><source path="/Users/xiaofeng/Desktop/VideoNew/vitamio/src/release/res"/></dataSet><mergedItems/></merger>

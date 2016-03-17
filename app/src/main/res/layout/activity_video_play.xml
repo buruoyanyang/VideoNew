@@ -1,156 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.biezhi.videonew.videoPlay">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:id="@+id/video_playView"
-        android:background="#000000">
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:id="@+id/video_loadingBar"/>
-        <io.vov.vitamio.widget.VideoView
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:id="@+id/video_surface"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
-    <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="100px"-->
-        <!--android:layout_alignBottom="@+id/video_playView"-->
-        <!--android:background="#404040"-->
-        <!--android:alpha="0.6"-->
-        <!--android:id="@+id/video_control">-->
-        <!--<ImageButton-->
-            <!--android:layout_width="75px"-->
-            <!--android:layout_height="75px"-->
-            <!--android:src="@drawable/video_play"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:background="#00000000"-->
-            <!--android:id="@+id/videoPlayOrPause"-->
-            <!--android:paddingLeft="5px"-->
-            <!--android:layout_centerVertical="true"/>-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_toRightOf="@id/videoPlayOrPause"-->
-            <!--android:id="@+id/video_currentTime"-->
-            <!--android:text="00:00"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:paddingLeft="5px"-->
-            <!--android:textColor="#ffffff"/>-->
-        <!--<SeekBar-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="75px"-->
-            <!--android:layout_toRightOf="@+id/video_currentTime"-->
-            <!--android:layout_toLeftOf="@+id/video_totalTime"-->
-            <!--android:id="@+id/video_seekBar"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:paddingRight="5px"/>-->
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_toLeftOf="@+id/video_fullScreen"-->
-            <!--android:text="00:00"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:textColor="#ffffff"-->
-            <!--android:id="@+id/video_totalTime" />-->
-        <!--<ImageButton-->
-            <!--android:layout_width="75px"-->
-            <!--android:layout_height="75px"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:src="@drawable/full_screen"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:id="@+id/video_fullScreen"-->
-            <!--android:background="#00000000"-->
-            <!--android:alpha="0.6"-->
-            <!--android:scaleType="fitXY"/>-->
-    <!--</RelativeLayout>-->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="120px"
-        android:layout_below="@+id/video_playView"
-        android:id="@+id/video_source">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="来源"
-            android:layout_centerVertical="true"
-            android:paddingLeft="5px"
-            android:textSize="50px"
-            android:id="@+id/video_sourceLabel"/>
-        <ImageButton
-            android:layout_width="75px"
-            android:layout_height="75px"
-            android:layout_alignParentRight="true"
-            android:paddingRight="5px"
-            android:background="#00000000"
-            android:src="@drawable/download"
-            android:id="@+id/video_download"
-            android:layout_centerVertical="true"
-            android:scaleType="fitXY"/>
-        <ImageButton
-            android:layout_width="75px"
-            android:layout_height="75px"
-            android:layout_toLeftOf="@+id/video_download"
-            android:layout_centerVertical="true"
-            android:background="#00000000"
-            android:src="@drawable/favorate"
-            android:scaleType="fitXY"
-            android:id="@+id/video_favorate"/>
-    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100px"
-        android:orientation="horizontal"
-        android:layout_below="@+id/video_source"
-        android:id="@+id/video_episode">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <Button
+            android:id="@+id/video_playView"
+            android:background="#000000">
+
+            <io.vov.vitamio.widget.VideoView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical|left"
-                android:background="@drawable/buttonwithnoframe"
-                android:text="剧  集"
-                android:textSize="60px"
-                android:id="@+id/video_button_episode"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical|right"
-                android:background="@drawable/buttonwithnoframe"
-                android:text="简  介"
-                android:textSize="60px"
-                android:id="@+id/video_button_comment"/>
-        </LinearLayout>
+                android:id="@+id/video_surface"
+                android:layout_centerInParent="true" />
+
+            <ProgressBar
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/video_loadingBar"
+                android:indeterminateDrawable="@drawable/loding_juhua_anim"
+                android:indeterminateBehavior="repeat"
+                android:background="#00000000"/>
+        </RelativeLayout>
     </LinearLayout>
-    <ListView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/video_episode"
-        android:visibility="visible"
-        android:id="@+id/video_episode_list">
-    </ListView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/video_episode"
-        android:visibility="invisible"
-        android:id="@+id/video_comment"/>
-</RelativeLayout>
+        android:layout_weight="2"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/video_playView"
+            android:id="@+id/video_source">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="来源"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:textSize="15dp"
+                android:id="@+id/video_sourceLabel"/>
+            <ImageButton
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_alignParentRight="true"
+                android:paddingRight="3dp"
+                android:background="#00000000"
+                android:src="@drawable/download"
+                android:id="@+id/video_download"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"/>
+            <ImageButton
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_toLeftOf="@+id/video_download"
+                android:layout_centerVertical="true"
+                android:background="#00000000"
+                android:src="@drawable/favorate"
+                android:scaleType="fitXY"
+                android:id="@+id/video_favorate"/>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/video_source"
+            android:id="@+id/video_episode">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|left"
+                    android:background="@drawable/buttonwithnoframe"
+                    android:text="剧  集"
+                    android:textSize="20dp"
+                    android:id="@+id/video_button_episode"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|right"
+                    android:background="@drawable/buttonwithnoframe"
+                    android:text="简  介"
+                    android:textSize="20dp"
+                    android:id="@+id/video_button_comment"/>
+            </LinearLayout>
+        </LinearLayout>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/video_episode"
+            android:visibility="visible"
+            android:id="@+id/video_episode_list">
+        </ListView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/video_episode"
+            android:visibility="invisible"
+            android:id="@+id/video_comment"/>
+    </LinearLayout>
+</LinearLayout>

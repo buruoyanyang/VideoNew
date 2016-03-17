@@ -35,7 +35,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -98,7 +97,9 @@ public class MediaController extends FrameLayout {
     private AudioManager mAM;
     private OnShownListener mShownListener;
     private OnHiddenListener mHiddenListener;
-    private RelativeLayout controllerLayout;
+    public ImageButton fullScreenButton;
+
+
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
@@ -242,12 +243,20 @@ public class MediaController extends FrameLayout {
     }
 
     private void initControllerView(View v) {
+
         mPauseButton = (ImageButton) v.findViewById(getResources().getIdentifier("mediacontroller_play_pause", "id", mContext.getPackageName()));
         if (mPauseButton != null) {
             mPauseButton.requestFocus();
             mPauseButton.setOnClickListener(mPauseListener);
         }
-
+        fullScreenButton = (ImageButton) v.findViewById(getResources().getIdentifier("fullscreen_button", "id", mContext.getPackageName()));
+        fullScreenButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //修改全屏
+                mPlayer.fullScreen();
+            }
+        });
         mProgress = (SeekBar) v.findViewById(getResources().getIdentifier("mediacontroller_seekbar", "id", mContext.getPackageName()));
         if (mProgress != null) {
             if (mProgress instanceof SeekBar) {
@@ -340,7 +349,7 @@ public class MediaController extends FrameLayout {
 
                 mAnchor.getLocationOnScreen(location);
 //        Rect anchorRect = new Rect(location[0], location[1], location[0] + mAnchor.getWidth(), location[1] + mAnchor.getHeight());
-                Rect anchorRect = new Rect(location[0], location[1], location[0] + mAnchor.getWidth(), mAnchor.getHeight() - 100-50-70);
+                Rect anchorRect = new Rect(location[0], location[1], location[0] + mAnchor.getWidth(), mAnchor.getHeight() - mAnchor.getHeight() / 10 - 100);
 
                 mWindow.setAnimationStyle(mAnimStyle);
                 setWindowLayoutType();
@@ -501,6 +510,8 @@ public class MediaController extends FrameLayout {
         boolean isPlaying();
 
         int getBufferPercentage();
+
+        void fullScreen();
     }
 
 }

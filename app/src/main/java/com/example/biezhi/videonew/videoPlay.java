@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,14 +36,10 @@ import io.vov.vitamio.widget.VideoView;
 
 
 public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener
-        , MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener,View.OnClickListener,View.OnTouchListener {
+        , MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener {
 
     private VideoView videoView;
-    ImageButton videoPlayOrPauseButton;
     TextView videoCurrentTimeLabel;
-    SeekBar videoSeekBar;
-    TextView videoTotalTimeLabel;
-    ImageButton videoFullScreen;
     TextView videoSourceLabel;
     ImageButton videoDownloadButton;
     ImageButton videoFavorateButton;
@@ -52,43 +49,30 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     TextView videoCommentText;
     ProgressBar videoProgressBar;
     Data appData;
-    android.media.MediaPlayer mediaPlayer;
-    RelativeLayout videoControlLayout;
     List<SourceModel.DataEntity> sourceData;
     int sourceCount;
     RelativeLayout videoSourceLayout;
     int[] bitmapResource;
     BitmapResize bitmapResize = new BitmapResize();
+    ProgressBar mProgressBar;
+
+    /**
+     * 是否需要暂停
+     */
+    private boolean needResume = false;
+
 
     /**
      * 是否处于全屏状态
      */
     private boolean isFullScreen = false;
 
-    //设置seekBar是否可以拖动
-    private boolean seekBarAutoFlag = false;
-
-    /**
-     * 视频时间显示
-     */
-    private TextView videoTiemTextView;
-
-    /**
-     * 播放总时间
-     */
-    private String videoTimeString;
-
-    private long videoTimeLong;
 
     /**
      * 屏幕的宽度和高度
      */
     private int screenWidth, screenHeight;
 
-    /**
-     * 控制栏显示标志
-     */
-    private boolean controlShow;
 
     /**
      * appId
@@ -170,11 +154,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         appData = (Data) this.getApplicationContext();
         bitmapResource = new int[]{R.drawable.other_on1, R.drawable.other_on2, R.drawable.other_on3, R.drawable.other_on4, R.drawable.other_on5};
         bitmapResize = new BitmapResize();
-//        videoPlayOrPauseButton = (ImageButton) findViewById(R.id.videoPlayOrPause);
         videoCurrentTimeLabel = (TextView) findViewById(R.id.video_currentTime);
-//        videoSeekBar = (SeekBar) findViewById(R.id.video_seekBar);
-//        videoTotalTimeLabel = (TextView) findViewById(R.id.video_totalTime);
-//        videoFullScreen = (ImageButton) findViewById(R.id.video_fullScreen);
         videoSourceLabel = (TextView) findViewById(R.id.video_sourceLabel);
         videoDownloadButton = (ImageButton) findViewById(R.id.video_download);
         videoFavorateButton = (ImageButton) findViewById(R.id.video_favorate);
@@ -183,8 +163,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         videoCommnetButton = (Button) findViewById(R.id.video_button_comment);
         videoEpisodeList = (ListView) findViewById(R.id.video_episode_list);
         videoProgressBar = (ProgressBar) findViewById(R.id.video_loadingBar);
-//        videoControlLayout = (RelativeLayout) findViewById(R.id.video_control);
         videoSourceLayout = (RelativeLayout) findViewById(R.id.video_source);
+        mProgressBar = (ProgressBar) findViewById(R.id.video_loadingBar);
         appId = appData.getAppid();
         appVersion = appData.getVersion();
         sourceData = new ArrayList<>();
@@ -202,33 +182,43 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         videoQuality = "normal";
         //获取播放地址
         //获取来源信息
-        controlShow = true;
         DisplayMetrics displayMetrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         screenWidth = displayMetrics.widthPixels;
         screenHeight = displayMetrics.heightPixels;
+
     }
     private void initPlayer() {
         Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
-        videoView.setVideoURI(Uri.parse("http://vplay.aixifan.com/des/20160304/3251926_mp4/3251926_lvbr.mp4?k=f0d230e08c8af6c131390bec52390a6a&t=1458114898"));
-        videoView.setVideoLayout(0,1080/650);
+        videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295"));
         MediaController mediaPlayerControl = new MediaController(this);
         mediaPlayerControl.setAnchorView(videoView);
         mediaPlayerControl.setAnimationStyle(-1);
-//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM,R.id.video_surface);
-//        mediaPlayerControl.setLayoutParams(layoutParams);
         videoView.setMediaController(mediaPlayerControl);
         videoView.setOnPreparedListener(this);
-        videoView.setOnClickListener(new View.OnClickListener() {
+        videoView.setOnFullScreenboolChangeListener(new MediaPlayer.OnFullScreenChangeListener() {
             @Override
-            public void onClick(View v) {
-                changeToFullScreen();
+            public void onFullScreenChanged() {
+                if (videoView.gotoFullScreen)
+                {
+                    //如果等于false。则表明是非全屏状态，全屏
+                }
+                else
+                {
+                    //进行全屏变换
+                }
             }
         });
+        videoView.setOnInfoListener(this);
+        videoView.setOnErrorListener(this);
+        videoView.setOnBufferingUpdateListener(this);
+        videoView.setOnCompletionListener(this);
+        videoView.setOnSeekCompleteListener(this);
 
     }
+
+
 
     @Override
     public void onBufferingUpdate(MediaPlayer mp, int percent) {
@@ -237,6 +227,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+        //播放结束
 
     }
 
@@ -245,15 +236,37 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         return false;
     }
 
+
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
-        return false;
+        switch (what) {
+            case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                //开始缓存，暂停播放
+                if (mp.isPlaying()) {
+                    mp.pause();
+                    needResume = true;
+                }
+                mProgressBar.setVisibility(View.VISIBLE);
+                break;
+            case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                //缓存完成，继续播放
+                if (needResume)
+                    mp.start();
+                mProgressBar.setVisibility(View.GONE);
+                break;
+            case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
+                //显示 下载速度
+                Log.e("loadspeed",extra+"");
+                break;
+        }
+        return true;
     }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
         videoView.start();
         videoView.getDuration();
+        mProgressBar.setVisibility(View.INVISIBLE);
 
     }
 
@@ -263,29 +276,5 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     }
 
 
-    public void changeToFullScreen()
-    {
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v == videoFullScreen)
-        {
-            changeToFullScreen();
-        }
-        if (v == videoView)
-        {
-            videoView.pause();
-        }
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (v == videoFullScreen)
-        {
-            changeToFullScreen();
-        }
-        return false;
-    }
 }

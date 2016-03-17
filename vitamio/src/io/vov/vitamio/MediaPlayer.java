@@ -61,6 +61,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Video</a> for additional help using MediaPlayer.
  */
 public class MediaPlayer {
+
+
+  /******************/
+  public boolean changeToFullScreen = false;
+  /******************/
+
+
   public static final int CACHE_TYPE_NOT_AVAILABLE = 1;
   public static final int CACHE_TYPE_START = 2;
   public static final int CACHE_TYPE_UPDATE = 3;
@@ -166,6 +173,7 @@ public class MediaPlayer {
   private OnSeekCompleteListener mOnSeekCompleteListener;
   private OnVideoSizeChangedListener mOnVideoSizeChangedListener;
   private OnErrorListener mOnErrorListener;
+  private OnFullScreenChangeListener mFullScreenChangeListener;
   /**
    * Register a callback to be invoked when an info/warning is available.
    *
@@ -526,6 +534,14 @@ public class MediaPlayer {
     _pause();
   }
 
+  public void changeFUllScreenBoolen()
+  {
+    changeToFullScreen = !changeToFullScreen;
+    if (mFullScreenChangeListener != null)
+    {
+      mFullScreenChangeListener.onFullScreenChanged();
+    }
+  }
   private native void _pause() throws IllegalStateException;
 
   /**
@@ -867,6 +883,7 @@ public class MediaPlayer {
     return trackSparse;
   }
 
+
   /**
    * @param mediaTrackType
    * @param trackInfo
@@ -997,6 +1014,13 @@ public class MediaPlayer {
       mEventHandler.sendMessage(m);
     }
   }
+
+  /*****************/
+  public void setOnFullScreenChangeListener(OnFullScreenChangeListener listener)
+  {
+    mFullScreenChangeListener = listener;
+  }
+  /*****************/
 
   /**
    * Register a callback to be invoked when a seek operation has been completed.
@@ -1300,6 +1324,13 @@ public class MediaPlayer {
     public void onFailed();
   }
 
+  /*****************/
+  public interface OnFullScreenChangeListener
+  {
+    void onFullScreenChanged();
+  }
+  /*****************/
+
   public interface OnPreparedListener {
     /**
      * Called when the media file is ready for playback.
@@ -1502,6 +1533,7 @@ public class MediaPlayer {
       super(looper);
       mMediaPlayer = mp;
     }
+
 
     @Override
     public void handleMessage(Message msg) {
