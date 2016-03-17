@@ -42,13 +42,68 @@
             android:layout_below="@+id/video_playView"
             android:id="@+id/video_source">
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:text="来源"
                 android:layout_centerVertical="true"
                 android:paddingLeft="3dp"
                 android:textSize="15dp"
                 android:id="@+id/video_sourceLabel"/>
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:layout_toRightOf="@+id/video_sourceLabel"
+                android:background="#00000000"
+                android:src="@drawable/other_on1"
+                android:scaleType="fitXY"
+                android:id="@+id/source_1"
+                android:visibility="invisible"/>
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:layout_toRightOf="@+id/source_1"
+                android:background="#00000000"
+                android:src="@drawable/other_on2"
+                android:scaleType="fitXY"
+                android:id="@+id/source_2"
+                android:visibility="invisible"/>
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:layout_toRightOf="@+id/source_2"
+                android:background="#00000000"
+                android:src="@drawable/other_on3"
+                android:scaleType="fitXY"
+                android:id="@+id/source_3"
+                android:visibility="invisible"/>
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:layout_toRightOf="@+id/source_3"
+                android:background="#00000000"
+                android:src="@drawable/other_on3"
+                android:scaleType="fitXY"
+                android:id="@+id/source_4"
+                android:visibility="invisible"/>
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:paddingLeft="3dp"
+                android:layout_toRightOf="@+id/source_4"
+                android:background="#00000000"
+                android:src="@drawable/other_on5"
+                android:scaleType="fitXY"
+                android:id="@+id/source_5"
+                android:visibility="invisible"/>
             <ImageButton
                 android:layout_width="38dp"
                 android:layout_height="38dp"

@@ -32,7 +32,7 @@
         <activity android:name=".recomList" />
         <activity android:name=".videoList" />
         <activity android:name=".videoInfo" />
-        <activity android:name=".videoPlay" />
+        <activity android:name=".videoPlay" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

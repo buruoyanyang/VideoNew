@@ -189,7 +189,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         videoCurrentTimeLabel = (TextView) findViewById(R.id.video_currentTime);
         videoSeekBar = (SeekBar) findViewById(R.id.video_seekBar);
         videoTotalTimeLabel = (TextView) findViewById(R.id.video_totalTime);
-        videoFullScreen = (ImageButton) findViewById(R.id.video_fullScreen);
+//        videoFullScreen = (ImageButton) findViewById(R.id.video_fullScreen);
         videoSourceLabel = (TextView) findViewById(R.id.video_sourceLabel);
         videoDownloadButton = (ImageButton) findViewById(R.id.video_download);
         videoFavorateButton = (ImageButton) findViewById(R.id.video_favorate);

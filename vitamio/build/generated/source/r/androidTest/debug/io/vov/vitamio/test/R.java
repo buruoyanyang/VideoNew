@@ -16,25 +16,28 @@ public final class R {
         public static final int transparent=0x7f050002;
     }
     public static final class drawable {
-        public static final int mediacontroller_button=0x7f020000;
-        public static final int mediacontroller_pause=0x7f020001;
-        public static final int mediacontroller_play=0x7f020002;
-        public static final int scrubber_control_disabled_holo=0x7f020003;
-        public static final int scrubber_control_focused_holo=0x7f020004;
-        public static final int scrubber_control_normal_holo=0x7f020005;
-        public static final int scrubber_control_pressed_holo=0x7f020006;
-        public static final int scrubber_control_selector_holo=0x7f020007;
-        public static final int scrubber_primary_holo=0x7f020008;
-        public static final int scrubber_progress_horizontal_holo_dark=0x7f020009;
-        public static final int scrubber_secondary_holo=0x7f02000a;
-        public static final int scrubber_track_holo_dark=0x7f02000b;
+        public static final int full_screen=0x7f020000;
+        public static final int mediacontroller_button=0x7f020001;
+        public static final int mediacontroller_pause=0x7f020002;
+        public static final int mediacontroller_play=0x7f020003;
+        public static final int scrubber_control_disabled_holo=0x7f020004;
+        public static final int scrubber_control_focused_holo=0x7f020005;
+        public static final int scrubber_control_normal_holo=0x7f020006;
+        public static final int scrubber_control_pressed_holo=0x7f020007;
+        public static final int scrubber_control_selector_holo=0x7f020008;
+        public static final int scrubber_primary_holo=0x7f020009;
+        public static final int scrubber_progress_horizontal_holo_dark=0x7f02000a;
+        public static final int scrubber_secondary_holo=0x7f02000b;
+        public static final int scrubber_track_holo_dark=0x7f02000c;
     }
     public static final class id {
-        public static final int mediacontroller_file_name=0x7f080004;
-        public static final int mediacontroller_play_pause=0x7f080000;
-        public static final int mediacontroller_seekbar=0x7f080003;
-        public static final int mediacontroller_time_current=0x7f080001;
-        public static final int mediacontroller_time_total=0x7f080002;
+        public static final int controller_layout=0x7f080000;
+        public static final int fullscreen_button=0x7f080004;
+        public static final int mediacontroller_file_name=0x7f080006;
+        public static final int mediacontroller_play_pause=0x7f080001;
+        public static final int mediacontroller_seekbar=0x7f080005;
+        public static final int mediacontroller_time_current=0x7f080002;
+        public static final int mediacontroller_time_total=0x7f080003;
     }
     public static final class layout {
         public static final int mediacontroller=0x7f030000;

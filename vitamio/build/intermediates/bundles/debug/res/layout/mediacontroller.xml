@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="74dp"
+    android:layout_height="100px"
     android:background="@color/mediacontroller_bg"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:id="@+id/controller_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical">
 
         <ImageButton
             android:id="@+id/mediacontroller_play_pause"
@@ -34,9 +36,9 @@
             style="@style/MediaController_Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/fullscreen_button"/>
 
         <SeekBar
             android:id="@+id/mediacontroller_seekbar"
@@ -48,6 +50,16 @@
             android:layout_toRightOf="@id/mediacontroller_time_current"
             android:focusable="true"
             android:max="1000" />
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/full_screen"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="#00000000"
+            android:scaleType="fitXY"
+            android:id="@+id/fullscreen_button"
+            android:alpha="0.6"/>
     </RelativeLayout>
 
     <TextView
@@ -57,6 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:ellipsize="marquee"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:visibility="invisible"/>
 
-</LinearLayout><!-- From: file:/Users/xiaofeng/Desktop/VideoNew/vitamio/res/layout/mediacontroller.xml -->
+</RelativeLayout><!-- From: file:/Users/xuhuanfeng/Desktop/VideoNew/vitamio/res/layout/mediacontroller.xml -->
