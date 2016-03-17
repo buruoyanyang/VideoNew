@@ -212,7 +212,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
         videoView.setVideoURI(Uri.parse("http://vplay.aixifan.com/des/20160304/3251926_mp4/3251926_lvbr.mp4?k=f0d230e08c8af6c131390bec52390a6a&t=1458114898"));
-        videoView.setVideoLayout(1,1080/650);
+        videoView.setVideoLayout(0,1080/650);
         MediaController mediaPlayerControl = new MediaController(this);
         mediaPlayerControl.setAnchorView(videoView);
         mediaPlayerControl.setAnimationStyle(-1);
