@@ -154,6 +154,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     String path = "";
 
+    boolean userIsVip;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,6 +205,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         getPlayUrl = new GetPlayUrl();
         episodeNum = 1;
         videoQuality = "normal";
+        userIsVip = appData.userVip;
         //获取播放地址
         //获取来源信息
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -230,7 +233,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             public void onFullScreenChanged() {
                 if (videoView.gotoFullScreen) {
                     //如果等于false。则表明是非全屏状态，全屏
-                    startActivity(new Intent(videoPlay.this,fullScreenPlay.class));
+                    startActivity(new Intent(videoPlay.this, fullScreenPlay.class));
                 } else {
                     //进行全屏变换
                 }
@@ -268,18 +271,15 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 //    path = getPlayUrl.getUrl();
 
 
-    private class getAfterUrl implements Runnable
-    {
+    private class getAfterUrl implements Runnable {
         @Override
-        public void run()
-        {
+        public void run() {
             getPlayUrl.setValue(Integer.parseInt(videoSiteId), episodeNum, screenWidth, screenHeight);
             getPlayUrl.ua = "iPhone";
             getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
             getPlayUrl.quality = videoQuality;
             path = getPlayUrl.getUrl();
-            if (path != "")
-            {
+            if (path != "" ) {
                 Message msg = Message.obtain();
                 msg.what = 3;
                 playUrlOK.sendMessage(msg);
@@ -452,8 +452,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
                 //修改剧集列表
                 SimpleAdapter simpleAdapter = new SimpleAdapter(videoPlay.this, getData(), R.layout.episode_adapter, adapterKeys, adapterIds);
                 videoEpisodeList.setAdapter(simpleAdapter);
-                if (videoView.isPlaying())
-                {
+                if (videoView.isPlaying()) {
                     videoView.stopPlayback();
                 }
                 videoView.setVideoURI(Uri.parse(path));
@@ -461,15 +460,11 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             }
         }
     };
-    private Handler playUrlOK = new Handler()
-    {
+    private Handler playUrlOK = new Handler() {
         @Override
-        public void handleMessage(Message msg)
-        {
-            if (msg.what == 3)
-            {
-                if (videoView.isPlaying())
-                {
+        public void handleMessage(Message msg) {
+            if (msg.what == 3) {
+                if (videoView.isPlaying()) {
                     videoView.stopPlayback();
                 }
                 //设置播放地址
@@ -542,16 +537,22 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        videoView.start();
-        videoView.getDuration();
-        mProgressBar.setVisibility(View.INVISIBLE);
-
+        if (isVipVideo) {
+            if (userIsVip) {
+                videoView.start();
+            } else {
+                //通知用户添加微信
+                videoView.pause();
+            }
+        } else {
+            //投放广告
+            videoView.start();
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
     public void onSeekComplete(MediaPlayer mp) {
-        videoView.start();
-
     }
 
 
