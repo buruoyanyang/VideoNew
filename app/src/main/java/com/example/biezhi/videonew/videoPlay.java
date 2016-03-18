@@ -222,7 +222,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     private void initPlayer() {
         Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
-        videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295" ));
+        videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295"));
         MediaController mediaPlayerControl = new MediaController(this);
         mediaPlayerControl.setAnchorView(videoView);
         mediaPlayerControl.setAnimationStyle(-1);
@@ -231,12 +231,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         videoView.setOnFullScreenboolChangeListener(new MediaPlayer.OnFullScreenChangeListener() {
             @Override
             public void onFullScreenChanged() {
-                if (videoView.gotoFullScreen) {
-                    //如果等于false。则表明是非全屏状态，全屏
-                    startActivity(new Intent(videoPlay.this, fullScreenPlay.class));
-                } else {
-                    //进行全屏变换
-                }
+                gotoFullScreen();
             }
         });
         videoView.setOnInfoListener(this);
@@ -244,6 +239,25 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         videoView.setOnBufferingUpdateListener(this);
         videoView.setOnCompletionListener(this);
         videoView.setOnSeekCompleteListener(this);
+    }
+
+    private void gotoFullScreen() {
+        int currentPosition = 0;
+        if (videoView.isPlaying())
+        {
+            videoView.pause();
+            currentPosition = (int) videoView.getCurrentPosition();
+            videoView.stopPlayback();
+        }
+        //准备数据
+        //当前播放地址 path
+        //当前进度 currentPosition
+        //当前视频的标题 episodeContent.get(episodeNum).getName();
+        //当前视频是否是vip episodeContent.get(episodeNum).isVIP();
+
+
+
+        startActivity(new Intent(videoPlay.this, fullScreenPlay.class));
     }
 
     /**
@@ -279,7 +293,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
             getPlayUrl.quality = videoQuality;
             path = getPlayUrl.getUrl();
-            if (path != "" ) {
+            if (path != "") {
                 Message msg = Message.obtain();
                 msg.what = 3;
                 playUrlOK.sendMessage(msg);
@@ -358,11 +372,11 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
      * @param sourceId 来源ID
      */
     private void changeSource(int sourceId) {
-        Log.e("123", sourceId + "" );
+        Log.e("123", sourceId + "");
         if (sourceId + 1 > sourceCount) {
             //说明点击的来源按钮有问题
             //直接提示该来源视频无法播放
-            Toast.makeText(videoPlay.this, "该来源视频无法播放，请尝试其他来源！", Toast.LENGTH_SHORT);
+            Toast.makeText(videoPlay.this, "该来源视频无法播放，请尝试其他来源！", Toast.LENGTH_LONG);
         } else {
             //清空原来的剧集表
             if (episodeContent.size() != 0) {
@@ -485,9 +499,9 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             } else {
                 map.put("vipImage", R.drawable.baiban);
             }
-            map.put("notShow", " " );
+            map.put("notShow", " ");
             map.put("episodeName", episodeContent.get(i).getName());
-            map.put("episodeNum", "第" + episodeContent.get(i).getEpisode() + "集" );
+            map.put("episodeNum", "第" + episodeContent.get(i).getEpisode() + "集");
             list.add(map);
         }
         return list;
@@ -529,7 +543,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
                 break;
             case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
                 //显示 下载速度
-                Log.e("loadspeed", extra + "" );
+                Log.e("loadspeed", extra + "");
                 break;
         }
         return true;
