@@ -703,7 +703,6 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                 }
                 Constants.playPosition = -1;
                 videoInfo.this.mediaPlayer.release();
-                ;
                 videoInfo.this.mediaPlayer = null;
             }
         } catch (Exception e) {

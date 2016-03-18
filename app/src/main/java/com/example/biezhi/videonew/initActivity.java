@@ -33,6 +33,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.umeng.analytics.MobclickAgent;
 
 
 import org.json.JSONObject;
@@ -133,15 +134,11 @@ public class initActivity extends AppCompatActivity {
         boolean netInfo;
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo.State mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
-        NetworkInfo.State wifi = connectivityManager.getNetworkInfo(connectivityManager.TYPE_WIFI).getState();
+        NetworkInfo.State wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
         if (mobile == NetworkInfo.State.CONNECTED && wifi == NetworkInfo.State.DISCONNECTED) {
             netInfo = true;
             Toast.makeText(this, "当前是3G/4G网络，请注意流量哦o(>﹏<)o", Toast.LENGTH_SHORT).show();
-        } else if (wifi == NetworkInfo.State.CONNECTED) {
-            netInfo = true;
-        } else {
-            netInfo = false;
-        }
+        } else netInfo = wifi == NetworkInfo.State.CONNECTED;
         return netInfo;
     }
     /**
@@ -184,7 +181,7 @@ public class initActivity extends AppCompatActivity {
             tempJson = tempJson.substring(0, tempJson.length() - 1);
             tempJson = tempJson.replaceAll("\"responseData\"", "");
             tempJson = tempJson.substring(2, tempJson.length());
-            byte[] tempResult = aes.Decrypt(tempJson, "dd358748fcabdda1");
+            byte[] tempResult = AES.Decrypt(tempJson, "dd358748fcabdda1");
             tempJson = new String(tempResult,"UTF-8");
             JSONObject jsonObject = new JSONObject(tempJson);
             appData.setUserName(jsonObject.optString("tel"));
@@ -369,5 +366,13 @@ public class initActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

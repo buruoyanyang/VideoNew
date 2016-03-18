@@ -93,11 +93,7 @@ public class mainActivity extends TabActivity implements View.OnClickListener {
             int checkedId = v.getId();
             //往左翻还是往右翻
             final boolean or;
-            if (checkedId < currentTab) {
-                or = true;
-            } else {
-                or = false;
-            }
+            or = checkedId < currentTab;
             if (or) {
                 tabHost.getCurrentTabView().startAnimation(right_out);
             } else {

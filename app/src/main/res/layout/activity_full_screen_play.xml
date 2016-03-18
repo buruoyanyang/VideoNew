@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.biezhi.videonew.fullScreenPlay">
+    <io.vov.vitamio.widget.VideoView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/video_fullScreen_view"/>
+    <ImageButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="#000000"
+        android:src="@drawable/cube_mints_icon_top_back"
+        android:scaleType="center"
+        android:id="@+id/fullscreen_back"
+        android:alpha="0.6"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="电影标题"
+        android:background="#000000"
+        android:alpha="0.6"
+        android:layout_toRightOf="@+id/fullscreen_back"
+        android:gravity="center"/>
+</RelativeLayout>

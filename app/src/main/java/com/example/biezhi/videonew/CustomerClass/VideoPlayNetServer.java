@@ -41,7 +41,7 @@ public class VideoPlayNetServer {
             result = sbf.toString();
             result = result.trim();
             AES aes = new AES();
-            byte[] tempResult = aes.Decrypt(result,key);
+            byte[] tempResult = AES.Decrypt(result,key);
             unlockJson = new String(tempResult,"UTF-8");
         }
         catch (Exception e)

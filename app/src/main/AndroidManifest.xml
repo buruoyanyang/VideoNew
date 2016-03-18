@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!-- <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> -->
     <application
@@ -24,6 +26,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="UMENG_APPKEY"
+                android:value="56ebba9967e58e46480017f8" />
+            <meta-data
+                android:name="UMENG_CHANNEL"
+                android:value="xiaomishouji" />
         </activity>
         <activity android:name=".mainActivity" />
         <activity android:name=".cateList" />
@@ -32,7 +41,10 @@
         <activity android:name=".recomList" />
         <activity android:name=".videoList" />
         <activity android:name=".videoInfo" />
-        <activity android:name=".videoPlay" android:screenOrientation="portrait"/>
+        <activity
+            android:name=".videoPlay"
+            android:screenOrientation="portrait" />
+        <activity android:name=".fullScreenPlay" android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

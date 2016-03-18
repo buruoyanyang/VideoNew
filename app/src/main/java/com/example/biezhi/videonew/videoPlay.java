@@ -1,8 +1,9 @@
 package com.example.biezhi.videonew;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
+
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -11,14 +12,15 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.BitmapResize;
 import com.example.biezhi.videonew.CustomerClass.GetPlayUrl;
@@ -29,6 +31,7 @@ import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.vov.vitamio.MediaPlayer;
@@ -37,8 +40,12 @@ import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 
 
+/*
+* vip判断
+* */
+
 public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener
-        , MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener, View.OnClickListener {
+        , MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener, View.OnClickListener, AdapterView.OnItemClickListener {
 
     private VideoView videoView;
     TextView videoCurrentTimeLabel;
@@ -54,9 +61,13 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     int sourceCount;
     RelativeLayout videoSourceLayout;
     int[] bitmapResource;
+    int[] sourceClicked;
     BitmapResize bitmapResize = new BitmapResize();
     ProgressBar mProgressBar;
     int[] sourceButtonsId;
+    String[] adapterKeys;
+    int[] adapterIds;
+
 
     /**
      * 是否需要暂停
@@ -154,6 +165,14 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     private void initClass() {
         appData = (Data) this.getApplicationContext();
         bitmapResource = new int[]{R.drawable.other_on1, R.drawable.other_on2, R.drawable.other_on3, R.drawable.other_on4, R.drawable.other_on5};
+        sourceClicked = new int[]
+                {
+                        R.drawable.other_on1_clicked,
+                        R.drawable.other_on2_clicked,
+                        R.drawable.other_on3_clicked,
+                        R.drawable.other_on4_clicked,
+                        R.drawable.other_on5_clicked
+                };
         bitmapResize = new BitmapResize();
         videoCurrentTimeLabel = (TextView) findViewById(R.id.video_currentTime);
         videoSourceLabel = (TextView) findViewById(R.id.video_sourceLabel);
@@ -166,6 +185,9 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         videoSourceLayout = (RelativeLayout) findViewById(R.id.video_source);
         sourceButtonsId = new int[]{R.id.source_1, R.id.source_2, R.id.source_3, R.id.source_4, R.id.source_5};
         mProgressBar = (ProgressBar) findViewById(R.id.video_loadingBar);
+        adapterKeys = new String[]{"vipImage", "notShow", "episodeName", "episodeNum"};
+        adapterIds = new int[]{R.id.vip_imageView, R.id.not_show, R.id.episode_name, R.id.episode_num};
+        videoEpisodeList.setOnItemClickListener(this);
         appId = appData.getAppid();
         appVersion = appData.getVersion();
         sourceData = new ArrayList<>();
@@ -197,7 +219,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     private void initPlayer() {
         Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
-        videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295"));
+        videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295" ));
         MediaController mediaPlayerControl = new MediaController(this);
         mediaPlayerControl.setAnchorView(videoView);
         mediaPlayerControl.setAnimationStyle(-1);
@@ -208,6 +230,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             public void onFullScreenChanged() {
                 if (videoView.gotoFullScreen) {
                     //如果等于false。则表明是非全屏状态，全屏
+                    startActivity(new Intent(videoPlay.this,fullScreenPlay.class));
                 } else {
                     //进行全屏变换
                 }
@@ -220,6 +243,49 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         videoView.setOnSeekCompleteListener(this);
     }
 
+    /**
+     * listview itemclick事件
+     *
+     * @param parent
+     * @param view
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.e("123", "" + position);
+        //重新获取playUrl
+        episodeNum = position + 1;
+        //异步解析videoUrl
+        new Thread(new getAfterUrl()).start();
+    }
+
+//    getplayUrl.episode就是1 2 3 4 5 集
+//    getPlayUrl.setValue(Integer.parseInt(videoSiteId), episodeNum, screenWidth, screenHeight);
+//    getPlayUrl.ua = "iPhone";
+//    getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
+//    getPlayUrl.quality = videoQuality;
+//    path = getPlayUrl.getUrl();
+
+
+    private class getAfterUrl implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            getPlayUrl.setValue(Integer.parseInt(videoSiteId), episodeNum, screenWidth, screenHeight);
+            getPlayUrl.ua = "iPhone";
+            getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
+            getPlayUrl.quality = videoQuality;
+            path = getPlayUrl.getUrl();
+            if (path != "")
+            {
+                Message msg = Message.obtain();
+                msg.what = 3;
+                playUrlOK.sendMessage(msg);
+            }
+        }
+    }
 
     private class getVideoSource implements Runnable {
         @Override
@@ -263,13 +329,22 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         public void handleMessage(Message msg) {
             if (msg.what == 2) {
                 for (int i = 0; i < sourceCount; i++) {
-                    ImageButton sourceButton = (ImageButton) findViewById(sourceButtonsId[i]);
+                    final ImageButton sourceButton = (ImageButton) findViewById(sourceButtonsId[i]);
                     sourceButton.setVisibility(View.VISIBLE);
                     final int finalI = i;
                     sourceButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            changeSource(finalI + 1);
+                            changeSource(finalI);
+                            sourceButton.setImageResource(sourceClicked[finalI]);
+                            //遍历所有的button
+                            for (int loop = 0; loop < sourceCount; loop++) {
+                                if (loop != finalI) {
+                                    //遍历所有的按钮，将非选中的按钮重置成原来的图片
+                                    ImageButton unClickedButton = (ImageButton) findViewById(sourceButtonsId[loop]);
+                                    unClickedButton.setImageResource(bitmapResource[loop]);
+                                }
+                            }
                         }
                     });
                 }
@@ -279,10 +354,148 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     /**
      * 修改来源
+     *
      * @param sourceId 来源ID
      */
     private void changeSource(int sourceId) {
-        Log.e("123", sourceId + "");
+        Log.e("123", sourceId + "" );
+        if (sourceId + 1 > sourceCount) {
+            //说明点击的来源按钮有问题
+            //直接提示该来源视频无法播放
+            Toast.makeText(videoPlay.this, "该来源视频无法播放，请尝试其他来源！", Toast.LENGTH_SHORT);
+        } else {
+            //清空原来的剧集表
+            if (episodeContent.size() != 0) {
+                episodeContent.clear();
+            }
+            episodeNum = 1;
+            currentVideo = String.valueOf(sourceData.get(sourceId).getVideoId());
+            new Thread(new getPlayUrl()).start();
+
+//            videoView.stopPlayback();
+//            videoView.setVideoURI(Uri.parse("http://ws.acgvideo.com/d/29/6126227-1.mp4?wsTime=1458249117&wsSecret2=17000a3262cd8c831880d0d6d1935a9b&oi=2014991661&appkey=452d3958f048c02a&or=1034170279" ));
+//            //展示菊花
+//            mProgressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    //请求所有的episode
+    private class getPlayUrl implements Runnable {
+        @Override
+        public void run() {
+            GetServer getServer = new GetServer();
+            getServer.getUrl = "http://115.29.190.54:99/Video.aspx?videoid=" + currentVideo + "&appid=" + appId + "&version=" + appVersion;
+            getServer.aesSecret = "dd358748fcabdda1";
+            String json = getServer.getInfoFromServer();
+            if (json.length() < 10) {
+                switch (json) {
+                    case "0":
+                        break;
+                    case "1":
+                        break;
+                    case "2":
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                //获取所有的episode
+                Gson gson = new Gson();
+                VideoInfoModel videoInfoModel = gson.fromJson(json, VideoInfoModel.class);
+                contentEntity.addAll(videoInfoModel.getContent());
+                videoCateId = String.valueOf(videoInfoModel.getCateId());
+                videoIntro = videoInfoModel.getIntro();
+                videoSiteId = String.valueOf(contentEntity.get(0).getId());
+                GetServer getServer1 = new GetServer();
+                getServer1.getUrl = "http://115.29.190.54:99/Episode.aspx?videoid=" + currentVideo + "&siteid=" + contentEntity.get(0).getId() + "&appid=" + appId + "&version=" + appVersion;
+                getServer1.aesSecret = "dd358748fcabdda1";
+                String json1 = getServer1.getInfoFromServer();
+                //获取完毕，直接修改UI
+                if (json1.length() < 10) {
+                    switch (json) {
+                        case "0":
+                            break;
+                        case "1":
+                            break;
+                        case "2":
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    Gson gson1 = new Gson();
+                    EpisodeModel episodeModel = gson1.fromJson(json1, EpisodeModel.class);
+                    episodeContent.addAll(episodeModel.getContent());
+                    videoSiteId = String.valueOf(episodeModel.getSiteId());
+                    //getplayUrl.episode就是1 2 3 4 5 集
+                    getPlayUrl.setValue(Integer.parseInt(videoSiteId), episodeNum, screenWidth, screenHeight);
+                    getPlayUrl.ua = "iPhone";
+                    getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
+                    getPlayUrl.quality = videoQuality;
+                    path = getPlayUrl.getUrl();
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+                    episodeOK.sendMessage(msg);
+
+//                    Message msg_1 = Message.obtain();
+//                    msg_1.what = 3;
+//                    playUrlOK.sendMessage(msg);
+                }
+            }
+        }
+    }
+
+    private Handler episodeOK = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                //修改剧集列表
+                SimpleAdapter simpleAdapter = new SimpleAdapter(videoPlay.this, getData(), R.layout.episode_adapter, adapterKeys, adapterIds);
+                videoEpisodeList.setAdapter(simpleAdapter);
+                if (videoView.isPlaying())
+                {
+                    videoView.stopPlayback();
+                }
+                videoView.setVideoURI(Uri.parse(path));
+                mProgressBar.setVisibility(View.VISIBLE);
+            }
+        }
+    };
+    private Handler playUrlOK = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            if (msg.what == 3)
+            {
+                if (videoView.isPlaying())
+                {
+                    videoView.stopPlayback();
+                }
+                //设置播放地址
+                videoView.setVideoURI(Uri.parse(path));
+                mProgressBar.setVisibility(View.VISIBLE);
+            }
+        }
+    };
+
+    private List<HashMap<String, Object>> getData() {
+        ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+        HashMap<String, Object> map;
+        for (int i = 0; i < episodeContent.size(); i++) {
+            //"vipImage", "notShow", "episodeName", "episodeNum"
+            map = new HashMap<>();
+            if (episodeContent.get(i).isVIP()) {
+                map.put("vipImage", R.drawable.vip);
+            } else {
+                map.put("vipImage", R.drawable.baiban);
+            }
+            map.put("notShow", " " );
+            map.put("episodeName", episodeContent.get(i).getName());
+            map.put("episodeNum", "第" + episodeContent.get(i).getEpisode() + "集" );
+            list.add(map);
+        }
+        return list;
     }
 
     @Override
@@ -321,7 +534,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
                 break;
             case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
                 //显示 下载速度
-                Log.e("loadspeed", extra + "");
+                Log.e("loadspeed", extra + "" );
                 break;
         }
         return true;
@@ -337,6 +550,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     @Override
     public void onSeekComplete(MediaPlayer mp) {
+        videoView.start();
 
     }
 
@@ -374,7 +588,5 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     }
 
-    private void changeEpisode(int episodeNum) {
 
-    }
 }
