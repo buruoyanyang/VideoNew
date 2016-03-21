@@ -243,8 +243,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     private void gotoFullScreen() {
         int currentPosition = 0;
-        if (videoView.isPlaying())
-        {
+        if (videoView.isPlaying()) {
             videoView.pause();
             currentPosition = (int) videoView.getCurrentPosition();
             videoView.stopPlayback();
@@ -254,9 +253,11 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         //当前进度 currentPosition
         //当前视频的标题 episodeContent.get(episodeNum).getName();
         //当前视频是否是vip episodeContent.get(episodeNum).isVIP();
-
-
-
+        appData.setVideoVip(isVipVideo);
+        appData.setPlayUrl(path);
+        appData.setCurrentPosition(currentPosition);
+        appData.setVideoName(episodeContent.get(episodeNum).getName());
+        isFullScreen = true;
         startActivity(new Intent(videoPlay.this, fullScreenPlay.class));
     }
 
@@ -277,12 +278,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         new Thread(new getAfterUrl()).start();
     }
 
-//    getplayUrl.episode就是1 2 3 4 5 集
-//    getPlayUrl.setValue(Integer.parseInt(videoSiteId), episodeNum, screenWidth, screenHeight);
-//    getPlayUrl.ua = "iPhone";
-//    getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
-//    getPlayUrl.quality = videoQuality;
-//    path = getPlayUrl.getUrl();
 
 
     private class getAfterUrl implements Runnable {

@@ -31,5 +31,7 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile project(':vitamio')
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.wang.avi:library:1.0.4'
+    compile 'com.nineoldandroids:library:2.4.0'
 
 }

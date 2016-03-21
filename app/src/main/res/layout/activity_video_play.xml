@@ -14,13 +14,11 @@
             android:layout_height="match_parent"
             android:id="@+id/video_playView"
             android:background="#000000">
-
             <io.vov.vitamio.widget.VideoView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/video_surface"
                 android:layout_centerInParent="true" />
-
             <ProgressBar
                 android:layout_width="50dp"
                 android:layout_height="50dp"

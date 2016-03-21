@@ -276,7 +276,8 @@ public class VideoView extends SurfaceView implements MediaController.MediaPlaye
             //修改全屏标志，触发全屏通知
         }
     };
-    /****************/
+
+    /*****************/
     private OnTimedTextListener mTimedTextListener = new OnTimedTextListener() {
         @Override
         public void onTimedTextUpdate(byte[] pixels, int width, int height) {

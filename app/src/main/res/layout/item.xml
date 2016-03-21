@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.biezhi.videonew.CustomerView.itemView
+<com.example.biezhi.videonew.CustomerView.itemVIew
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:carrey="http://schemas.android.com/apk/com.example.biezhi.videonew"
     android:id="@+id/customview"

@@ -1329,6 +1329,11 @@ public class MediaPlayer {
   {
     void onFullScreenChanged();
   }
+
+  public interface OnVideoViewClickedListener
+  {
+    public void onVideoClicked();
+  }
   /*****************/
 
   public interface OnPreparedListener {

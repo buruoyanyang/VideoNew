@@ -20,7 +20,7 @@ import com.example.biezhi.videonew.R;
 /**
  * Created by xiaofeng on 16/2/24.
  */
-public class itemView extends View {
+public class itemVIew extends View {
     private static final String TAG = "CustomView";
 
     /** 图片Bitmap */
@@ -71,7 +71,7 @@ public class itemView extends View {
     /** 控件的高度 */
     private int mViewHeight;
 
-    public itemView(Context context, AttributeSet attrs, int defStyle)
+    public itemVIew(Context context, AttributeSet attrs, int defStyle)
     {
         super(context, attrs, defStyle);
         TypedArray a = context.getTheme().obtainStyledAttributes(
@@ -137,11 +137,11 @@ public class itemView extends View {
         textPaint = new TextPaint(paint);
         rect = new Rect();
     }
-    public itemView(Context context, AttributeSet attrs)
+    public itemVIew(Context context, AttributeSet attrs)
     {
         this(context, attrs, 0);
     }
-    public itemView(Context context)
+    public itemVIew(Context context)
     {
         this(context, null);
     }

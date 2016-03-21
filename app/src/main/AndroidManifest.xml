@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <!-- <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" /> -->
     <application
         android:name=".Data"
         android:allowBackup="true"
@@ -44,7 +43,7 @@
         <activity
             android:name=".videoPlay"
             android:screenOrientation="portrait" />
-        <activity android:name=".fullScreenPlay" android:screenOrientation="landscape"/>
+        <activity android:name=".fullScreenPlay" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
     </application>
 
 </manifest>
