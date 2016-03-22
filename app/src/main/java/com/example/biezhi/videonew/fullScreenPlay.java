@@ -151,6 +151,11 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
+            /** 左右滑动的最短距离 */
+            int distance = 100;
+            /** 左右滑动的最大速度 */
+            int velocity = 200;
+
             float mOldX = e1.getX(), mOldY = e1.getY();
             int y = (int) e2.getRawY();
             Display disp = getWindowManager().getDefaultDisplay();
@@ -162,16 +167,10 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
             else if (mOldX < windowWidth / 5.0)// 左边滑动
                 onBrightnessSlide((mOldY - y) / windowHeight);
             //左右滑动
-            float mNewX = e2.getX();
-            float mNewY = e2.getY();
-            if (mNewY<mOldY + 50 && mNewY > mOldY - 50)
-            {
-                //是左右滑动
-                Log.e("123","123");
-            }
 
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
+        
     }
 
     /** 定时隐藏 */
