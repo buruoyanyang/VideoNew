@@ -7,18 +7,19 @@
     android:background="#000000"
     tools:context="com.example.biezhi.videonew.fullScreenPlay">
 
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/avloadingIndicatorView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:indicator="BallClipRotate"
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        app:indicator_color="@color/cube_mints_white"/>
+
     <io.vov.vitamio.widget.VideoView
         android:id="@+id/video_fullScreen_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <!--<com.wang.avi.AVLoadingIndicatorView-->
-        <!--android:id="@+id/avloadingIndicatorView"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:visibility="invisible"-->
-        <!--app:indicator="BallPulse"-->
-        <!--android:layout_centerInParent="true" />-->
 
     <ImageButton
         android:id="@+id/fullscreen_back"
@@ -36,15 +37,16 @@
         android:alpha="0.6"
         android:background="#000000"
         android:gravity="center"
-        android:text="电影标题" />
+        android:text="电影标题"
+        android:id="@+id/video_title"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:id="@+id/video_control">
         <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:background="#00000000"
             android:layout_centerVertical="true"
             android:scaleType="fitXY"
@@ -53,8 +55,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="当前时间"
-            android:textSize="20dp"
+            android:text="00:00:00"
+            android:textSize="15dp"
             android:layout_centerVertical="true"
             android:id="@+id/video_currentTime"
             android:layout_toRightOf="@+id/video_playOrPause"/>
@@ -68,8 +70,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="总时间"
-            android:textSize="20dp"
+            android:text="00:00:00"
+            android:textSize="15dp"
             android:id="@+id/video_totalTime"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"/>

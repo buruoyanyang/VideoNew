@@ -167,14 +167,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     private void initClass() {
         appData = (Data) this.getApplicationContext();
         bitmapResource = new int[]{R.drawable.other_on1, R.drawable.other_on2, R.drawable.other_on3, R.drawable.other_on4, R.drawable.other_on5};
-        sourceClicked = new int[]
-                {
-                        R.drawable.other_on1_clicked,
-                        R.drawable.other_on2_clicked,
-                        R.drawable.other_on3_clicked,
-                        R.drawable.other_on4_clicked,
-                        R.drawable.other_on5_clicked
-                };
+        sourceClicked = new int[]{R.drawable.other_on1_clicked, R.drawable.other_on2_clicked, R.drawable.other_on3_clicked, R.drawable.other_on4_clicked, R.drawable.other_on5_clicked};
         bitmapResize = new BitmapResize();
         videoCurrentTimeLabel = (TextView) findViewById(R.id.video_currentTime);
         videoSourceLabel = (TextView) findViewById(R.id.video_sourceLabel);
