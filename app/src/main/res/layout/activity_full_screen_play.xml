@@ -7,15 +7,6 @@
     android:background="#000000"
     tools:context="com.example.biezhi.videonew.fullScreenPlay">
 
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/avloadingIndicatorView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:indicator="BallClipRotate"
-        android:layout_centerInParent="true"
-        android:visibility="visible"
-        app:indicator_color="@color/cube_mints_white"/>
-
     <io.vov.vitamio.widget.VideoView
         android:id="@+id/video_fullScreen_view"
         android:layout_width="match_parent"
@@ -104,4 +95,13 @@
                 android:scaleType="matrix" />
         </FrameLayout>
     </FrameLayout>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/avloadingIndicatorView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:indicator="BallClipRotate"
+        android:layout_centerInParent="true"
+        android:visibility="visible"
+        app:indicator_color="@color/cube_mints_white"/>
 </RelativeLayout>

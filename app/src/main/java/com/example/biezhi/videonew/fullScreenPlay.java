@@ -42,7 +42,7 @@ import io.vov.vitamio.widget.VideoView;
 */
 
 public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnErrorListener,
-        MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnPreparedListener, MediaController.OnHiddenListener ,View.OnClickListener{
+        MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnPreparedListener, MediaController.OnHiddenListener, View.OnClickListener {
 
     VideoView videoView;
     private View mVolumeBrightnessLayout;
@@ -152,7 +152,6 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     Data appData;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,7 +172,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         video_seekBar = (SeekBar) findViewById(R.id.video_seekBar);
         video_totalTime = (TextView) findViewById(R.id.video_totalTime);
         video_currentTime = (TextView) findViewById(R.id.video_currentTime);
-        playOrPause = (ImageButton)findViewById(R.id.videoPlayOrPause);
+        playOrPause = (ImageButton) findViewById(R.id.video_playOrPause);
         videoTimeString = "";
         videoTotalString = "";
         avloadingIndicatorView.setVisibility(View.VISIBLE);
@@ -183,10 +182,9 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         isVipUser = appData.getUserVip();
         currentTime = appData.getCurrentPosition();
         video_title.setText(videoTitle);
-//        fullscreen_back.setOnClickListener(this);
-//        playOrPause.setOnClickListener(this);
+        fullscreen_back.setOnClickListener(this);
+        playOrPause.setOnClickListener(this);
     }
-
 
 
     /**
@@ -331,6 +329,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                     if (null != fullScreenPlay.this.videoView
                             && fullScreenPlay.this.videoView.isPlaying()) {
 //                        videoSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+                        video_seekBar.setProgress((int) videoView.getCurrentPosition());
                     }
                 }
             } catch (Exception e) {
@@ -341,10 +340,12 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
 
     /**
      * 控件点击事件
+     *
      * @param v
      */
     @Override
     public void onClick(View v) {
+        Log.e("455", "3");
 
     }
 
@@ -362,7 +363,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                     videoView.seekTo(progress);
                 }
                 // 设置当前播放时间
-                video_currentTime.setText(getShowTime(progress) + "/" + videoTimeString);
+                video_currentTime.setText(getShowTime(progress));
             }
         }
 
@@ -457,8 +458,11 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         //隐藏按钮和标题
         fullscreen_back.setVisibility(View.INVISIBLE);
         video_title.setVisibility(View.INVISIBLE);
+        video_seekBar.setMax((int) videoView.getDuration());
+        video_seekBar.setProgress(currentTime);
+        videoView.seekTo(currentTime);
+        new Thread(changeSeekBar).start();
         videoView.start();
-
     }
 
     @Override
