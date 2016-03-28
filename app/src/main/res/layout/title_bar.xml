@@ -37,10 +37,4 @@
             android:id="@+id/searchButton"
             android:background="@drawable/download"/>
     </RelativeLayout>
-    <View
-        android:id="@+id/title_view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/title_bg_index_bg" />
-
 </LinearLayout>

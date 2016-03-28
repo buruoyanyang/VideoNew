@@ -1,9 +1,8 @@
 package com.example.biezhi.videonew;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -11,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,13 +31,14 @@ import com.example.biezhi.videonew.DataModel.VideoInfoModel;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.Vitamio;
-import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 
 
@@ -46,7 +48,6 @@ import io.vov.vitamio.widget.VideoView;
 
 public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener
         , MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener, View.OnClickListener, AdapterView.OnItemClickListener {
-
     private VideoView videoView;
     TextView videoCurrentTimeLabel;
     TextView videoSourceLabel;
@@ -156,6 +157,48 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     boolean userIsVip;
 
+    /**
+     * 全屏按钮
+     */
+    private ImageButton fullScreenButton;
+
+    /**
+     * 播放按钮
+     */
+    private ImageButton videoPlayOrPauseButton;
+
+    /**
+     * 进度条
+     */
+    private SeekBar video_seekBar;
+
+    /**
+     * 控制栏
+     */
+    RelativeLayout video_control;
+
+    /**
+     * 当前播放时间
+     */
+    TextView video_currentTime;
+
+    /**
+     * 总时间
+     */
+    TextView video_totalTime;
+
+    /**
+     * 当前时间String
+     */
+    String videoTimeString;
+
+    /**
+     * 总时间String
+     */
+    String videoTotalString;
+
+    private boolean seekBarAutoFlag = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,6 +225,12 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         mProgressBar = (ProgressBar) findViewById(R.id.video_loadingBar);
         adapterKeys = new String[]{"vipImage", "notShow", "episodeName", "episodeNum"};
         adapterIds = new int[]{R.id.vip_imageView, R.id.not_show, R.id.episode_name, R.id.episode_num};
+        fullScreenButton = (ImageButton) findViewById(R.id.fullscreen_button);
+        videoPlayOrPauseButton = (ImageButton) findViewById(R.id.video_playOrPause);
+        video_seekBar = (SeekBar) findViewById(R.id.video_seekBar);
+        video_control = (RelativeLayout) findViewById(R.id.video_control);
+        video_totalTime = (TextView) findViewById(R.id.video_totalTime);
+        video_currentTime = (TextView) findViewById(R.id.video_currentTime);
         videoEpisodeList.setOnItemClickListener(this);
         appId = appData.getAppid();
         appVersion = appData.getVersion();
@@ -190,6 +239,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         contentEntity = new ArrayList<>();
         videoIntro = "";
         videoCateId = "";
+        videoTimeString = "";
+        videoTotalString = "";
         episodeContent = new ArrayList<>();
         isVipVideo = false;
         episodeId = "";
@@ -209,6 +260,9 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         videoCommentButton.setOnClickListener(this);
         videoFavoriteButton.setOnClickListener(this);
         videoEpisodeButton.setOnClickListener(this);
+        fullScreenButton.setOnClickListener(this);
+        videoPlayOrPauseButton.setOnClickListener(this);
+        video_seekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
         new Thread(new getVideoSource()).start();
     }
 
@@ -216,22 +270,19 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
         videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295"));
-        MediaController mediaPlayerControl = new MediaController(this);
-        mediaPlayerControl.setAnchorView(videoView);
-        mediaPlayerControl.setAnimationStyle(-1);
-        videoView.setMediaController(mediaPlayerControl);
         videoView.setOnPreparedListener(this);
-        videoView.setOnFullScreenboolChangeListener(new MediaPlayer.OnFullScreenChangeListener() {
-            @Override
-            public void onFullScreenChanged() {
-                gotoFullScreen();
-            }
-        });
         videoView.setOnInfoListener(this);
         videoView.setOnErrorListener(this);
         videoView.setOnBufferingUpdateListener(this);
         videoView.setOnCompletionListener(this);
         videoView.setOnSeekCompleteListener(this);
+        videoView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                return false;
+            }
+        });
     }
 
     private void gotoFullScreen() {
@@ -270,7 +321,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         //异步解析videoUrl
         new Thread(new getAfterUrl()).start();
     }
-
 
 
     private class getAfterUrl implements Runnable {
@@ -539,6 +589,11 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        videoTotalString = getShowTime(videoView.getDuration());
+        video_totalTime.setText(videoTotalString);
+        video_currentTime.setText(getShowTime(0));
+        video_seekBar.setMax((int) videoView.getDuration());
+        new Thread(changeSeekBar).start();
         if (isVipVideo) {
             if (userIsVip) {
                 videoView.start();
@@ -573,6 +628,9 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         if (v == videoCommentButton) {
             videoCommentButtonClicked();
         }
+        if (v == fullScreenButton) {
+            gotoFullScreen();
+        }
     }
 
     private void addToDownload() {
@@ -591,5 +649,80 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     }
 
+    /**
+     * seekBar拖动监听类
+     */
+    @SuppressWarnings("unused")
+    private class SeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            // TODO Auto-generated method stub
+            if (progress >= 0) {
+                // 如果是用户手动拖动控件，则设置视频跳转。
+                if (fromUser) {
+                    videoView.seekTo(progress);
+                }
+                // 设置当前播放时间
+                video_currentTime.setText(getShowTime(progress));
+            }
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+
+        }
+    }
+    /**
+     * 转换播放时间
+     *
+     * @param milliseconds 传入毫秒值
+     * @return 返回 hh:mm:ss或mm:ss格式的数据
+     */
+    @SuppressLint("SimpleDateFormat")
+    public String getShowTime(long milliseconds) {
+        // 获取日历函数
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliseconds);
+        SimpleDateFormat dateFormat = null;
+        // 判断是否大于60分钟，如果大于就显示小时。设置日期格式
+        if (milliseconds / 60000 > 60) {
+            dateFormat = new SimpleDateFormat("hh:mm:ss");
+        } else {
+            dateFormat = new SimpleDateFormat("mm:ss");
+        }
+        return dateFormat.format(calendar.getTime());
+    }
+
+    /**
+     * 滑动条变化线程
+     */
+    private Runnable changeSeekBar = new Runnable() {
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            // 增加对异常的捕获，防止在判断mediaPlayer.isPlaying的时候，报IllegalStateException异常
+            try {
+                while (seekBarAutoFlag) {
+                    /*
+                     * mediaPlayer不为空且处于正在播放状态时，使进度条滚动。
+                     * 通过指定类名的方式判断mediaPlayer防止状态发生不一致
+                     */
+
+                    if (null != videoPlay.this.videoView
+                            && videoPlay.this.videoView.isPlaying()) {
+//                        videoSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+                        video_seekBar.setProgress((int) videoView.getCurrentPosition());
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
 }

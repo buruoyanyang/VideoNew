@@ -3,6 +3,7 @@ package com.example.biezhi.videonew;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.biezhi.videonew.CustomerClass.Constants;
@@ -151,6 +154,25 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
 
     Data appData;
 
+    /**
+     * 屏幕长度
+     */
+    private int screenWidth;
+
+    /**
+     * 是否显示control
+     */
+    private boolean isShow = true;
+
+    /**
+     * 锁定按钮
+     */
+    private ImageButton video_lockButton;
+
+    /**
+     * 是否锁定
+     */
+    private boolean isLocked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,6 +195,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         video_totalTime = (TextView) findViewById(R.id.video_totalTime);
         video_currentTime = (TextView) findViewById(R.id.video_currentTime);
         playOrPause = (ImageButton) findViewById(R.id.video_playOrPause);
+        video_lockButton = (ImageButton) findViewById(R.id.video_lock);
         videoTimeString = "";
         videoTotalString = "";
         avloadingIndicatorView.setVisibility(View.VISIBLE);
@@ -182,8 +205,36 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         isVipUser = appData.getUserVip();
         currentTime = appData.getCurrentPosition();
         video_title.setText(videoTitle);
-        fullscreen_back.setOnClickListener(this);
+        fullscreen_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("123", "123");
+            }
+        });
+        video_lockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isLocked) {
+                    video_lockButton.setImageResource(R.drawable.lock);
+                    //隐藏所有control
+                    video_control.setVisibility(View.INVISIBLE);
+                    fullscreen_back.setVisibility(View.INVISIBLE);
+                    video_title.setVisibility(View.INVISIBLE);
+                } else {
+                    video_lockButton.setImageResource(R.drawable.unlock);
+                    video_title.setVisibility(View.VISIBLE);
+                    video_control.setVisibility(View.VISIBLE);
+                    fullscreen_back.setVisibility(View.VISIBLE);
+                }
+                isLocked = !isLocked;
+
+            }
+        });
         playOrPause.setOnClickListener(this);
+        video_seekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
+        screenWidth = appData.getHeight();
+        isShow = true;
+        isLocked = false;
     }
 
 
@@ -214,17 +265,48 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mGestureDetector.onTouchEvent(event))
-            return true;
-        // 处理手势结束
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_UP:
-                endGesture();
-                break;
-            case MotionEvent.ACTION_DOWN:
-                //显示或者不显示标题
-                Log.e("123", "123");
-                break;
+        if (isLocked) {
+            //隐藏所有按钮
+            video_control.setVisibility(View.INVISIBLE);
+            video_title.setVisibility(View.INVISIBLE);
+            fullscreen_back.setVisibility(View.INVISIBLE);
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_DOWN:
+                    if (isShow) {
+                        video_lockButton.setVisibility(View.VISIBLE);
+                        isShow = !isShow;
+                    } else {
+                        video_lockButton.setVisibility(View.INVISIBLE);
+                        isShow = !isShow;
+                    }
+                    break;
+            }
+        } else {
+            if (mGestureDetector.onTouchEvent(event))
+                return true;
+            // 处理手势结束
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_UP:
+                    endGesture();
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    //显示或者不显示标题
+                    Log.e("123", "123");
+                    if (isShow) {
+                        video_title.setVisibility(View.VISIBLE);
+                        video_control.setVisibility(View.VISIBLE);
+                        fullscreen_back.setVisibility(View.VISIBLE);
+                        video_lockButton.setVisibility(View.VISIBLE);
+                        isShow = !isShow;
+                    } else {
+                        video_control.setVisibility(View.INVISIBLE);
+                        video_title.setVisibility(View.INVISIBLE);
+                        fullscreen_back.setVisibility(View.INVISIBLE);
+                        video_lockButton.setVisibility(View.INVISIBLE);
+                        isShow = !isShow;
+                    }
+                    break;
+            }
         }
         return super.onTouchEvent(event);
     }
@@ -292,7 +374,6 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //MediaPlayer非常消耗资源，当activity销毁时，需要直接销毁
         try {
             if (null != this.videoView) {
                 //提前标志为false,防止视频停止时，线程仍旧在运行
@@ -341,12 +422,25 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     /**
      * 控件点击事件
      *
-     * @param v
+     * @param v 被点击的view
      */
     @Override
     public void onClick(View v) {
-        Log.e("455", "3");
-
+        if (v == playOrPause) {
+            Log.e("123", "123");
+            if (videoView != null) {
+                if (videoView.isPlaying()) {
+                    Constants.playPosition = (int) videoView.getCurrentPosition();
+                    videoView.pause();
+                    playOrPause.setImageResource(R.drawable.video_pause);
+                } else {
+                    videoView.seekTo(Constants.playPosition);
+                    videoView.start();
+                    playOrPause.setImageResource(R.drawable.video_play);
+                    Constants.playPosition = -1;
+                }
+            }
+        }
     }
 
     /**
@@ -477,12 +571,12 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
          */
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            if (mLayout == VideoView.VIDEO_LAYOUT_ZOOM)
-                mLayout = VideoView.VIDEO_LAYOUT_ORIGIN;
-            else
-                mLayout++;
-            if (videoView != null)
-                videoView.setVideoLayout(mLayout, 0);
+//            if (mLayout == VideoView.VIDEO_LAYOUT_ZOOM)
+//                mLayout = VideoView.VIDEO_LAYOUT_ORIGIN;
+//            else
+//                mLayout++;
+//            if (videoView != null)
+//                videoView.setVideoLayout(mLayout, 0);
             return true;
         }
 
@@ -493,48 +587,92 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         public boolean onScroll(MotionEvent e1, MotionEvent e2,
                                 float distanceX, float distanceY) {
 
-            float mOldX = e1.getX(), mOldY = e1.getY();
-            int y = (int) e2.getRawY();
-            Display disp = getWindowManager().getDefaultDisplay();
-            int windowWidth = disp.getWidth();
-            int windowHeight = disp.getHeight();
+            //lock屏蔽手势
+            if (!isLocked) {
+                float mOldX = e1.getX(), mOldY = e1.getY();
+                int y = (int) e2.getRawY();
+                Display disp = getWindowManager().getDefaultDisplay();
+                int windowWidth = disp.getWidth();
+                int windowHeight = disp.getHeight();
 
-            if (mOldX > windowWidth * 4.0 / 5)// 右边滑动
-                onVolumeSlide((mOldY - y) / windowHeight);
-            else if (mOldX < windowWidth / 5.0)// 左边滑动
-                onBrightnessSlide((mOldY - y) / windowHeight);
+                if (mOldX > windowWidth * 4.0 / 5)// 右边滑动
+                    onVolumeSlide((mOldY - y) / windowHeight);
+                else if (mOldX < windowWidth / 5.0)// 左边滑动
+                    onBrightnessSlide((mOldY - y) / windowHeight);
+            }
             //左右滑动
-
             return super.onScroll(e1, e2, distanceX, distanceY);
         }
 
         private int verticalMinDistance = 100;
-        private int minVelocity = 0;
+        private int minVelocity = 20;
 
         //重写滑动事件
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (!isLocked) {
+                if (e1.getX() - e2.getX() > verticalMinDistance && Math.abs(velocityX) > minVelocity) {
 
-            if (e1.getX() - e2.getX() > verticalMinDistance && Math.abs(velocityX) > minVelocity) {
-
-                // 切换Activity
-                // Intent intent = new Intent(ViewSnsActivity.this, UpdateStatusActivity.class);
-                // startActivity(intent);
+                    // 切换Activity
+                    // Intent intent = new Intent(ViewSnsActivity.this, UpdateStatusActivity.class);
+                    // startActivity(intent);
 //                Toast.makeText(this, "向左手势", Toast.LENGTH_SHORT).show();
-                Log.e("123", "左滑");
-                //改变进度条
-            } else if (e2.getX() - e1.getX() > verticalMinDistance && Math.abs(velocityX) > minVelocity) {
+                    Log.e("123", "左滑");
+                    if (videoView != null) {
+                        int total = (int) videoView.getDuration();
+                        int moved = (int) Math.abs(e2.getX() - e1.getX());
+                        if (total > 0) {
+                            float seekNums = (float) moved / (float) screenWidth * (float) total;
+                            seekByGesture((int) seekNums, false);
+                        }
 
-                // 切换Activity
-                // Intent intent = new Intent(ViewSnsActivity.this, UpdateStatusActivity.class);
-                // startActivity(intent);
+                    }
+                    Log.e("距离", "" + (e2.getX() - e1.getX()));
+                    //改变进度条
+                } else if (e2.getX() - e1.getX() > verticalMinDistance && Math.abs(velocityX) > minVelocity) {
+
+                    // 切换Activity
+                    // Intent intent = new Intent(ViewSnsActivity.this, UpdateStatusActivity.class);
+                    // startActivity(intent);
 //                Toast.makeText(this, "向右手势", Toast.LENGTH_SHORT).show();
+                    if (videoView != null) {
+                        int total = (int) videoView.getDuration();
+                        int moved = (int) Math.abs(e2.getX() - e1.getX());
+                        if (total > 0) {
+                            float seekNums = (float) moved / (float) screenWidth * (float) total;
+                            seekByGesture((int) seekNums, true);
+                        }
+                        Log.e("123", "右滑");
+                    }
 
-                Log.e("123", "右滑");
+                }
             }
             return false;
         }
+    }
 
+    private void seekByGesture(int seekNums, boolean isToRight) {
+        if (seekNums > 0) {
+            if (isToRight) {
+                int current = (int) videoView.getCurrentPosition();
+                if (seekNums + current < (int) videoView.getDuration()) {
+                    videoView.seekTo(current + seekNums);
+                    video_seekBar.setProgress(current + seekNums);
+                } else {
+                    videoView.seekTo(videoView.getDuration() - 1000);
+                    video_seekBar.setProgress((int) videoView.getDuration() - 1000);
+                }
+            } else {
+                int current = (int) videoView.getCurrentPosition();
+                if (current - seekNums > 0) {
+                    videoView.seekTo(current - seekNums);
+                    video_seekBar.setProgress(current - seekNums);
+                } else {
+                    videoView.seekTo(1000);
+                    video_seekBar.setProgress(1000);
+                }
+            }
+        }
     }
 
     /**
@@ -616,5 +754,21 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         super.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (isLocked) {
+                //提示界面处于锁定状态
+                Toast.makeText(this, "界面已被锁定，请解锁！", Toast.LENGTH_SHORT).show();
+            } else {
+                //非全屏状态退出当前当前页面
+                //准备数据，进行跳转
+
+                appData.setSourcePage("FullScreen");
+//                startActivity(new Intent(videoInfo.this, videoList.class));
+            }
+        }
+        return false;
+    }
 
 }
