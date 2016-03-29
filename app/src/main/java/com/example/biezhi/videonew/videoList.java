@@ -2,8 +2,6 @@ package com.example.biezhi.videonew;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -11,6 +9,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -277,6 +276,15 @@ public class videoList extends AppCompatActivity {
             }
             return (T) childView;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int KeyCode, KeyEvent event) {
+        if (KeyCode == KeyEvent.KEYCODE_BACK) {
+            startActivity(new Intent(videoList.this,cateList.class));
+        }
+        return false;
+
     }
 
 

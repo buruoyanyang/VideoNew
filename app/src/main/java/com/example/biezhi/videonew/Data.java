@@ -55,10 +55,10 @@ public class Data extends Application {
     String videoCover = "";
 
     //appid
-    String appId = "43";
+    String appId = "1";
 
     //app内部版本
-    String version = "6.0";
+    String version = "1.0";
 
     //当前视频的播放地址
     String playUrl = "";

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.BitmapResize;
 import com.example.biezhi.videonew.CustomerClass.GetPlayUrl;
+import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.EpisodeModel;
 import com.example.biezhi.videonew.DataModel.SourceModel;
 import com.example.biezhi.videonew.DataModel.VideoInfoModel;
@@ -199,16 +201,27 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     private boolean seekBarAutoFlag = true;
 
+    boolean isShow = true;
+
+    int currentPosition = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_play);
+        SysApplication.getInstance().addActivity(this);
+        appData = (Data) this.getApplicationContext();
+        if (appData.getSourcePage() == "FullScreen") {
+            path = appData.getPlayUrl();
+            currentPosition = appData.getCurrentPosition();
+        }
         initPlayer();
         initClass();
     }
 
     private void initClass() {
-        appData = (Data) this.getApplicationContext();
+
         bitmapResource = new int[]{R.drawable.other_on1, R.drawable.other_on2, R.drawable.other_on3, R.drawable.other_on4, R.drawable.other_on5};
         sourceClicked = new int[]{R.drawable.other_on1_clicked, R.drawable.other_on2_clicked, R.drawable.other_on3_clicked, R.drawable.other_on4_clicked, R.drawable.other_on5_clicked};
         bitmapResize = new BitmapResize();
@@ -263,13 +276,15 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         fullScreenButton.setOnClickListener(this);
         videoPlayOrPauseButton.setOnClickListener(this);
         video_seekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
+        isShow = true;
         new Thread(new getVideoSource()).start();
+        new Thread(new getPlayUrl()).start();
     }
 
     private void initPlayer() {
         Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
-        videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295"));
+//        videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295"));
         videoView.setOnPreparedListener(this);
         videoView.setOnInfoListener(this);
         videoView.setOnErrorListener(this);
@@ -279,14 +294,20 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         videoView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-
+                if (isShow) {
+                    video_control.setVisibility(View.INVISIBLE);
+                    isShow = !isShow;
+                } else {
+                    video_control.setVisibility(View.VISIBLE);
+                    isShow = !isShow;
+                }
                 return false;
             }
         });
     }
 
     private void gotoFullScreen() {
-        int currentPosition = 0;
+
         if (videoView.isPlaying()) {
             videoView.pause();
             currentPosition = (int) videoView.getCurrentPosition();
@@ -300,7 +321,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         appData.setVideoVip(isVipVideo);
         appData.setPlayUrl(path);
         appData.setCurrentPosition(currentPosition);
-        appData.setVideoName(episodeContent.get(episodeNum).getName());
+        appData.setVideoName(episodeContent.get(episodeNum - 1).getName());
         isFullScreen = true;
         startActivity(new Intent(videoPlay.this, fullScreenPlay.class));
     }
@@ -677,6 +698,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
         }
     }
+
     /**
      * 转换播放时间
      *
@@ -724,5 +746,20 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             }
         }
     };
+
+    @Override
+    public boolean onKeyDown(int KeyCode, KeyEvent event) {
+        if (KeyCode == KeyEvent.KEYCODE_BACK) {
+            if (appData.getSourcePage() == "FullScreen") {
+                startActivity(new Intent(videoPlay.this, videoList.class));
+            } else {
+                super.onKeyDown(KeyCode, event);
+                startActivity(new Intent(videoPlay.this, mainActivity.class));
+            }
+        }
+        return false;
+
+    }
+
 
 }

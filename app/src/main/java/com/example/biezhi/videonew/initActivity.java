@@ -209,7 +209,7 @@ public class initActivity extends AppCompatActivity {
         public void run()
         {
             GetServer getServer = new GetServer();
-            getServer.getUrl = "http://www.biezhi360.cn:99/category.aspx?appid=1&version=1.0";
+            getServer.getUrl = "http://www.biezhi360.cn:99/category.aspx?appid="+appData.getAppid()+"&version="+appData.getVersion();
             getServer.aesSecret = "C169F435FEA3530E";
             String json = getServer.getInfoFromServer();
             if (json.length() < 100)

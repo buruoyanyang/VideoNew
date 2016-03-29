@@ -765,6 +765,9 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                 //准备数据，进行跳转
 
                 appData.setSourcePage("FullScreen");
+                appData.setCurrentPosition((int) videoView.getCurrentPosition());
+                startActivity(new Intent(fullScreenPlay.this,videoPlay.class));
+
 //                startActivity(new Intent(videoInfo.this, videoList.class));
             }
         }
