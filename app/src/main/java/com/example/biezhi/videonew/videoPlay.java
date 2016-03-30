@@ -70,6 +70,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     int[] sourceButtonsId;
     String[] adapterKeys;
     int[] adapterIds;
+    ImageButton titleDownloadButton;
+    ImageButton titleBackButton;
 
 
     /**
@@ -225,7 +227,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         bitmapResource = new int[]{R.drawable.other_on1, R.drawable.other_on2, R.drawable.other_on3, R.drawable.other_on4, R.drawable.other_on5};
         sourceClicked = new int[]{R.drawable.other_on1_clicked, R.drawable.other_on2_clicked, R.drawable.other_on3_clicked, R.drawable.other_on4_clicked, R.drawable.other_on5_clicked};
         bitmapResize = new BitmapResize();
-        videoCurrentTimeLabel = (TextView) findViewById(R.id.video_currentTime);
+//        videoCurrentTimeLabel = (TextView) findViewById(R.id.video_currentTime);
         videoSourceLabel = (TextView) findViewById(R.id.video_sourceLabel);
         videoDownloadButton = (ImageButton) findViewById(R.id.video_download);
         videoFavoriteButton = (ImageButton) findViewById(R.id.video_favorate);
@@ -244,6 +246,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         video_control = (RelativeLayout) findViewById(R.id.video_control);
         video_totalTime = (TextView) findViewById(R.id.video_totalTime);
         video_currentTime = (TextView) findViewById(R.id.video_currentTime);
+        titleBackButton = (ImageButton) findViewById(R.id.title_back);
         videoEpisodeList.setOnItemClickListener(this);
         appId = appData.getAppid();
         appVersion = appData.getVersion();
@@ -276,6 +279,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         fullScreenButton.setOnClickListener(this);
         videoPlayOrPauseButton.setOnClickListener(this);
         video_seekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
+        titleBackButton.setOnClickListener(this);
         isShow = true;
         new Thread(new getVideoSource()).start();
         new Thread(new getPlayUrl()).start();
@@ -652,6 +656,10 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         if (v == fullScreenButton) {
             gotoFullScreen();
         }
+        if (v == titleBackButton)
+        {
+            backToCateList();
+        }
     }
 
     private void addToDownload() {
@@ -659,6 +667,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     }
 
     private void addToFavorite() {
+        //写入本地缓存
 
     }
 
@@ -668,6 +677,11 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     private void videoCommentButtonClicked() {
 
+    }
+
+    private void backToCateList()
+    {
+        startActivity(new Intent(videoPlay.this, videoList.class));
     }
 
     /**

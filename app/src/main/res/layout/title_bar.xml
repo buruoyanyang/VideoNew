@@ -12,7 +12,17 @@
             android:layout_height="50dp"
             android:src="@drawable/icon_100"
             android:layout_centerVertical="true"
-            android:paddingLeft="5dp"/>
+            android:paddingLeft="5dp"
+            android:layout_toRightOf="@+id/title_back"/>
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"
+            android:background="#00000000"
+            android:id="@+id/title_back"
+            android:src="@drawable/back_icon"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

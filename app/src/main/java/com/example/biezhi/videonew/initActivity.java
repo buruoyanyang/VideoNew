@@ -298,7 +298,7 @@ public class initActivity extends AppCompatActivity {
                 appData.setCateIdList(cateIdList);
                 appData.setBitmapList(bitmapList);
 
-                startActivity(new Intent(initActivity.this, mainActivity.class));
+                startActivity(new Intent(initActivity.this, defaultActivity.class));
                 //销毁页面
 //                onDestroy();
             }

@@ -5,14 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.biezhi.videonew.cateList">
-    <include layout="@layout/title_bar"/>
+    <include
+        layout="@layout/video_title_bar"
+        android:id="@+id/title_bar"/>
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:id="@+id/cateList_help_textView1"
+        android:layout_below="@+id/title_bar" />
     <GridView
-        android:paddingTop="200px"
+        android:layout_below="@+id/cateList_help_textView1"
         android:id="@+id/cate_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="3">
     </GridView>
-
-
 </RelativeLayout>

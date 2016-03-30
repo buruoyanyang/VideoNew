@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.biezhi.videonew.recomList">
+    tools:context="com.example.biezhi.videonew.recomList"
+    android:orientation="vertical">
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="recomList"/>
-
-</RelativeLayout>
+        android:id="@+id/textview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:textSize="18sp"
+        android:gravity="center" />
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="ceshi"
+        android:id="@+id/test_button"/>
+</LinearLayout>

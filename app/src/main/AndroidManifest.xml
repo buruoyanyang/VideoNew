@@ -43,7 +43,12 @@
         <activity
             android:name=".videoPlay"
             android:screenOrientation="portrait" />
-        <activity android:name=".fullScreenPlay" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <activity
+            android:name=".fullScreenPlay"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity android:name=".downloadActivity" />
+        <activity android:name=".defaultActivity"></activity>
     </application>
 
 </manifest>
