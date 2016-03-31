@@ -4,27 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
+
+    <!--<com.makeramen.roundedimageview.RoundedImageView-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:scaleType="center"-->
+        <!--android:id="@+id/cate_image"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--app:riv_corner_radius="3dip"-->
+        <!--app:riv_border_width="0dip"-->
+        <!--app:riv_border_color="#333333"-->
+        <!--app:riv_mutate_background="true"-->
+        <!--app:riv_tile_mode="repeat"-->
+        <!--app:riv_oval="false" />-->
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/item_bg"
         android:id="@+id/cate_image"
-        android:padding="2px"/>
+        android:scaleType="center"
+        android:src="@drawable/item_bg"
+        android:layout_centerHorizontal="true"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/cate_name"
         android:text="123"
         android:gravity="center_horizontal"
-        android:lines="3"
-        android:layout_below="@+id/cate_image"
-        />
-    <!--<ProgressBar-->
-        <!--android:layout_width="25dp"-->
-        <!--android:layout_height="25dp"-->
-        <!--android:indeterminateDrawable="@anim/loding_juhua"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:id="@+id/lodingProgressBar"-->
-        <!--android:indeterminateDuration="500" />-->
+        android:lines="2"
+        android:layout_below="@+id/cate_image"/>
 
 </RelativeLayout>

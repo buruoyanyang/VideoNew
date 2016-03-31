@@ -2,49 +2,65 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="50dp">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/title_bg_index">
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/icon_100"
-            android:layout_centerVertical="true"
-            android:paddingLeft="5dp"
-            android:layout_toRightOf="@+id/title_back"/>
+        android:layout_height="50dp"
+        android:background="#c7c0c0">
         <ImageButton
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:scaleType="fitXY"
             android:background="#00000000"
-            android:id="@+id/title_back"
-            android:src="@drawable/back_icon"/>
+            android:src="@drawable/goback_icon"
+            android:scaleType="fitXY"
+            android:id="@+id/title_icon" />
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="分类"
-            android:layout_centerInParent="true"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@+id/title_icon"
+            android:text="别致影音"
             android:textSize="20dp"
-            android:id="@+id/title_text"/>
+            android:gravity="center"
+            android:id="@+id/title_appName"/>
         <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/download"
-            android:paddingRight="3dp"
-            android:id="@+id/downloadButton"/>
-        <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="20dp"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/downloadButton"
-            android:paddingRight="3dp"
-            android:id="@+id/searchButton"
-            android:background="@drawable/download"/>
+            android:background="#00000000"
+            android:src="@drawable/search_icon"
+            android:scaleType="fitXY"
+            android:id="@+id/title_search" />
+
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="1dp"
+            android:layout_toLeftOf="@+id/title_search"
+            android:id="@+id/title_help_textView1"/>
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:src="@drawable/cache_icon"
+            android:scaleType="fitXY"
+            android:id="@+id/title_cache"
+            android:layout_toLeftOf="@+id/title_help_textView1" />
+        <TextView
+            android:layout_width="10dp"
+            android:layout_height="1dp"
+            android:layout_toLeftOf="@+id/title_cache"
+            android:id="@+id/title_help_textView2"/>
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:background="#00000000"
+            android:src="@drawable/download_icon"
+            android:scaleType="fitXY"
+            android:id="@+id/title_download"
+            android:layout_toLeftOf="@+id/title_help_textView2" />
+
     </RelativeLayout>
+
 </LinearLayout>

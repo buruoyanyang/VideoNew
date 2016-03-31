@@ -4,7 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.biezhi.videonew.videoList">
-    <include layout="@layout/title_bar"/>
+    <include layout="@layout/title_bar"
+        android:id="@+id/title_layout"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/title_layout"
+        android:id="@+id/title_help_textView1"
+        android:visibility="invisible"/>
     <in.srain.cube.views.ptr.PtrClassicFrameLayout
         android:id="@+id/ptr_refresh"
         xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
@@ -16,7 +23,7 @@
         cube_ptr:ptr_duration_to_close_header="2000"
         cube_ptr:ptr_keep_header_when_refresh="true"
         cube_ptr:ptr_pull_to_fresh="false"
-        android:paddingTop="200px">
+        android:layout_below="@+id/title_help_textView1">
         <in.srain.cube.views.loadmore.LoadMoreGridViewContainer
             android:id="@+id/load_more_grid_view_container"
             android:layout_width="match_parent"

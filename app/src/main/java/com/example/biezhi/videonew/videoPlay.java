@@ -246,7 +246,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         video_control = (RelativeLayout) findViewById(R.id.video_control);
         video_totalTime = (TextView) findViewById(R.id.video_totalTime);
         video_currentTime = (TextView) findViewById(R.id.video_currentTime);
-        titleBackButton = (ImageButton) findViewById(R.id.title_back);
+        titleBackButton = (ImageButton) findViewById(R.id.title_icon);
         videoEpisodeList.setOnItemClickListener(this);
         appId = appData.getAppid();
         appVersion = appData.getVersion();

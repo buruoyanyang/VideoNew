@@ -4,15 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.biezhi.videonew.cateList">
-    <include
-        layout="@layout/video_title_bar"
-        android:id="@+id/title_bar"/>
+    tools:context="com.example.biezhi.videonew.cateList"
+    android:background="@drawable/video_background">
     <TextView
         android:layout_width="1dp"
         android:layout_height="10dp"
-        android:id="@+id/cateList_help_textView1"
-        android:layout_below="@+id/title_bar" />
+        android:id="@+id/cateList_help_textView1" />
     <GridView
         android:layout_below="@+id/cateList_help_textView1"
         android:id="@+id/cate_list"

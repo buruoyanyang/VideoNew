@@ -30,6 +30,7 @@ public class cateList extends AppCompatActivity {
 
     ImageButton searchButton;
     ImageButton downloadButton;
+    ImageButton cacheButton;
     GridView gridView;
     Data appData;
     //跳转页面
@@ -66,8 +67,9 @@ public class cateList extends AppCompatActivity {
         height = appData.getHeight();
         sourcePage = appData.getSourcePage();
         cateIdList = appData.getCateIdList();
-        searchButton = (ImageButton) findViewById(R.id.searchButton);
-        downloadButton = (ImageButton) findViewById(R.id.downloadButton);
+        searchButton = (ImageButton) findViewById(R.id.title_search);
+        downloadButton = (ImageButton) findViewById(R.id.title_download);
+        cacheButton = (ImageButton) findViewById(R.id.title_cache);
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gridView = (GridView) findViewById(R.id.cate_list);
     }
@@ -76,45 +78,41 @@ public class cateList extends AppCompatActivity {
      * 初始化cate
      */
     private void initCate() {
+        //先计算有多少个图片被加载成功
         //计算有多少需要被初始化的频道
         GridViewAdapter gridViewAdapter = new GridViewAdapter();
         gridView.setAdapter(gridViewAdapter);
 
     }
 
-    private class GridViewAdapter extends BaseAdapter
-    {
+    private class GridViewAdapter extends BaseAdapter {
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return bitmapList.size();
         }
+
         @Override
-        public Object getItem(int position)
-        {
-            return  bitmapList.get(position);
+        public Object getItem(int position) {
+            return bitmapList.get(position);
         }
+
         @Override
-        public long getItemId(int position)
-        {
+        public long getItemId(int position) {
             return position;
         }
+
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent)
-        {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder holder;
-            if (convertView == null)
-            {
+            if (convertView == null) {
                 holder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.cate_adpter,null);
-                holder.imageView = (ImageView)convertView.findViewById(R.id.cate_image);
-                holder.textView = (TextView)convertView.findViewById(R.id.cate_name);
+                convertView = inflater.inflate(R.layout.cate_adpter, null);
+                holder.imageView = (ImageView) convertView.findViewById(R.id.cate_image);
+                holder.textView = (TextView) convertView.findViewById(R.id.cate_name);
 //                holder.progressBar = (ProgressBar)convertView.findViewById(R.id.lodingProgressBar);
                 convertView.setTag(holder);
-            }
-            else
-            {
-                holder = (ViewHolder)convertView.getTag();
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
             holder.imageView.setImageBitmap(bitmapList.get(position));
             holder.textView.setText(nameList.get(position));
@@ -137,16 +135,11 @@ public class cateList extends AppCompatActivity {
     }
 
 
-    static class ViewHolder
-    {
+    static class ViewHolder {
         ImageView imageView;
         TextView textView;
         ProgressBar progressBar;
     }
-
-
-
-
 
 
 }
