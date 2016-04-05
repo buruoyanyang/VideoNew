@@ -125,8 +125,8 @@ public class CateListFragment extends Fragment {
             if (convertView == null) {
                 holder = new ViewHolder();
                 convertView = inflater.inflate(R.layout.cate_adpter, null);
-//                holder.imageView = (RoundedImageView) convertView.findViewById(R.id.cate_image);
-                holder.imageView = (ImageView) convertView.findViewById(R.id.cate_image);
+                holder.imageView = (RoundedImageView) convertView.findViewById(R.id.cate_image);
+//                holder.imageView = (ImageView) convertView.findViewById(R.id.cate_image);
                 holder.textView = (TextView) convertView.findViewById(R.id.cate_name);
 //                holder.progressBar = (ProgressBar)convertView.findViewById(R.id.lodingProgressBar);
                 convertView.setTag(holder);
@@ -154,8 +154,8 @@ public class CateListFragment extends Fragment {
     }
 
     static class ViewHolder {
-//        RoundedImageView imageView;
-        ImageView imageView;
+        RoundedImageView imageView;
+//        ImageView imageView;
         TextView textView;
         ProgressBar progressBar;
     }

@@ -75,8 +75,6 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
     boolean isLoadMore = false;
     BitmapDrawable holdBD;
     Bitmap holdBM;
-    Bitmap holdDF;
-    BitmapDrawable holdDBDF;
     ImageButton back_button;
     ImageButton search_button;
     ImageButton cache_button;
@@ -107,6 +105,7 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
         drawable.draw(canvas);
         return bitmap;
     }
+
     public static BitmapDrawable zoomDrawable(BitmapDrawable drawable, int w, int h) {
         int width = drawable.getIntrinsicWidth();
         int height = drawable.getIntrinsicHeight();
@@ -124,6 +123,7 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
                 matrix, true);
         return new BitmapDrawable(newbmp);
     }
+
     private void initClass() {
         appData = (Data) this.getApplicationContext();
         SysApplication.getInstance().addActivity(this);
@@ -147,10 +147,7 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
         screenWidth = appData.getWidth();
         bitmapResize = new BitmapResize();
         holdBM = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.item_bg), screenHeight / 6, screenWidth * 2 / 5, false);
-        holdDF = BitmapFactory.decodeResource(getResources(), R.drawable.item_bg);
-        holdDBDF = new BitmapDrawable(holdDF);
         holdBD = new BitmapDrawable(holdBM);
-        holdBD = zoomDrawable(holdBD,screenHeight / 6, screenWidth * 2 / 5);
         ptrFrame = (PtrClassicFrameLayout) findViewById(R.id.ptr_refresh);
         ptrFrame.setLastUpdateTimeRelateObject(this);
         ptrFrame.disableWhenHorizontalMove(false);
@@ -201,6 +198,16 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
         if (v == back_button) {
             appData.setSourcePage("VideoList");
             startActivity(new Intent(videoList.this, defaultActivity.class));
+            finish();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Glide.get(videoList.this).clearMemory();
+        if (mGridView.getAdapter() != null) {
+            mGridView.setAdapter(null);
         }
     }
 
@@ -275,37 +282,6 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
         }
     };
 
-
-    private class defaultAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return 30;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.cate_adpter, parent, false);
-            }
-            ImageView imageView = ViewHolder.get(convertView, R.id.cate_image);
-            TextView textView = ViewHolder.get(convertView, R.id.cate_name);
-            textView.setText("");
-            imageView.setImageBitmap(holdBM);
-            return convertView;
-        }
-    }
-
     private class GridViewAdapter extends BaseAdapter {
         @Override
         public int getCount() {
@@ -330,8 +306,6 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
 
             ImageView imageView = ViewHolder.get(convertView, R.id.cate_image);
             TextView textView = ViewHolder.get(convertView, R.id.cate_name);
-//            imageView.setImageBitmap(holdBM);
-//            holdBD = new BitmapDrawable(holdBM);
 
             Glide.with(videoList.this)
                     .load(contentEntityList.get(position).getCover())
@@ -352,8 +326,7 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
                     appData.setAppId("43");
                     appData.setVersion("6.0");
                     startActivity(new Intent(videoList.this, videoPlay.class));
-
-
+//                    finish();
                 }
             });
 
@@ -380,8 +353,9 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
     @Override
     public boolean onKeyDown(int KeyCode, KeyEvent event) {
         if (KeyCode == KeyEvent.KEYCODE_BACK) {
-            Glide.get(videoList.this).clearMemory();
+
             startActivity(new Intent(videoList.this, defaultActivity.class));
+            finish();
         }
         return false;
 

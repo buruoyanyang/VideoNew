@@ -44,6 +44,18 @@
     <style name="LightTabTextAppearance" parent="@style/Base.TextAppearance.AppCompat.Subhead">
         <item name="android:textColor">@drawable/color_tpi_light</item>
     </style>
+    <style  name="LightTabPageIndicatorEpisode"  parent="Material.Widget.TabPageIndicator">
+        <item name="tpi_tabPadding">12dp</item>
+        <item name="tpi_tabRipple">@style/LightTabRippleStyle</item>
+        <item name="tpi_indicatorHeight">3dp</item>
+        <item name="tpi_indicatorColor">#ea4f4f</item>
+        <item name="android:textAppearance">@style/LightTabTextAppearanceEpisode</item>
+        <item name="android:background">#ffffff</item>
+        <item name="tpi_mode">scroll</item>
+    </style>
+    <style name="LightTabTextAppearanceEpisode" parent="@style/Base.TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">@drawable/color_tpi_dark</item>
+    </style>
 
 
 </resources>

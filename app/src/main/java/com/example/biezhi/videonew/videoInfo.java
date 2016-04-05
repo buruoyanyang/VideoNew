@@ -172,6 +172,11 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
 
     String path = "";
 
+    Thread sourceThread;
+
+    Thread playUrlThread;
+
+    Runnable getChangeSeekBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,8 +236,14 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         //设置surface的回调
         surfaceHolder.addCallback(new SurfaceCallback());
         videoProgressBar.setVisibility(View.VISIBLE);
-        new Thread(new getPlaySource()).start();
-        new Thread(new getPlayUrl()).start();
+        sourceThread = new Thread(new getPlaySource());
+        playUrlThread = new Thread(new getPlayUrl());
+        getChangeSeekBar = new Thread(changeSeekBar);
+        sourceThread.start();
+        playUrlThread.start();
+//        new Thread(new getPlaySource()).start();
+//        new Thread(new getPlayUrl()).start();
+
 
     }
 
@@ -357,7 +368,8 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
         //显示缓冲标志
         videoProgressBar.setVisibility(View.VISIBLE);
         //获取播放地址
-        new Thread(new getPlayUrl()).start();
+        playUrlThread.start();
+//        new Thread(new getPlayUrl()).start();
     }
 
     /**
@@ -546,8 +558,9 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
     }
 
     // TODO: 16/3/9 所有的视频播放失败，都加载出错了应该~
+
     /**
-     * 错误监听 
+     * 错误监听
      *
      * @param mp
      * @param what
@@ -558,7 +571,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
     public boolean onError(MediaPlayer mp, int what, int extra) {
         //需要处理一些错误信息
         String TAG2 = "mediaError";
-        switch (what){
+        switch (what) {
             case MediaPlayer.MEDIA_ERROR_UNKNOWN:
                 Log.e(TAG2, "unknown media playback error");
                 break;
@@ -632,7 +645,7 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                 }
             }
         });
-        new Thread(changeSeekBar).start();
+//        new Thread(changeSeekBar).start();
         //设置surfaceView保持在屏幕上
         mediaPlayer.setScreenOnWhilePlaying(true);
         surfaceHolder.setKeepScreenOn(true);
@@ -869,6 +882,10 @@ public class videoInfo extends AppCompatActivity implements MediaPlayer.OnComple
                 appData.setSourcePage("Play");
                 startActivity(new Intent(videoInfo.this, videoList.class));
             }
+            sourceThread.interrupt();
+            playUrlThread.interrupt();
+            sourceThread = null;
+            playUrlThread = null;
         }
         return false;
     }

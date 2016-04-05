@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.example.biezhi.videonew.videoPlay">
     <include layout="@layout/title_bar"/>
@@ -173,51 +174,19 @@
         </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:layout_below="@+id/video_source"
-            android:id="@+id/video_episode">
-            <LinearLayout
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <com.rey.material.widget.TabPageIndicator
+                style="@style/LightTabPageIndicatorEpisode"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|left"
-                    android:background="@drawable/buttonwithnoframe"
-                    android:text="剧  集"
-                    android:textSize="20dp"
-                    android:id="@+id/video_button_episode"/>
-            </LinearLayout>
-            <LinearLayout
+                android:layout_height="48dp"
+                android:id="@+id/indicator"
+                app:tpi_mode="fixed"/>
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="1">
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|right"
-                    android:background="@drawable/buttonwithnoframe"
-                    android:text="简  介"
-                    android:textSize="20dp"
-                    android:id="@+id/video_button_comment"/>
-            </LinearLayout>
+                android:layout_height="0dp"
+                android:layout_weight="1" />
         </LinearLayout>
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/video_episode"
-            android:visibility="visible"
-            android:id="@+id/video_episode_list">
-        </ListView>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/video_episode"
-            android:visibility="invisible"
-            android:id="@+id/video_comment"/>
     </LinearLayout>
 </LinearLayout>
