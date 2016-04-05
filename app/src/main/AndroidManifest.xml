@@ -22,10 +22,8 @@
             android:label="@string/title_activity_init">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <meta-data
                 android:name="UMENG_APPKEY"
                 android:value="56ebba9967e58e46480017f8" />
@@ -50,5 +48,4 @@
         <activity android:name=".downloadActivity" />
         <activity android:name=".defaultActivity"></activity>
     </application>
-
 </manifest>

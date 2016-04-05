@@ -3,6 +3,9 @@ package com.example.biezhi.videonew;
 import android.app.Application;
 import android.graphics.Bitmap;
 
+
+import org.xutils.x;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -281,6 +284,7 @@ public class Data extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        x.Ext.init(this);
     }
 
 }
