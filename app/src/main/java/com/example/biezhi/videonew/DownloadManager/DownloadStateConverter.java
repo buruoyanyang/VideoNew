@@ -9,9 +9,7 @@ import android.database.Cursor;
 import org.xutils.db.converter.ColumnConverter;
 import org.xutils.db.sqlite.ColumnDbType;
 
-/**
- * Created by wyouflf on 15/11/10.
- */
+
 public class DownloadStateConverter implements ColumnConverter<DownloadState> {
 
     @Override

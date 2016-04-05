@@ -1,6 +1,7 @@
 package com.example.biezhi.videonew;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -52,6 +53,7 @@ public class defaultActivity extends FragmentActivity {
             "检查新版本",
             "关于我们"
     };
+    private ImageButton downloadButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +122,13 @@ public class defaultActivity extends FragmentActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //设置点击功能
                 Toast.makeText(getApplicationContext(), "敬请期待", Toast.LENGTH_SHORT).show();
+            }
+        });
+        downloadButton = (ImageButton) findViewById(R.id.title_download);
+        downloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(defaultActivity.this, downloadActivity.class));
             }
         });
 

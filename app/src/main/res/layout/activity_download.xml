@@ -22,12 +22,12 @@
             android:textSize="20dp"
             android:text="暂无下载内容"
             android:layout_gravity="center"
-            android:visibility="visible"/>
+            android:visibility="invisible" />
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/download_list"
-            android:visibility="invisible">
+            android:visibility="visible">
         </ListView>
     </FrameLayout>
     <com.rey.material.widget.ProgressView

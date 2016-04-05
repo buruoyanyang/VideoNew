@@ -19,11 +19,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 
-/**
- * Author: wyouflf
- * Date: 13-11-10
- * Time: 下午8:10
- */
 public final class DownloadManager {
 
     static {

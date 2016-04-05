@@ -2,11 +2,186 @@
 <items version="2" >
 
     <item
-        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.badoo.mobile/android-weak-handler/1.1/jars/classes.jar"
+        jar="/Users/xuhuanfeng/.gradle/caches/modules-2/files-2.1/com.umeng.analytics/analytics/5.6.7/bf324c2f968604935d48434b57832aaaca91def0/analytics-5.6.7.jar"
         jumboMode="false"
         revision="23.0.2"
-        sha1="7a2dafc6ef58bed3ca9a9a1fb5c5a42624b379a3">
-        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-f9ac433a2026d9b913791c9d9e477d71fb5edf97.jar" />
+        sha1="bf324c2f968604935d48434b57832aaaca91def0">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/analytics-5.6.7-e607ac30df74468087daebc96c6bce34f62a2e6a.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/in.srain.cube/cube-sdk/1.0.44/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="ab3e30bc50e6b7f859b4971bfc897cd107a7b6c5">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-890cf2500f9fdd90a8dea3e212cf2a6b92c40a58.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp3/okhttp/3.1.2/7052283359001bb108753cb0583a887d3bf94c82/okhttp-3.1.2.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="7052283359001bb108753cb0583a887d3bf94c82">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/okhttp-3.1.2-91a4795218dbe4016513c23aee275d3e25a8dbc2.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.3.1/ecb6e1f8e4b0e84c4b886c2f14a1500caf309757/gson-2.3.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="ecb6e1f8e4b0e84c4b886c2f14a1500caf309757">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/gson-2.3.1-be842c0c7ed6c4908e99d049e8baccbe2a9867cc.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/jars/libs/internal_impl-23.2.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6e239441500605809818997dd63b62a947195f8c">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/internal_impl-23.2.0-e438f60c430ee64963e604393eaf0237d1c4d160.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.wang.avi/library/1.0.4/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="aa6b7036f72ea088b11599d86ca1b6ac91d24862">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-e099fca6f98af7c639b242d764b2a7845c725871.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/.gradle/caches/modules-2/files-2.1/in.srain.cube/clog/1.0.2/4b857e5d62a7243e74fd0307639fff5a54f8f030/clog-1.0.2.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="4b857e5d62a7243e74fd0307639fff5a54f8f030">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/clog-1.0.2-fbec3772b0d8c0fe3a1d94f6bd8194fa14be2b72.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/VideoNew/vitamio/unspecified/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1c895a30cd4cd797e697288c653e25706a5391e1">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-2f802e45e1fdf7574d9fd37509cbab25a8691752.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="09c5e804bc67fc0580360043dff067df574a60d4">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-c0a54dfed261d2806eb0f670159231fb74e05ed1.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/.gradle/caches/modules-2/files-2.1/com.github.bumptech.glide/glide/3.7.0/9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4/glide-3.7.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/glide-3.7.0-eb8c31189dd0c19f18561cda702d236ba911d8ab.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/libs/bcprov-jdk16-139.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="442c78011c2905a028ab64d223fc3582e13531ea">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/bcprov-jdk16-139-75ee7d604d708755c6258ade1afb3dd7c34b1a55.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="e5f32fa48a3eb2de0c987025c11b6e3864b634d9">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-72ccc99cd3bab3e7f02e111df9205f3126ad9e01.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.2.0/support-annotations-23.2.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="c5bf571bb10462bd90e5419ade67793f71acbc87">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/support-annotations-23.2.0-48f67ae92cd3c2e1c388678cb7dc809281ab59c6.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/library-2.4.0-21f0b2989c4307693bbb4bce94b8ee735c5068f2.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/libs/universal-image-loader-1.9.5.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="442dbfb517b9ab5cb5c6da7ebf8cc28ec5bd0375">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/universal-image-loader-1.9.5-ebb88a94de81e44983cc61c9a95f3704079b70c7.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8c108c22c99e794eff255bb34d2a461200c4cbb0">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-701e8081c68b77d8ce726b26b4ab6a2aec88b344.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/.gradle/caches/modules-2/files-2.1/org.greenrobot/eventbus/3.0.0/ddd99896e9569eaababbe81b35d80e1b91c4ad85/eventbus-3.0.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="ddd99896e9569eaababbe81b35d80e1b91c4ad85">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/eventbus-3.0.0-847fc5b7c0f1a572b7e416038dcf19e4ff7aa7a8.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/org.xutils/xutils/3.3.30/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="62c253e9d0378181efbfbe0187a6d3fd09143507">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-46ada06871ab018498ca8c3aea85ca26e8cf0a61.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/libs/mockwebserver-3.1.2.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="0860e28703ea8c0ffeb29e1e3d1eea9fc1a2d857">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/mockwebserver-3.1.2-bd9cec3942dcac31e1f589f227e63608eb79487a.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.6.0/98476622f10715998eacf9240d6b479f12c66143/okio-1.6.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="98476622f10715998eacf9240d6b479f12c66143">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/okio-1.6.0-d5a7c97a0ddf0e6731e676d301426037f234b254.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6e3578f92f7462d1a935a1d36173e3bdd1234976">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-3233372f68e0a1e5ae154aef4664c72d8c074d28.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.makeramen/roundedimageview/2.2.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="814fc0c3ec69a944add398217d90077301501a74">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-f651096610e3c7ac17229a38bc83e63c94ef4718.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="292a9fa091757208efa65e77eef63088247e51f3">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-5898586ba059fd329d19932be19e0ca5c62d8087.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.android.support/cardview-v7/23.1.1/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="5e412e954a24c5310a459c09870e4e2081aceb03">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-1ffac38f9a99c51523263ae69758616554836601.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/in.srain.cube/ultra-ptr/1.0.11/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a0bdf70123d26dd83d8462d602b3a83a41934cf6">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-6bbd5b54ccb7efd150ca241d759f0eef7bc1d894.jar" />
+    </item>
+    <item
+        jar="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.github.rey5137/material/1.2.2/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="dde1ea8573633db3da4e8c42d541bfa7d03d6720">
+        <dex dex="/Users/xuhuanfeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-52e3a33c14f65646bd682a460720364c5935c7bd.jar" />
     </item>
 
 </items>

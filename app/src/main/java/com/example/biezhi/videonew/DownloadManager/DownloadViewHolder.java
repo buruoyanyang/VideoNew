@@ -11,9 +11,6 @@ import org.xutils.x;
 
 import java.io.File;
 
-/**
- * Created by wyouflf on 15/11/10.
- */
 public abstract class DownloadViewHolder {
 
     protected DownloadInfo downloadInfo;

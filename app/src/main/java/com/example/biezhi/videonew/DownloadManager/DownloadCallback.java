@@ -11,13 +11,7 @@ import org.xutils.ex.DbException;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
-/**
- * Created by wyouflf on 15/11/10.
- */
-/*package*/ class DownloadCallback implements
-        Callback.CommonCallback<File>,
-        Callback.ProgressCallback<File>,
-        Callback.Cancelable {
+class DownloadCallback implements Callback.CommonCallback<File>, Callback.ProgressCallback<File>, Callback.Cancelable {
 
     private DownloadInfo downloadInfo;
     private WeakReference<DownloadViewHolder> viewHolderRef;
