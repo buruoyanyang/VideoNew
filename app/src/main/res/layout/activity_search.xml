@@ -3,10 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     tools:context="com.example.biezhi.videonew.searchActivity">
-    <SearchView
+    <com.lapism.searchview.view.SearchView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        app:search_style ="toolbar_classic"
+        app:search_theme = "light"
+        app:search_divider = "true"
+        app:search_hint = "输入你想看的电影"
+        app:search_hint_size = "16sp"
+        app:search_animation_duration = "360"
+        app:search_shadow_color = "#80000000"
         android:id="@+id/search_view">
-    </SearchView>
+    </com.lapism.searchview.view.SearchView>
 </RelativeLayout>

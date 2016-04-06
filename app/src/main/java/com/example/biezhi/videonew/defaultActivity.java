@@ -1,13 +1,9 @@
 package com.example.biezhi.videonew;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -25,13 +21,11 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.biezhi.videonew.CustomerClass.AES;
 import com.example.biezhi.videonew.CustomerClass.CateListFragment;
 import com.rey.material.widget.TabPageIndicator;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,6 +61,7 @@ public class defaultActivity extends FragmentActivity {
     };
     private ImageButton downloadButton;
     private ImageButton cacheButton;
+    private ImageButton searchButton;
     Data appData;
 
     @Override
@@ -96,12 +91,10 @@ public class defaultActivity extends FragmentActivity {
 
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
-
             }
 
             @Override
             public void onPageScrollStateChanged(int arg0) {
-
             }
         });
 
@@ -184,6 +177,7 @@ public class defaultActivity extends FragmentActivity {
         downloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                appData.setSourcePage("Default");
                 startActivity(new Intent(defaultActivity.this, downloadActivity.class));
             }
         });
@@ -191,20 +185,16 @@ public class defaultActivity extends FragmentActivity {
         cacheButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                try {
-//                    for (int i = 0;i < 3;i++) {
-//                        String url = "http://baobab.wdjcdn.com/14597778199461.mp4";
-//                        String label = i +"xUtils_" + System.nanoTime();
-//                        DownloadManager.getInstance().startDownload(
-//                                url, label,
-//                                "/sdcard/xUtils/" + label + ".aar", true, false, null);
-//                    }
-////                    Environment.getExternalStorageDirectory().getPath();
-//                }
-//                catch (DbException ex)
-//                {
-//                    ex.printStackTrace();
-//                }
+                appData.setSourcePage("Default");
+                startActivity(new Intent(defaultActivity.this,cacheActivity.class));
+            }
+        });
+        searchButton = (ImageButton)findViewById(R.id.title_search);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                appData.setSourcePage("Default");
+                startActivity(new Intent(defaultActivity.this,searchActivity.class));
             }
         });
 
