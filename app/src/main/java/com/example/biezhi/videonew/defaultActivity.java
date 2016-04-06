@@ -1,9 +1,13 @@
 package com.example.biezhi.videonew;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -15,14 +19,21 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.biezhi.videonew.CustomerClass.AES;
 import com.example.biezhi.videonew.CustomerClass.CateListFragment;
 import com.rey.material.widget.TabPageIndicator;
 
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +48,7 @@ public class defaultActivity extends FragmentActivity {
     private ImageButton title_iconButton;
     private TextView title_text;
     private ListView left_menuList;
+    private ImageView left_menuBack;
     private int[] imageId = new int[]{
             R.drawable.login_icon,
             R.drawable.pen_icon,
@@ -54,13 +66,18 @@ public class defaultActivity extends FragmentActivity {
             "关于我们"
     };
     private ImageButton downloadButton;
+    private ImageButton cacheButton;
+    Data appData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
+        appData = (Data) this.getApplicationContext();
         initClass();
-
+        if (appData.sourcePage == "Login") {
+            initFromLogin();
+        }
         //ViewPager的adapter
         FragmentPagerAdapter adapter = new TabPageIndicatorAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
@@ -72,7 +89,6 @@ public class defaultActivity extends FragmentActivity {
 
         //如果我们要对ViewPager设置监听，用indicator设置就行了
         indicator.setOnPageChangeListener(new OnPageChangeListener() {
-
             @Override
             public void onPageSelected(int arg0) {
                 Toast.makeText(getApplicationContext(), TITLE[arg0], Toast.LENGTH_SHORT).show();
@@ -91,11 +107,47 @@ public class defaultActivity extends FragmentActivity {
 
     }
 
+    private void initFromLogin() {
+        if (appData.getUserName() != "") {
+            //对侧边菜单进行初始化
+            SimpleAdapter adapter = new SimpleAdapter(
+                    defaultActivity.this,
+                    getDataWithUser(),
+                    R.layout.download_item, new String[]{"img", "name"},
+                    new int[]{R.id.drawer_layout_image, R.id.drawer_layout_text}
+            );
+            left_menuList.setDividerHeight(10);
+            left_menuList.setAdapter(adapter);
+            left_menuBack.setImageResource(R.drawable.vip_background);
+            //同时将信息写入本地文件
+            saveInfoToGallery("UI", "BieZhi", appData.getHtmlString());
+            appData.setHtmlString("");
+        }
+    }
+
+    public static void saveInfoToGallery(String fileName, String dirName, String writeFile) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), dirName);
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(writeFile.getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void initClass() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         title_iconButton = (ImageButton) findViewById(R.id.title_icon);
         title_text = (TextView) findViewById(R.id.title_appName);
         left_menuList = (ListView) findViewById(R.id.left_menu_list);
+        left_menuBack = (ImageView) findViewById(R.id.left_menu_back);
         title_iconButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,6 +174,10 @@ public class defaultActivity extends FragmentActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //设置点击功能
                 Toast.makeText(getApplicationContext(), "敬请期待", Toast.LENGTH_SHORT).show();
+                if (position == 0) {
+                    startActivity(new Intent(defaultActivity.this, loginActivity.class));
+                }
+
             }
         });
         downloadButton = (ImageButton) findViewById(R.id.title_download);
@@ -129,6 +185,26 @@ public class defaultActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(defaultActivity.this, downloadActivity.class));
+            }
+        });
+        cacheButton = (ImageButton) findViewById(R.id.title_cache);
+        cacheButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                try {
+//                    for (int i = 0;i < 3;i++) {
+//                        String url = "http://baobab.wdjcdn.com/14597778199461.mp4";
+//                        String label = i +"xUtils_" + System.nanoTime();
+//                        DownloadManager.getInstance().startDownload(
+//                                url, label,
+//                                "/sdcard/xUtils/" + label + ".aar", true, false, null);
+//                    }
+////                    Environment.getExternalStorageDirectory().getPath();
+//                }
+//                catch (DbException ex)
+//                {
+//                    ex.printStackTrace();
+//                }
             }
         });
 
@@ -141,6 +217,21 @@ public class defaultActivity extends FragmentActivity {
             map.put("img", imageId[i]);
             map.put("name", choiseName[i]);
             list.add(map);
+        }
+        return list;
+    }
+
+    private List<Map<String, Object>> getDataWithUser() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (int i = 0; i < imageId.length; i++) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("img", imageId);
+            if (i == 0 && appData.getUserName() != "") {
+                map.put("name", appData.getUserName());
+            } else {
+                map.put("name", choiseName[i]);
+            }
+
         }
         return list;
     }

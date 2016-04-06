@@ -22,8 +22,10 @@
             android:label="@string/title_activity_init">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <meta-data
                 android:name="UMENG_APPKEY"
                 android:value="56ebba9967e58e46480017f8" />
@@ -46,6 +48,10 @@
             android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity android:name=".downloadActivity" />
-        <activity android:name=".defaultActivity"></activity>
+        <activity android:name=".defaultActivity" />
+        <activity android:name=".loginActivity" />
+        <activity android:name=".cacheActivity" />
+        <activity android:name=".searchActivity"></activity>
     </application>
+
 </manifest>

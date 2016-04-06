@@ -31,7 +31,8 @@
             android:gravity="center"
             android:text="编辑"
             android:textSize="20dp"
-            android:textColor="#FF505050" />
+            android:textColor="#FF505050"
+            android:id="@+id/title_delete"/>
     </RelativeLayout>
 
 </LinearLayout>

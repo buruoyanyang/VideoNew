@@ -8,7 +8,8 @@
         android:layout_width="250dp"
         android:layout_height="150dp"
         android:src="@drawable/left_welcome"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:id="@+id/left_menu_back"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -3,6 +3,7 @@ package com.example.biezhi.videonew;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +34,27 @@ public class downloadActivity extends AppCompatActivity {
     private DownloadManager downloadManager;
     private DownloadListAdapter downloadListAdapter;
 
+    private Button deleteButton;
+
+    private TextView downloadNO;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
         downloadList = (ListView) findViewById(R.id.download_list);
+        downloadNO = (TextView)findViewById(R.id.download_no);
         downloadManager = DownloadManager.getInstance();
+        if (downloadManager.getDownloadListCount() ==0)
+        {
+            downloadList.setVisibility(View.INVISIBLE);
+            downloadNO.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            downloadList.setVisibility(View.VISIBLE);
+            downloadNO.setVisibility(View.INVISIBLE);
+        }
         downloadListAdapter = new DownloadListAdapter();
         downloadList.setAdapter(downloadListAdapter);
     }
@@ -75,7 +91,7 @@ public class downloadActivity extends AppCompatActivity {
             DownloadItemViewHolder holder;
             DownloadInfo downloadInfo = downloadManager.getDownloadInfo(position);
             if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.download_item, null);
+                convertView = mInflater.inflate(R.layout.download_item_default, null);
                 holder = new DownloadItemViewHolder(convertView, downloadInfo);
                 convertView.setTag(holder);
                 holder.refresh();
@@ -105,10 +121,10 @@ public class downloadActivity extends AppCompatActivity {
         @ViewInject(R.id.download_label)
         TextView label;
         @ViewInject(R.id.download_state)
-        TextView state;
+        TextView stateLabel;
         @ViewInject(R.id.download_pb)
         ProgressBar progressBar;
-        @ViewInject(R.id.download_stop_btn)
+        @ViewInject(R.id.download_stopOrStart)
         Button stopBtn;
 
         public DownloadItemViewHolder(View view, DownloadInfo downloadInfo) {
@@ -116,7 +132,7 @@ public class downloadActivity extends AppCompatActivity {
             refresh();
         }
 
-        @Event(R.id.download_stop_btn)
+        @Event(R.id.download_stopOrStart)
         private void toggleEvent(View view) {
             DownloadState state = downloadInfo.getState();
             switch (state) {
@@ -199,26 +215,36 @@ public class downloadActivity extends AppCompatActivity {
 
         public void refresh() {
             label.setText(downloadInfo.getLabel());
-            state.setText(downloadInfo.getState().toString());
+            stateLabel.setText(downloadInfo.getState().toString());
             progressBar.setProgress(downloadInfo.getProgress());
 
             stopBtn.setVisibility(View.VISIBLE);
-            stopBtn.setText(x.app().getString(R.string.stop));
+//            stopBtn.setText(x.app().getString(R.string.stop));
             DownloadState state = downloadInfo.getState();
             switch (state) {
                 case WAITING:
                 case STARTED:
-                    stopBtn.setText(x.app().getString(R.string.stop));
+//                    stopBtn.setText(x.app().getString(R.string.stop));
+                    stateLabel.setText("下载中");
                     break;
                 case ERROR:
                 case STOPPED:
-                    stopBtn.setText(x.app().getString(R.string.start));
+//                    stopBtn.setText(x.app().getString(R.string.start));
+                    stateLabel.setText("暂停中");
                     break;
                 case FINISHED:
-                    stopBtn.setVisibility(View.INVISIBLE);
+//                    stopBtn.setVisibility(View.INVISIBLE);
+                    stopBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.e("已完成","跳转播放链接");
+                            Log.e("播放地址",downloadInfo.getFileSavePath());
+                        }
+                    });
                     break;
                 default:
-                    stopBtn.setText(x.app().getString(R.string.start));
+//                    stopBtn.setText(x.app().getString(R.string.start));
+                    stateLabel.setText("暂停中");
                     break;
 
             }
