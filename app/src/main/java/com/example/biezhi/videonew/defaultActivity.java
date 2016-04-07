@@ -73,6 +73,10 @@ public class defaultActivity extends FragmentActivity {
         if (appData.sourcePage == "Login") {
             initFromLogin();
         }
+        if (appData.sourcePage == "INIT")
+        {
+            initFromLogin();
+        }
         //ViewPager的adapter
         FragmentPagerAdapter adapter = new TabPageIndicatorAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
@@ -106,19 +110,29 @@ public class defaultActivity extends FragmentActivity {
             SimpleAdapter adapter = new SimpleAdapter(
                     defaultActivity.this,
                     getDataWithUser(),
-                    R.layout.download_item, new String[]{"img", "name"},
+                    R.layout.drawlayout_item, new String[]{"img", "name"},
                     new int[]{R.id.drawer_layout_image, R.id.drawer_layout_text}
             );
             left_menuList.setDividerHeight(10);
             left_menuList.setAdapter(adapter);
-            left_menuBack.setImageResource(R.drawable.vip_background);
             //同时将信息写入本地文件
             saveInfoToGallery("UI", "BieZhi", appData.getHtmlString());
             appData.setHtmlString("");
         }
     }
 
-    public static void saveInfoToGallery(String fileName, String dirName, String writeFile) {
+    private void deleteInfoFromGallery(String fileName,String dirName)
+    {
+        File appDir = new File(Environment.getExternalStorageDirectory() ,dirName);
+        if (!appDir.exists())
+            return;
+        File file = new File(appDir,fileName);
+        if (file.exists())
+            file.delete();
+
+    }
+
+    private String saveInfoToGallery(String fileName, String dirName, String writeFile) {
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), dirName);
         if (!appDir.exists()) {
@@ -133,6 +147,7 @@ public class defaultActivity extends FragmentActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return appDir.getAbsolutePath()+"/"+fileName;
     }
 
     private void initClass() {
@@ -166,8 +181,17 @@ public class defaultActivity extends FragmentActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //设置点击功能
-                Toast.makeText(getApplicationContext(), "敬请期待", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), "敬请期待", Toast.LENGTH_SHORT).show();
                 if (position == 0) {
+                    if (appData.getUserName() != "") {
+                        //已经处于登陆状态，点击登出
+                        appData.setUserPwd("");
+                        appData.setUserName("");
+                        appData.setUserVip(false);
+                        appData.setHtmlString("");
+                        //删除本地文件
+                        deleteInfoFromGallery("UI","BieZhi");
+                    }
                     startActivity(new Intent(defaultActivity.this, loginActivity.class));
                 }
 
@@ -186,15 +210,15 @@ public class defaultActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 appData.setSourcePage("Default");
-                startActivity(new Intent(defaultActivity.this,cacheActivity.class));
+                startActivity(new Intent(defaultActivity.this, cacheActivity.class));
             }
         });
-        searchButton = (ImageButton)findViewById(R.id.title_search);
+        searchButton = (ImageButton) findViewById(R.id.title_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 appData.setSourcePage("Default");
-                startActivity(new Intent(defaultActivity.this,searchActivity.class));
+                startActivity(new Intent(defaultActivity.this, searchActivity.class));
             }
         });
 
@@ -215,12 +239,13 @@ public class defaultActivity extends FragmentActivity {
         List<Map<String, Object>> list = new ArrayList<>();
         for (int i = 0; i < imageId.length; i++) {
             Map<String, Object> map = new HashMap<>();
-            map.put("img", imageId);
+            map.put("img", imageId[i]);
             if (i == 0 && appData.getUserName() != "") {
                 map.put("name", appData.getUserName());
             } else {
                 map.put("name", choiseName[i]);
             }
+            list.add(map);
 
         }
         return list;

@@ -8,12 +8,15 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.AES;
 import com.example.biezhi.videonew.DataModel.LoginModel;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 public class loginActivity extends AppCompatActivity {
@@ -46,7 +49,9 @@ public class loginActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                appData.setSourcePage("Login");
+                startActivity(new Intent(loginActivity.this, defaultActivity.class));
+
             }
         });
         webView = (WebView) findViewById(R.id.login_view);
@@ -70,6 +75,7 @@ public class loginActivity extends AppCompatActivity {
         );
         webView.loadUrl("http://115.29.190.54:12345/Login.aspx");
     }
+
     final class InJavaScriptLocalObj {
         @JavascriptInterface
         public void showSource(String html) {
@@ -86,6 +92,10 @@ public class loginActivity extends AppCompatActivity {
                     //解密
                     byte[] tempResult = AES.Decrypt(responseData, "dd358748fcabdda1");
                     responseData = new String(tempResult, "UTF-8");
+                    if (responseData.length() > 200) {
+                        responseData = responseData.split("\\},\\{")[0];
+                        responseData = responseData + "}";
+                    }
                     Gson gson = new Gson();
                     LoginModel loginModel = gson.fromJson(responseData, LoginModel.class);
                     String tel = loginModel.getTel();
@@ -102,7 +112,8 @@ public class loginActivity extends AppCompatActivity {
                 }
                 appData.setSourcePage("Login");
                 appData.setHtmlString(html);
-                startActivity(new Intent(loginActivity.this,defaultActivity.class));
+                Toast.makeText(loginActivity.this,"登陆成功",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(loginActivity.this, defaultActivity.class));
             }
         }
     }

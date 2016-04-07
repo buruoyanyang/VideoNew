@@ -35,6 +35,7 @@ import com.example.biezhi.videonew.CustomerClass.BitmapCut;
 import com.example.biezhi.videonew.CustomerClass.ImageService;
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.CateModel;
+import com.example.biezhi.videonew.DataModel.LoginModel;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -100,6 +101,7 @@ public class initActivity extends AppCompatActivity {
         //获取上一次登录信息
         getSdCard();
 
+        //todo 判断保存的账号密码是否有限
         //获取屏幕大小
         if (Integer.valueOf(android.os.Build.VERSION.SDK) > 13) {
             Display display = getWindowManager().getDefaultDisplay();
@@ -166,38 +168,43 @@ public class initActivity extends AppCompatActivity {
      * 获取本地信息
      */
     protected void getSdCard() {
-        try {
-            File dirFile = new File(loginMessage);
-            if (!dirFile.exists()) {
-                dirFile.mkdir();
+        File appDir = new File(Environment.getExternalStorageDirectory(), "BieZhi");
+        if (appDir.exists()) {
+            File file = new File(appDir, "UI");
+            if (file.exists()) {
+                try {
+                    InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
+                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                    String str = "";
+                    String mimeTypeLine;
+                    while ((mimeTypeLine = bufferedReader.readLine()) != null) {
+                        str = str + mimeTypeLine;
+                    }
+                    appData.setHtmlString(str);
+                    JSONObject jsonObject = new JSONObject(str);
+                    String responseData = jsonObject.optString("responseData");
+                    //解密
+                    byte[] tempResult = AES.Decrypt(responseData, "dd358748fcabdda1");
+                    responseData = new String(tempResult, "UTF-8");
+                    if (responseData.length() > 200) {
+                        responseData = responseData.split("\\},\\{")[0];
+                        responseData = responseData + "}";
+                    }
+                    Gson gson = new Gson();
+                    LoginModel loginModel = gson.fromJson(responseData, LoginModel.class);
+                    String tel = loginModel.getTel();
+                    String password = loginModel.getPassword();
+                    boolean vip = loginModel.isVip();
+                    appData.setUserName(tel);
+                    appData.setUserPwd(password);
+                    appData.setUserVip(vip);
+                } catch (Exception ex) {
+                    appData.setHtmlString("");
+                    appData.setUserName("");
+                    appData.setUserPwd("");
+                    appData.setUserVip(false);
+                }
             }
-            File file = new File(loginMessage + "Message");
-            InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String str = "";
-            String mimeTypeLine;
-            while ((mimeTypeLine = bufferedReader.readLine()) != null) {
-                str = str + mimeTypeLine;
-            }
-            appData.setHtmlString(str);
-            //处理Json
-            AES aes = new AES();
-            String tempJson = appData.getHtmlString().substring(1, appData.getHtmlString().length() - 1);
-            tempJson = tempJson.substring(0, tempJson.length() - 1);
-            tempJson = tempJson.replaceAll("\"responseData\"", "");
-            tempJson = tempJson.substring(2, tempJson.length());
-            byte[] tempResult = AES.Decrypt(tempJson, "dd358748fcabdda1");
-            tempJson = new String(tempResult, "UTF-8");
-            JSONObject jsonObject = new JSONObject(tempJson);
-            appData.setUserName(jsonObject.optString("tel"));
-            appData.setUserPwd(jsonObject.optString("password"));
-            if (jsonObject.optString("vip") == "false") {
-                appData.setUserVip(false);
-            } else {
-                appData.setUserVip(true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         appData.setSourcePage("INIT");
     }

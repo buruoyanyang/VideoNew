@@ -31,9 +31,19 @@
             android:visibility="visible">
         </ListView>
     </FrameLayout>
-    <com.rey.material.widget.ProgressView
+    <ProgressBar
         android:layout_width="match_parent"
-        android:layout_height="15dp"
+        android:layout_height="20dp"
         android:layout_alignParentBottom="true"
-        android:id="@+id/disk_free_num" />
+        android:id="@+id/disk_free_num"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_toRightOf="@+id/disK_label"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15dp"
+        android:text="内存使用：  "
+        android:layout_alignParentBottom="true"
+        android:id="@+id/disK_label"
+        android:gravity="center"/>
 </RelativeLayout>

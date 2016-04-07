@@ -59,7 +59,7 @@ import io.vov.vitamio.widget.VideoView;
 * */
 
 public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener
-        , MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener, View.OnClickListener, AdapterView.OnItemClickListener,EpisodeListFragment.OnEpisodeClickListener{
+        , MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnInfoListener, View.OnClickListener, AdapterView.OnItemClickListener, EpisodeListFragment.OnEpisodeClickListener {
     private VideoView videoView;
     TextView videoSourceLabel;
     ImageButton videoDownloadButton;
@@ -261,8 +261,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     }
 
-    private void initFragment()
-    {
+    private void initFragment() {
         FragmentPagerAdapter adapter = new TabPageIndicatorAdapter(getSupportFragmentManager());
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
@@ -496,8 +495,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
                     final ImageButton sourceButton = (ImageButton) findViewById(sourceButtonsId[i]);
                     sourceButton.setVisibility(View.VISIBLE);
-                    if (i == 0)
-                    {
+                    if (i == 0) {
                         //设置当前按钮选中
                         sourceButton.setImageResource(R.drawable.other_on1_clicked);
 
@@ -789,7 +787,21 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     private void backToCateList() {
 //        startActivity(new Intent(videoPlay.this, videoList.class));
-        finish();
+        if (appData.getSourcePage() == "FullScreen") {
+            appData.setSourcePage("VideoPlay");
+            startActivity(new Intent(videoPlay.this, videoList.class));
+            finish();
+        } else if (appData.getSourcePage() == "Search_VideoList") {
+            appData.setSourcePage("Search");
+//                super.onKeyDown(KeyCode, event);
+            startActivity(new Intent(videoPlay.this, videoList.class));
+            finish();
+        } else {
+//                super.onKeyDown(KeyCode, event);
+            appData.setSourcePage("VideoPlay");
+//            startActivity(new Intent(videoPlay.this, videoList.class));
+            finish();
+        }
     }
 
     /**
@@ -866,10 +878,19 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     public boolean onKeyDown(int KeyCode, KeyEvent event) {
         if (KeyCode == KeyEvent.KEYCODE_BACK) {
             if (appData.getSourcePage() == "FullScreen") {
+                appData.setSourcePage("VideoPlay");
                 startActivity(new Intent(videoPlay.this, videoList.class));
+                finish();
+            } else if (appData.getSourcePage() == "Search_VideoList") {
+                appData.setSourcePage("Search");
+//                super.onKeyDown(KeyCode, event);
+                startActivity(new Intent(videoPlay.this, videoList.class));
+                finish();
             } else {
-                super.onKeyDown(KeyCode, event);
-                startActivity(new Intent(videoPlay.this, mainActivity.class));
+//                super.onKeyDown(KeyCode, event);
+                appData.setSourcePage("VideoPlay");
+//                startActivity(new Intent(videoPlay.this, videoList.class));
+                finish();
             }
         }
         return false;
@@ -934,21 +955,19 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
         @Override
         public Fragment getItem(int position) {
-            if (position ==0) {
+            if (position == 0) {
                 Fragment fragment = new EpisodeListFragment();
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("vipArray", vipArray);
                 bundle.putStringArrayList("nameArray", episodeNameArray);
                 bundle.putStringArrayList("numArray", episodeNumArray);
-                bundle.putInt("currentEpisode",currentEpisodePosition);
+                bundle.putInt("currentEpisode", currentEpisodePosition);
                 fragment.setArguments(bundle);
                 return fragment;
-            }
-            else
-            {
+            } else {
                 Fragment fragment = new CommentFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("comment",videoIntro);
+                bundle.putString("comment", videoIntro);
                 fragment.setArguments(bundle);
                 return fragment;
             }

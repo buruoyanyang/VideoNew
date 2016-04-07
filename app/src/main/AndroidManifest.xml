@@ -51,7 +51,7 @@
         <activity android:name=".defaultActivity" />
         <activity android:name=".loginActivity" />
         <activity android:name=".cacheActivity" />
-        <activity android:name=".searchActivity"></activity>
+        <activity android:name=".searchActivity" />
     </application>
 
 </manifest>

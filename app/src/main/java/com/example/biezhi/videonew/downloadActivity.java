@@ -1,14 +1,19 @@
 package com.example.biezhi.videonew;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Environment;
+import android.os.StatFs;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,6 +23,7 @@ import com.example.biezhi.videonew.DownloadManager.DownloadInfo;
 import com.example.biezhi.videonew.DownloadManager.DownloadManager;
 import com.example.biezhi.videonew.DownloadManager.DownloadState;
 import com.example.biezhi.videonew.DownloadManager.DownloadViewHolder;
+import com.rey.material.widget.ProgressView;
 
 import org.xutils.common.Callback;
 import org.xutils.ex.DbException;
@@ -38,12 +44,33 @@ public class downloadActivity extends AppCompatActivity {
 
     private TextView downloadNO;
 
+    private ProgressBar progressBar;
+
+    private TextView titleName;
+
+    private ImageButton backButton;
+
+    Data appData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
         downloadList = (ListView) findViewById(R.id.download_list);
         downloadNO = (TextView)findViewById(R.id.download_no);
+        progressBar = (ProgressBar)findViewById(R.id.disk_free_num);
+        deleteButton = (Button)findViewById(R.id.title_delete);
+        deleteButton.setVisibility(View.INVISIBLE);
+        titleName = (TextView)findViewById(R.id.title_appName);
+        backButton = (ImageButton) findViewById(R.id.title_icon);
+        appData = (Data) this.getApplicationContext();
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        titleName.setText("缓存");
         downloadManager = DownloadManager.getInstance();
         if (downloadManager.getDownloadListCount() ==0)
         {
@@ -57,8 +84,39 @@ public class downloadActivity extends AppCompatActivity {
         }
         downloadListAdapter = new DownloadListAdapter();
         downloadList.setAdapter(downloadListAdapter);
+        float size1 = getSDCardTotalSize();
+        float size2 = getSDCardFreeSize();
+        progressBar.setMax((int) size1);
+        progressBar.setProgress((int)size1 - (int)size2);
+
     }
 
+    private float getSDCardFreeSize()
+    {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+        {
+            File path = Environment.getExternalStorageDirectory();
+            StatFs statfs = new StatFs(path.getPath());
+            long blockSize = statfs.getBlockSize();
+            long availableBlocks = statfs.getAvailableBlocks();
+            long size = (availableBlocks * blockSize)/1024/1024;
+            return (float) size;
+        }
+        return 1;
+    }
+
+    private float getSDCardTotalSize()
+    {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File path = Environment.getExternalStorageDirectory();
+            StatFs stat = new StatFs(path.getPath());
+            long blockSize = stat.getBlockSize();
+            long availableBlocks = stat.getBlockCount();
+            long size = (availableBlocks * blockSize)/1024/1024;
+            return (float) size;
+        }
+        return 1;
+    }
     private class DownloadListAdapter extends BaseAdapter {
 
         private Context mContext;
@@ -239,6 +297,12 @@ public class downloadActivity extends AppCompatActivity {
                         public void onClick(View v) {
                             Log.e("已完成","跳转播放链接");
                             Log.e("播放地址",downloadInfo.getFileSavePath());
+                            appData.setVideoVip(false);
+                            appData.setPlayUrl(downloadInfo.getFileSavePath());
+                            appData.setCurrentPosition(0);
+                            appData.setVideoName(label.getText().toString());
+                            appData.setSourcePage("Download");
+                            startActivity(new Intent(downloadActivity.this, fullScreenPlay.class));
                         }
                     });
                     break;

@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.example.biezhi.videonew.CustomerClass.BitmapCut;
 import com.example.biezhi.videonew.CustomerClass.BitmapResize;
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
+import com.example.biezhi.videonew.DataModel.SearchModel;
 import com.example.biezhi.videonew.DataModel.VideoModel;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
@@ -64,6 +65,7 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
     double defaultVersion = 1.0;
     List<VideoModel.ChannelsEntity> channelsEntityList;
     List<VideoModel.ContentEntity> contentEntityList;
+    List<SearchModel.ContentEntity> searchContentEntityList;
     Boolean has_next;
     BitmapCut bitmapCut;
     static int screenWidth;
@@ -86,42 +88,6 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_video_list);
         initClass();
         initVideo();
-    }
-
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        // 取 drawable 的长宽
-        int w = drawable.getIntrinsicWidth();
-        int h = drawable.getIntrinsicHeight();
-
-        // 取 drawable 的颜色格式
-        Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
-                : Bitmap.Config.RGB_565;
-        // 建立对应 bitmap
-        Bitmap bitmap = Bitmap.createBitmap(w, h, config);
-        // 建立对应 bitmap 的画布
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, w, h);
-        // 把 drawable 内容画到画布中
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-    public static BitmapDrawable zoomDrawable(BitmapDrawable drawable, int w, int h) {
-        int width = drawable.getIntrinsicWidth();
-        int height = drawable.getIntrinsicHeight();
-        // drawable转换成bitmap
-        Bitmap oldbmp = drawableToBitmap(drawable);
-        // 创建操作图片用的Matrix对象
-        Matrix matrix = new Matrix();
-        // 计算缩放比例
-        float sx = ((float) w / width);
-        float sy = ((float) h / height);
-        // 设置缩放比例
-        matrix.postScale(sx, sy);
-        // 建立新的bitmap，其内容是对原bitmap的缩放后的图
-        Bitmap newbmp = Bitmap.createBitmap(oldbmp, 0, 0, width, height,
-                matrix, true);
-        return new BitmapDrawable(newbmp);
     }
 
     private void initClass() {
@@ -216,9 +182,14 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
         @Override
         public void run() {
             GetServer getServer = new GetServer();
-            getServer.getUrl = "http://www.biezhi360.cn:99/Videos.aspx?page=" + currentPageNum + "&cat=" +
-                    appData.getClickedCateId() + "&size=" + defaultPageSize + "&order=" + defaultOrder +
-                    "&district=" + defaultDistrict + "&kind=" + defaultKind + "&appid=" + defaultAppid + "&version=" + defaultVersion;
+            if (appData.sourcePage == "Search") {
+                getServer.getUrl = "http://115.29.190.54:99/search.aspx?keyword=" + appData.getSearchVideo()
+                        + "&page=" + currentPageNum + "&size=" + defaultPageSize + "&appid=" + defaultAppid + "&version=" + defaultVersion;
+            } else {
+                getServer.getUrl = "http://www.biezhi360.cn:99/Videos.aspx?page=" + currentPageNum + "&cat=" +
+                        appData.getClickedCateId() + "&size=" + defaultPageSize + "&order=" + defaultOrder +
+                        "&district=" + defaultDistrict + "&kind=" + defaultKind + "&appid=" + defaultAppid + "&version=" + defaultVersion;
+            }
             getServer.aesSecret = "dd358748fcabdda1";
             String json = getServer.getInfoFromServer();
             if (json.length() < 10) {
@@ -239,17 +210,26 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
 
             } else {
                 final Gson gson = new Gson();
-                VideoModel videoModel = gson.fromJson(json, VideoModel.class);
-                //获取所有的list
-                if (isLoadMore) {
-                    channelsEntityList.addAll(videoModel.getChannels());
-                    contentEntityList.addAll(videoModel.getContent());
-
+                if (appData.sourcePage == "Search") {
+                    SearchModel searchModel = gson.fromJson(json, SearchModel.class);
+                    if (isLoadMore) {
+                        searchContentEntityList.addAll(searchModel.getContent());
+                    } else {
+                        searchContentEntityList = searchModel.getContent();
+                    }
+                    has_next = Boolean.valueOf(searchModel.getHas_next());
                 } else {
-                    channelsEntityList = videoModel.getChannels();
-                    contentEntityList = videoModel.getContent();
+                    VideoModel videoModel = gson.fromJson(json, VideoModel.class);
+                    //获取所有的list
+                    if (isLoadMore) {
+                        channelsEntityList.addAll(videoModel.getChannels());
+                        contentEntityList.addAll(videoModel.getContent());
+                    } else {
+                        channelsEntityList = videoModel.getChannels();
+                        contentEntityList = videoModel.getContent();
+                    }
+                    has_next = Boolean.valueOf(videoModel.getHas_next());
                 }
-                has_next = Boolean.valueOf(videoModel.getHas_next());
                 Message message = Message.obtain();
                 message.what = 1;
                 //通知准备修改ui
@@ -285,7 +265,11 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
     private class GridViewAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return contentEntityList.size();
+            if (appData.sourcePage == "Search") {
+                return searchContentEntityList.size();
+            } else {
+                return contentEntityList.size();
+            }
         }
 
         @Override
@@ -307,29 +291,55 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
             ImageView imageView = ViewHolder.get(convertView, R.id.cate_image);
             TextView textView = ViewHolder.get(convertView, R.id.cate_name);
 
-            Glide.with(videoList.this)
-                    .load(contentEntityList.get(position).getCover())
-                    .override(screenHeight / 6, screenWidth * 2 / 5)
-                    .centerCrop()
-                    .placeholder(holdBD)
-                    .crossFade(100)
-                    .error(holdBD)
-                    .into(imageView);
-            textView.setText(contentEntityList.get(position).getName());
-            //添加ImageView的点击事件
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //准备跳转内容和数据
-                    appData.setClickedVideoID(String.valueOf(contentEntityList.get(position).getId()));
-                    appData.setVideoCover(String.valueOf(contentEntityList.get(position).getCover()));
-                    appData.setAppId("43");
-                    appData.setVersion("6.0");
-                    startActivity(new Intent(videoList.this, videoPlay.class));
+            if (appData.sourcePage == "Search") {
+                Glide.with(videoList.this)
+                        .load(searchContentEntityList.get(position).getCover())
+                        .override(screenHeight / 6, screenWidth * 2 / 5)
+                        .centerCrop()
+                        .placeholder(holdBD)
+                        .crossFade(100)
+                        .error(holdBD)
+                        .into(imageView);
+                textView.setText(searchContentEntityList.get(position).getName());
+                //添加ImageView的点击事件
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //准备跳转内容和数据
+                        appData.setClickedVideoID(String.valueOf(searchContentEntityList.get(position).getId()));
+                        appData.setVideoCover(String.valueOf(searchContentEntityList.get(position).getCover()));
+                        appData.setAppId("43");
+                        appData.setVersion("6.0");
+                        appData.setSourcePage("Search_VideoList");
+                        startActivity(new Intent(videoList.this, videoPlay.class));
 //                    finish();
-                }
-            });
-
+                    }
+                });
+            } else {
+                Glide.with(videoList.this)
+                        .load(contentEntityList.get(position).getCover())
+                        .override(screenHeight / 6, screenWidth * 2 / 5)
+                        .centerCrop()
+                        .placeholder(holdBD)
+                        .crossFade(100)
+                        .error(holdBD)
+                        .into(imageView);
+                textView.setText(contentEntityList.get(position).getName());
+                //添加ImageView的点击事件
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //准备跳转内容和数据
+                        appData.setClickedVideoID(String.valueOf(contentEntityList.get(position).getId()));
+                        appData.setVideoCover(String.valueOf(contentEntityList.get(position).getCover()));
+                        appData.setAppId("43");
+                        appData.setVersion("6.0");
+                        appData.setSourcePage("VideoList");
+                        startActivity(new Intent(videoList.this, videoPlay.class));
+//                    finish();
+                    }
+                });
+            }
             return convertView;
         }
     }
@@ -353,7 +363,6 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
     @Override
     public boolean onKeyDown(int KeyCode, KeyEvent event) {
         if (KeyCode == KeyEvent.KEYCODE_BACK) {
-
             startActivity(new Intent(videoList.this, defaultActivity.class));
             finish();
         }

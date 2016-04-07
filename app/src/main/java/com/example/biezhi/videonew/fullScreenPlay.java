@@ -208,7 +208,24 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         fullscreen_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("123", "123");
+                if (isLocked) {
+                    //提示界面处于锁定状态
+                    Toast.makeText(fullScreenPlay.this, "界面已被锁定，请解锁！", Toast.LENGTH_SHORT).show();
+                } else {
+                    //非全屏状态退出当前当前页面
+                    //准备数据，进行跳转
+                    if (appData.getSourcePage() == "Download")
+                    {
+                        appData.setSourcePage("FullScreen");
+                        appData.setCurrentPosition((int) videoView.getCurrentPosition());
+                        startActivity(new Intent(fullScreenPlay.this,downloadActivity.class));
+                    }
+                    else {
+                        appData.setSourcePage("FullScreen");
+                        appData.setCurrentPosition((int) videoView.getCurrentPosition());
+                        startActivity(new Intent(fullScreenPlay.this, videoPlay.class));
+                    }
+                }
             }
         });
         video_lockButton.setOnClickListener(new View.OnClickListener() {
@@ -763,12 +780,17 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
             } else {
                 //非全屏状态退出当前当前页面
                 //准备数据，进行跳转
-
-                appData.setSourcePage("FullScreen");
-                appData.setCurrentPosition((int) videoView.getCurrentPosition());
-                startActivity(new Intent(fullScreenPlay.this,videoPlay.class));
-
-//                startActivity(new Intent(videoInfo.this, videoList.class));
+                if (appData.getSourcePage() == "Download")
+                {
+                    appData.setSourcePage("FullScreen");
+                    appData.setCurrentPosition((int) videoView.getCurrentPosition());
+                    startActivity(new Intent(fullScreenPlay.this,downloadActivity.class));
+                }
+                else {
+                    appData.setSourcePage("FullScreen");
+                    appData.setCurrentPosition((int) videoView.getCurrentPosition());
+                    startActivity(new Intent(fullScreenPlay.this, videoPlay.class));
+                }
             }
         }
         return false;
