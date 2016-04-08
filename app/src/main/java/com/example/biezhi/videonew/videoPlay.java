@@ -293,14 +293,9 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         bitmapResource = new int[]{R.drawable.other_on1, R.drawable.other_on2, R.drawable.other_on3, R.drawable.other_on4, R.drawable.other_on5};
         sourceClicked = new int[]{R.drawable.other_on1_clicked, R.drawable.other_on2_clicked, R.drawable.other_on3_clicked, R.drawable.other_on4_clicked, R.drawable.other_on5_clicked};
         bitmapResize = new BitmapResize();
-//        videoCurrentTimeLabel = (TextView) findViewById(R.id.video_currentTime);
         videoSourceLabel = (TextView) findViewById(R.id.video_sourceLabel);
         videoDownloadButton = (ImageButton) findViewById(R.id.video_download);
         videoFavoriteButton = (ImageButton) findViewById(R.id.video_favorate);
-//        videoEpisodeButton = (Button) findViewById(R.id.video_button_episode);
-//        videoCommentText = (TextView) findViewById(R.id.video_comment);
-//        videoCommentButton = (Button) findViewById(R.id.video_button_comment);
-//        videoEpisodeList = (ListView) findViewById(R.id.video_episode_list);
         videoSourceLayout = (RelativeLayout) findViewById(R.id.video_source);
         sourceButtonsId = new int[]{R.id.source_1, R.id.source_2, R.id.source_3, R.id.source_4, R.id.source_5};
         mProgressBar = (ProgressBar) findViewById(R.id.video_loadingBar);
@@ -313,7 +308,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         video_totalTime = (TextView) findViewById(R.id.video_totalTime);
         video_currentTime = (TextView) findViewById(R.id.video_currentTime);
         titleBackButton = (ImageButton) findViewById(R.id.title_icon);
-//        videoEpisodeList.setOnItemClickListener(this);
         appId = appData.getAppid();
         appVersion = appData.getVersion();
         sourceData = new ArrayList<>();
@@ -349,9 +343,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         video_seekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
         titleBackButton.setOnClickListener(this);
         isShow = true;
-
-//        new Thread(new getVideoSource()).start();
-//        new Thread(new getPlayUrl()).start();
         sourceThread = new Thread(new getVideoSource());
         playUrlThread = new Thread(new getPlayUrl());
         getChangeSeekBar = new Thread(changeSeekBar);
@@ -364,7 +355,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     private void initPlayer() {
         Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
-//        videoView.setVideoURI(Uri.parse("http://api1.rrmj.tv/api/letvyun/letvmmsid.php?vid=47896295"));
         videoView.setOnPreparedListener(this);
         videoView.setOnInfoListener(this);
         videoView.setOnErrorListener(this);
@@ -404,6 +394,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         appData.setVideoName(episodeContent.get(episodeNum - 1).getName());
         isFullScreen = true;
         startActivity(new Intent(videoPlay.this, fullScreenPlay.class));
+        finish();
     }
 
     /**
@@ -786,20 +777,29 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     }
 
     private void backToCateList() {
-//        startActivity(new Intent(videoPlay.this, videoList.class));
         if (appData.getSourcePage() == "FullScreen") {
+            if (!appData.getFromSearch()) {
+                appData.setSourcePage("VideoPlay");
+                finish();
+            } else {
+                appData.setSourcePage("Search");
+                startActivity(new Intent(videoPlay.this, videoList.class));
+                finish();
+            }
+        } else if (appData.getSourcePage() == "VideoList") {
+            if (!appData.getFromSearch())
+            {
+                appData.setSourcePage("VideoPlay");
+                finish();
+            }
+            else {
+                appData.setSourcePage("Search");
+                startActivity(new Intent(videoPlay.this, videoList.class));
+                finish();
+            }
+        } else if (appData.getSourcePage() == "Download") {
             appData.setSourcePage("VideoPlay");
-            startActivity(new Intent(videoPlay.this, videoList.class));
-            finish();
-        } else if (appData.getSourcePage() == "Search_VideoList") {
-            appData.setSourcePage("Search");
-//                super.onKeyDown(KeyCode, event);
-            startActivity(new Intent(videoPlay.this, videoList.class));
-            finish();
-        } else {
-//                super.onKeyDown(KeyCode, event);
-            appData.setSourcePage("VideoPlay");
-//            startActivity(new Intent(videoPlay.this, videoList.class));
+            startActivity(new Intent(videoPlay.this, downloadActivity.class));
             finish();
         }
     }
@@ -878,16 +878,26 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     public boolean onKeyDown(int KeyCode, KeyEvent event) {
         if (KeyCode == KeyEvent.KEYCODE_BACK) {
             if (appData.getSourcePage() == "FullScreen") {
-                appData.setSourcePage("VideoPlay");
-                startActivity(new Intent(videoPlay.this, videoList.class));
-                finish();
-            } else if (appData.getSourcePage() == "Search_VideoList") {
+                if (!appData.getFromSearch()) {
+                    appData.setSourcePage("VideoPlay");
+                    startActivity(new Intent(videoPlay.this, videoList.class));
+                    finish();
+                } else {
+                    appData.setSourcePage("Search");
+                    startActivity(new Intent(videoPlay.this, videoList.class));
+                    finish();
+                }
+            } else if (appData.getSourcePage() == "Search") {
                 appData.setSourcePage("Search");
-//                super.onKeyDown(KeyCode, event);
                 startActivity(new Intent(videoPlay.this, videoList.class));
                 finish();
-            } else {
-//                super.onKeyDown(KeyCode, event);
+            } else if (appData.getSourcePage() == "Download") {
+                appData.setSourcePage("VideoPlay");
+                startActivity(new Intent(videoPlay.this, downloadActivity.class));
+                finish();
+            }
+            else
+            {
                 appData.setSourcePage("VideoPlay");
 //                startActivity(new Intent(videoPlay.this, videoList.class));
                 finish();
@@ -921,29 +931,43 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         playUrlThread = null;
         getChangeSeekBar = null;
         afterUrlThread = null;
+        bitmapResource = null;
+        sourceClicked = null;
+        bitmapResize = null;
+        videoSourceLabel = null;
+        videoDownloadButton = null;
+        videoFavoriteButton = null;
+        videoSourceLayout = null;
+        sourceButtonsId = null;
+        mProgressBar = null;
+        adapterKeys = null;
+        adapterIds = null;
+        fullScreenButton = null;
+        videoPlayOrPauseButton = null;
+        video_seekBar = null;
+        video_control = null;
+        video_currentTime = null;
+        titleBackButton = null;
+        appId = null;
+        appVersion = null;
+        sourceData = null;
+        currentVideo = null;
+        contentEntity = null;
+        videoIntro = null;
+        videoIntro = null;
+        videoCateId = null;
+        videoTimeString = null;
+        videoTotalString = null;
+        episodeContent = null;
+        episodeId = null;
+        currentVideoPlayUrl = null;
+        videoSiteId = null;
+        getPlayUrl = null;
+        videoQuality = null;
+        setContentView(R.layout.view_null);
+
     }
-    //        videoSourceLabel = null;
-//        videoDownloadButton = null;
-//        videoFavoriteButton = null;
-//        videoEpisodeButton = null;
-//        videoCommentButton = null;
-//        videoEpisodeList = null;
-//        videoCommentText = null;
-//        sourceData = null;
-//        videoSourceLayout = null;
-//        bitmapResize = null;
-//        mProgressBar = null;
-//        titleDownloadButton = null;
-//        titleBackButton = null;
-//        contentEntity = null;
-//        episodeContent = null;
-//        getPlayUrl = null;
-//        fullScreenButton = null;
-//        videoPlayOrPauseButton = null;
-//        video_seekBar = null;
-//        video_control = null;
-//        video_currentTime = null;
-//        video_totalTime = null;
+
 
     /**
      * ViewPager适配器

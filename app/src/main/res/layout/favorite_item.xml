@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:text="电影名称"
+        android:textColor="#FF252525"
+        android:layout_gravity="center"
+        android:gravity="center_vertical"
+        android:textSize="15dp"
+        android:padding="5dp"
+        android:layout_weight="4"
+        android:id="@+id/favorite_video"/>
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="#00000000"
+        android:textColor="#000000"
+        android:text="移除"
+        android:id="@+id/favorite_delete"/>
+</LinearLayout>

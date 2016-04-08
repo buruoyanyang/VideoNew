@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 
 import com.example.biezhi.videonew.CustomerClass.Constants;
+import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.text.SimpleDateFormat;
@@ -178,6 +179,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen_play);
+//        SysApplication.getInstance().addActivity(this);
         initClass();
         initPlayer();
     }
@@ -771,6 +773,8 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         super.onConfigurationChanged(newConfig);
     }
 
+
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -785,11 +789,15 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                     appData.setSourcePage("FullScreen");
                     appData.setCurrentPosition((int) videoView.getCurrentPosition());
                     startActivity(new Intent(fullScreenPlay.this,downloadActivity.class));
+                    finish();
+//                    SysApplication.getInstance().exit();
                 }
                 else {
                     appData.setSourcePage("FullScreen");
                     appData.setCurrentPosition((int) videoView.getCurrentPosition());
                     startActivity(new Intent(fullScreenPlay.this, videoPlay.class));
+                    finish();
+//                    SysApplication.getInstance().exit();
                 }
             }
         }

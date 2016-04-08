@@ -52,6 +52,7 @@
         <activity android:name=".loginActivity" />
         <activity android:name=".cacheActivity" />
         <activity android:name=".searchActivity" />
+        <activity android:name=".favoriteActivity"></activity>
     </application>
 
 </manifest>

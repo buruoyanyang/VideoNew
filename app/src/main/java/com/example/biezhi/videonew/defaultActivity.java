@@ -73,8 +73,7 @@ public class defaultActivity extends FragmentActivity {
         if (appData.sourcePage == "Login") {
             initFromLogin();
         }
-        if (appData.sourcePage == "INIT")
-        {
+        if (appData.sourcePage == "INIT") {
             initFromLogin();
         }
         //ViewPager的adapter
@@ -121,12 +120,11 @@ public class defaultActivity extends FragmentActivity {
         }
     }
 
-    private void deleteInfoFromGallery(String fileName,String dirName)
-    {
-        File appDir = new File(Environment.getExternalStorageDirectory() ,dirName);
+    private void deleteInfoFromGallery(String fileName, String dirName) {
+        File appDir = new File(Environment.getExternalStorageDirectory(), dirName);
         if (!appDir.exists())
             return;
-        File file = new File(appDir,fileName);
+        File file = new File(appDir, fileName);
         if (file.exists())
             file.delete();
 
@@ -147,7 +145,7 @@ public class defaultActivity extends FragmentActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return appDir.getAbsolutePath()+"/"+fileName;
+        return appDir.getAbsolutePath() + "/" + fileName;
     }
 
     private void initClass() {
@@ -190,9 +188,11 @@ public class defaultActivity extends FragmentActivity {
                         appData.setUserVip(false);
                         appData.setHtmlString("");
                         //删除本地文件
-                        deleteInfoFromGallery("UI","BieZhi");
+                        deleteInfoFromGallery("UI", "BieZhi");
                     }
                     startActivity(new Intent(defaultActivity.this, loginActivity.class));
+                } else if (position == 1) {
+                    startActivity(new Intent(defaultActivity.this, favoriteActivity.class));
                 }
 
             }

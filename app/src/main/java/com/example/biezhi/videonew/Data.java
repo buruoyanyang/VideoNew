@@ -29,11 +29,11 @@ public class Data extends Application {
     boolean userVip = false;
     boolean videoVip = true;
     //分类图片
-    List<Bitmap> bitmapList = new ArrayList<Bitmap>();
+    List<Bitmap> bitmapList = new ArrayList<>();
     //分类名
-    List<String> nameList = new ArrayList<String>();
+    List<String> nameList = new ArrayList<>();
     //cateId列表
-    List<String> cateIdList = new ArrayList<String>();
+    List<String> cateIdList = new ArrayList<>();
     //被点击的cateId
     String clickedCateId = "";
     //被搜索的Video
@@ -41,9 +41,9 @@ public class Data extends Application {
     //被点击的cateName
     String cateName = "";
     //已加载的VideoID
-    List<String> videoIDList = new ArrayList<String>();
+    List<String> videoIDList = new ArrayList<>();
     //已加载的VideoBm
-    List<Bitmap> videoBmList = new ArrayList<Bitmap>();
+    List<Bitmap> videoBmList = new ArrayList<>();
     //已加载的VideoName
     List<String> videoNameList = new ArrayList<>();
 
@@ -69,8 +69,10 @@ public class Data extends Application {
     //当前视频的播放进度
     int currentPosition = 0;
 
+    //视频名称
     String videoName = "";
 
+    boolean isFromSearch = false;
 
     public void setWidth(int _width) {
         width = _width;
@@ -280,6 +282,15 @@ public class Data extends Application {
         return videoName;
     }
 
+    public void setFromSearch(boolean _isFromSearch)
+    {
+        isFromSearch = _isFromSearch;
+    }
+
+    public boolean getFromSearch()
+    {
+        return isFromSearch;
+    }
 
     @Override
     public void onCreate() {

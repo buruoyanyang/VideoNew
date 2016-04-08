@@ -310,9 +310,9 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
                         appData.setVideoCover(String.valueOf(searchContentEntityList.get(position).getCover()));
                         appData.setAppId("43");
                         appData.setVersion("6.0");
-                        appData.setSourcePage("Search_VideoList");
+                        appData.setSourcePage("VideoList");
                         startActivity(new Intent(videoList.this, videoPlay.class));
-//                    finish();
+//                        finish();
                     }
                 });
             } else {
@@ -336,7 +336,7 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
                         appData.setVersion("6.0");
                         appData.setSourcePage("VideoList");
                         startActivity(new Intent(videoList.this, videoPlay.class));
-//                    finish();
+//                        finish();
                     }
                 });
             }

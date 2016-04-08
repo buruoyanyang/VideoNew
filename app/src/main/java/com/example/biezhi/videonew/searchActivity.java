@@ -45,6 +45,7 @@ public class searchActivity extends AppCompatActivity {
                 searchHistoryTable.addItem(new SearchItem(query));
                 appData.setSearchVideo(query);
                 appData.setSourcePage("Search");
+                appData.setFromSearch(true);
                 startActivity(new Intent(searchActivity.this,videoList.class));
                 return false;
             }
@@ -71,8 +72,9 @@ public class searchActivity extends AppCompatActivity {
                 searchHistoryTable.addItem(new SearchItem(text));
                 appData.setSearchVideo(text.toString());
                 appData.setSourcePage("Search");
+                appData.setFromSearch(true);
                 startActivity(new Intent(searchActivity.this,videoList.class));
-                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
 
             }
         });

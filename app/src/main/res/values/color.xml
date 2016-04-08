@@ -276,7 +276,6 @@
     <color name="md_blue_grey_700">#ff455a64</color>
     <color name="md_blue_grey_800">#ff37474f</color>
     <color name="md_blue_grey_900">#ff263238</color>
-
     <color name="md_black">#ff000000</color>
     <color name="md_white">#ffffffff</color>
 </resources>
