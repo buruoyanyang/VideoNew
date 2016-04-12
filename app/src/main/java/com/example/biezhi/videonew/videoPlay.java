@@ -64,7 +64,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     TextView videoSourceLabel;
     ImageButton videoDownloadButton;
     ImageButton videoFavoriteButton;
-    //    Button videoEpisodeButton;
+//    Button videoEpisodeButton;
 //    Button videoCommentButton;
 //    ListView videoEpisodeList;
 //    TextView videoCommentText;
@@ -81,6 +81,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     int[] adapterIds;
     ImageButton titleDownloadButton;
     ImageButton titleBackButton;
+
 
 
     /**
