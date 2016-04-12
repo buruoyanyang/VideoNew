@@ -74,6 +74,10 @@ public class Data extends Application {
 
     boolean isFromSearch = false;
 
+    String deviceId = "";
+
+    boolean exUser = false;
+
     public void setWidth(int _width) {
         width = _width;
     }
@@ -290,6 +294,26 @@ public class Data extends Application {
     public boolean getFromSearch()
     {
         return isFromSearch;
+    }
+
+    public void setDeviceId(String _deviceId)
+    {
+        deviceId = _deviceId;
+    }
+
+    public String getDeviceId()
+    {
+        return deviceId;
+    }
+
+    public void setExUser(boolean _exUser)
+    {
+        exUser = _exUser;
+    }
+
+    public boolean getExUser()
+    {
+        return exUser;
     }
 
     @Override

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.CateListFragment;
+import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.rey.material.widget.TabPageIndicator;
 
 
@@ -63,6 +64,7 @@ public class defaultActivity extends FragmentActivity {
     private ImageButton cacheButton;
     private ImageButton searchButton;
     Data appData;
+    private static String deviceId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,18 @@ public class defaultActivity extends FragmentActivity {
             //同时将信息写入本地文件
             saveInfoToGallery("UI", "BieZhi", appData.getHtmlString());
             appData.setHtmlString("");
+            //同时通知服务器用户已经登录
+            new Thread(new trackToServer()).start();
+        }
+    }
+
+    private static class trackToServer implements Runnable {
+        @Override
+        public void run() {
+            GetServer getServer = new GetServer();
+            getServer.getUrl = "http://115.29.190.54:12345/mLogin.aspx?tel=18580434396&password=123456&idfa=" + deviceId;
+            getServer.aesSecret = "C169F435FEA3530E";
+            getServer.getInfoFromServer();
         }
     }
 
@@ -221,6 +235,7 @@ public class defaultActivity extends FragmentActivity {
                 startActivity(new Intent(defaultActivity.this, searchActivity.class));
             }
         });
+        deviceId = appData.getDeviceId();
 
     }
 

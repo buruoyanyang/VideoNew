@@ -18,18 +18,13 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.biezhi.videonew.CustomerClass.AES;
 import com.example.biezhi.videonew.CustomerClass.BitmapCut;
 import com.example.biezhi.videonew.CustomerClass.ImageService;
@@ -41,15 +36,11 @@ import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.umeng.analytics.MobclickAgent;
 
 
-import org.bouncycastle.jce.exception.ExtIOException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -75,6 +66,12 @@ public class initActivity extends AppCompatActivity {
     private final static String loginMessage = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Message";   //登录信息保存路径
     private final static String ALBUM_PATH = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Images";      //图片保存路径
     BitmapCut bitmapCut;
+    private static String deviceId;
+    private static String userName;
+    private static String userPwd;
+    private static boolean userIsVip;
+    private static boolean isExUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +90,13 @@ public class initActivity extends AppCompatActivity {
 
     private void initApp() {
         getResourcesFromDefault();
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        appData.setDeviceId(tm.getDeviceId());
+        deviceId = appData.getDeviceId();
+        userName = "";
+        userPwd = "";
+        userIsVip = false;
+        isExUser = false;
         bitmapCut = new BitmapCut();
     }
 
@@ -100,8 +104,9 @@ public class initActivity extends AppCompatActivity {
 
         //获取上一次登录信息
         getSdCard();
-
         //todo 判断保存的账号密码是否有限
+        //请求验证接口
+
         //获取屏幕大小
         if (Integer.valueOf(android.os.Build.VERSION.SDK) > 13) {
             Display display = getWindowManager().getDefaultDisplay();
@@ -124,12 +129,44 @@ public class initActivity extends AppCompatActivity {
             netWorkInfo.setButton("好", listener);
             netWorkInfo.show();
         } else {
-            //todo 请求各个分类
+            //请求各个分类
             new Thread(new getTabulation()).start();
+            //验证账号使用情况
+            new Thread(new trackToServer()).start();
         }
-
-
     }
+
+    /**
+     * 请求验证接口
+     */
+    private static class trackToServer implements Runnable {
+        @Override
+        public void run() {
+            GetServer getServer = new GetServer();
+            getServer.getUrl = "http://115.29.190.54:12345/mLogin.aspx?tel=" + userName + "&password=" + userPwd + "&idfa=" + deviceId;
+            getServer.aesSecret = "C169F435FEA3530E";
+            getServer.getInfoFromServer();
+            String json = getServer.getInfoFromServer();
+            if (json.length() < 10) {
+                //说明账号已经存在异常
+                //通知用户账号异常，登陆已经失效，请重新登陆
+                Message msg = Message.obtain();
+                msg.what = 3;
+                trackOK.sendMessage(msg);
+            }
+        }
+    }
+
+    private static Handler trackOK = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 3) {
+                userName = "";
+                userPwd = "";
+                userIsVip = false;
+            }
+        }
+    };
 
     /**
      * 获取当前网络状态
@@ -198,11 +235,17 @@ public class initActivity extends AppCompatActivity {
                     appData.setUserName(tel);
                     appData.setUserPwd(password);
                     appData.setUserVip(vip);
+                    userName = tel;
+                    userPwd = password;
+                    userIsVip = vip;
                 } catch (Exception ex) {
                     appData.setHtmlString("");
                     appData.setUserName("");
                     appData.setUserPwd("");
                     appData.setUserVip(false);
+                    userName = "";
+                    userPwd = "";
+                    userIsVip = false;
                 }
             }
         }
@@ -315,6 +358,10 @@ public class initActivity extends AppCompatActivity {
                 appData.setImageUrlFromInitView(urlList);
                 appData.setCateIdList(cateIdList);
                 appData.setBitmapList(bitmapList);
+                appData.setExUser(isExUser);
+                appData.setUserName(userName);
+                appData.setUserPwd(userPwd);
+                appData.setUserVip(userIsVip);
 
                 startActivity(new Intent(initActivity.this, defaultActivity.class));
                 //销毁页面

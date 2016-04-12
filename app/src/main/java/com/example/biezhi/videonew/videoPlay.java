@@ -718,10 +718,15 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 //        new Thread(changeSeekBar).start();
         executor.execute(getChangeSeekBar);
         if (isVipVideo) {
-            if (userIsVip) {
+            if (userIsVip && appData.getUserName() != "") {
                 videoView.start();
-            } else {
+            } else if (!userIsVip && appData.getUserName() !=""){
                 //通知用户添加微信
+                videoView.pause();
+            }
+            else
+            {
+                //提示登录
                 videoView.pause();
             }
         } else {
