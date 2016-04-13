@@ -124,7 +124,7 @@
         android:visibility="visible"
         app:indicator_color="@color/cube_mints_white"/>
     <ListView
-        android:layout_width="200dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
         android:id="@+id/episode_list"
         android:layout_alignParentRight="true"
