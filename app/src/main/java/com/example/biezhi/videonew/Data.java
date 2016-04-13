@@ -8,6 +8,7 @@ import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xhf.
@@ -75,6 +76,8 @@ public class Data extends Application {
     boolean isFromSearch = false;
 
     String deviceId = "";
+
+    List<Map<String, String>> videoEpisode = new ArrayList<>();
 
     boolean exUser = false;
 
@@ -286,34 +289,36 @@ public class Data extends Application {
         return videoName;
     }
 
-    public void setFromSearch(boolean _isFromSearch)
-    {
+    public void setFromSearch(boolean _isFromSearch) {
         isFromSearch = _isFromSearch;
     }
 
-    public boolean getFromSearch()
-    {
+    public boolean getFromSearch() {
         return isFromSearch;
     }
 
-    public void setDeviceId(String _deviceId)
-    {
+    public void setDeviceId(String _deviceId) {
         deviceId = _deviceId;
     }
 
-    public String getDeviceId()
-    {
+    public String getDeviceId() {
         return deviceId;
     }
 
-    public void setExUser(boolean _exUser)
-    {
+    public void setExUser(boolean _exUser) {
         exUser = _exUser;
     }
 
-    public boolean getExUser()
-    {
+    public boolean getExUser() {
         return exUser;
+    }
+
+    public void setVideoEpisode(List<Map<String, String>> _videoEpisode) {
+        videoEpisode = _videoEpisode;
+    }
+
+    public List<Map<String, String>> getVideoEpisode() {
+        return videoEpisode;
     }
 
     @Override

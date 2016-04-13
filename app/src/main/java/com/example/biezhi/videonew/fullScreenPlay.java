@@ -1,6 +1,5 @@
 package com.example.biezhi.videonew;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -20,8 +20,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +33,11 @@ import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.Vitamio;
@@ -53,6 +59,8 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     private ImageView mOperationBg;
     private ImageView mOperationPercent;
     private AudioManager mAudioManager;
+    private TextView videoSelectTv;
+    private ListView episodeList;
     /**
      * 最大声音
      */
@@ -175,6 +183,8 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
      */
     private boolean isLocked = false;
 
+    private boolean isShowEpisode = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,6 +200,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     private void initClass() {
         appData = (Data) this.getApplicationContext();
         avloadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.avloadingIndicatorView);
+        episodeList = (ListView) findViewById(R.id.episode_list);
         fullscreen_back = (ImageButton) findViewById(R.id.fullscreen_back);
         video_title = (TextView) findViewById(R.id.video_title);
         video_control = (RelativeLayout) findViewById(R.id.video_control);
@@ -198,6 +209,20 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         video_currentTime = (TextView) findViewById(R.id.video_currentTime);
         playOrPause = (ImageButton) findViewById(R.id.video_playOrPause);
         video_lockButton = (ImageButton) findViewById(R.id.video_lock);
+        videoSelectTv = (TextView) findViewById(R.id.video_select);
+        videoSelectTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isShowEpisode) {
+                    episodeList.setVisibility(View.VISIBLE);
+                    isShowEpisode = !isShowEpisode;
+                } else {
+                    episodeList.setVisibility(View.INVISIBLE);
+                    isShowEpisode = !isShowEpisode;
+                }
+            }
+        });
+//        drawerLayout = (DrawerLayout) findViewById(R.id.episode_layout);
         videoTimeString = "";
         videoTotalString = "";
         avloadingIndicatorView.setVisibility(View.VISIBLE);
@@ -216,13 +241,11 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                 } else {
                     //非全屏状态退出当前当前页面
                     //准备数据，进行跳转
-                    if (appData.getSourcePage() == "Download")
-                    {
+                    if (appData.getSourcePage() == "Download") {
                         appData.setSourcePage("FullScreen");
                         appData.setCurrentPosition((int) videoView.getCurrentPosition());
-                        startActivity(new Intent(fullScreenPlay.this,downloadActivity.class));
-                    }
-                    else {
+                        startActivity(new Intent(fullScreenPlay.this, downloadActivity.class));
+                    } else {
                         appData.setSourcePage("FullScreen");
                         appData.setCurrentPosition((int) videoView.getCurrentPosition());
                         startActivity(new Intent(fullScreenPlay.this, videoPlay.class));
@@ -254,8 +277,19 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         screenWidth = appData.getHeight();
         isShow = true;
         isLocked = false;
+        initList();
     }
 
+    private void initList() {
+        SimpleAdapter adapter = new SimpleAdapter(
+                fullScreenPlay.this,
+                getData(),
+                R.layout.episode_item, new String[]{"episodeName"},
+                new int[]{R.id.episode_text}
+        );
+        //设置行间距
+        episodeList.setAdapter(adapter);
+    }
 
     /**
      * 播放器初始化
@@ -282,6 +316,17 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
 
     }
 
+
+    private List<Map<String, Object>> getData() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        for (int i = 1; i < appData.getVideoEpisode().size() + 1; i++) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("episodeName", "第" + i + "集");
+            list.add(map);
+        }
+        return list;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (isLocked) {
@@ -289,6 +334,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
             video_control.setVisibility(View.INVISIBLE);
             video_title.setVisibility(View.INVISIBLE);
             fullscreen_back.setVisibility(View.INVISIBLE);
+            videoSelectTv.setVisibility(View.INVISIBLE);
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                     if (isShow) {
@@ -316,12 +362,14 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                         video_control.setVisibility(View.VISIBLE);
                         fullscreen_back.setVisibility(View.VISIBLE);
                         video_lockButton.setVisibility(View.VISIBLE);
+                        videoSelectTv.setVisibility(View.VISIBLE);
                         isShow = !isShow;
                     } else {
                         video_control.setVisibility(View.INVISIBLE);
                         video_title.setVisibility(View.INVISIBLE);
                         fullscreen_back.setVisibility(View.INVISIBLE);
                         video_lockButton.setVisibility(View.INVISIBLE);
+                        videoSelectTv.setVisibility(View.INVISIBLE);
                         isShow = !isShow;
                     }
                     break;
@@ -446,7 +494,6 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     @Override
     public void onClick(View v) {
         if (v == playOrPause) {
-            Log.e("123", "123");
             if (videoView != null) {
                 if (videoView.isPlaying()) {
                     Constants.playPosition = (int) videoView.getCurrentPosition();
@@ -491,25 +538,19 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         }
     }
 
-    /**
-     * 转换播放时间
-     *
-     * @param milliseconds 传入毫秒值
-     * @return 返回 hh:mm:ss或mm:ss格式的数据
-     */
-    @SuppressLint("SimpleDateFormat")
-    public String getShowTime(long milliseconds) {
-        // 获取日历函数
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliseconds);
-        SimpleDateFormat dateFormat = null;
-        // 判断是否大于60分钟，如果大于就显示小时。设置日期格式
-        if (milliseconds / 60000 > 60) {
-            dateFormat = new SimpleDateFormat("hh:mm:ss");
-        } else {
-            dateFormat = new SimpleDateFormat("mm:ss");
+    private String getShowTime(int progress) {
+        if (progress <= 0) {
+            return "00:00";
         }
-        return dateFormat.format(calendar.getTime());
+        int second = progress / 1000;
+        int minute = second / 60;
+        int hour = minute / 60;
+        int lastSecond = second % 60;
+        int lastMinute = minute % 60;
+        int lastHour = hour;
+        String timeString = String.format("%02d:", lastHour) + String.format("%02d:", lastMinute) + String.format("%02d", lastSecond);
+        return timeString;
+
     }
 
     @Override
@@ -562,7 +603,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         //缓冲完毕，准备播放
         avloadingIndicatorView.setVisibility(View.INVISIBLE);
         //设置视频的时间
-        videoTotalString = getShowTime(videoView.getDuration());
+        videoTotalString = getShowTime((int) videoView.getDuration());
         video_totalTime.setText(videoTotalString);
         video_currentTime.setText(getShowTime(currentTime));
 //        playOrPause.setImageResource(R.drawable.video_play);
@@ -774,7 +815,6 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     }
 
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -784,15 +824,13 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
             } else {
                 //非全屏状态退出当前当前页面
                 //准备数据，进行跳转
-                if (appData.getSourcePage() == "Download")
-                {
+                if (appData.getSourcePage() == "Download") {
                     appData.setSourcePage("FullScreen");
                     appData.setCurrentPosition((int) videoView.getCurrentPosition());
-                    startActivity(new Intent(fullScreenPlay.this,downloadActivity.class));
+                    startActivity(new Intent(fullScreenPlay.this, downloadActivity.class));
                     finish();
 //                    SysApplication.getInstance().exit();
-                }
-                else {
+                } else {
                     appData.setSourcePage("FullScreen");
                     appData.setCurrentPosition((int) videoView.getCurrentPosition());
                     startActivity(new Intent(fullScreenPlay.this, videoPlay.class));

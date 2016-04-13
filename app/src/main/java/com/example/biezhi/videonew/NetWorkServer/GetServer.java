@@ -99,14 +99,6 @@ public class GetServer {
         String data;
     }
 
-//    static class Gist
-//    {
-//        Map<String,GistFile> result;
-//    }
-//    static class GistFile
-//    {
-//        String content;
-//    }
 
 
 }

@@ -114,6 +114,8 @@ public class defaultActivity extends FragmentActivity {
                     R.layout.drawlayout_item, new String[]{"img", "name"},
                     new int[]{R.id.drawer_layout_image, R.id.drawer_layout_text}
             );
+
+
             left_menuList.setDividerHeight(10);
             left_menuList.setAdapter(adapter);
             //同时将信息写入本地文件
