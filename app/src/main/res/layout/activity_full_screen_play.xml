@@ -130,6 +130,8 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/video_title"
         android:layout_above="@+id/video_control"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:alpha="0.6"
+        android:background="#000000">
     </ListView>
 </RelativeLayout>
