@@ -1,6 +1,8 @@
 package com.example.biezhi.videonew;
 
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -31,6 +33,7 @@ import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.EpisodeModel;
 import com.example.biezhi.videonew.DataModel.SourceModel;
 import com.example.biezhi.videonew.DataModel.VideoInfoModel;
+import com.example.biezhi.videonew.DownloadManager.DownloadManager;
 import com.example.biezhi.videonew.MessageBox.AfterUrlMessage;
 import com.example.biezhi.videonew.MessageBox.EpisodeMessage;
 import com.example.biezhi.videonew.MessageBox.PlayUrlMessage;
@@ -215,18 +218,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     private boolean isShow = true;
 
     private int currentPosition = 0;
-    /**
-     * 线程池
-     */
-    private ExecutorService executor;
-
-    private Thread sourceThread;
-
-    private Thread playUrlThread;
-
-    private Thread getChangeSeekBar;
-
-    private Thread afterUrlThread;
 
     private final String[] episode_name = new String[]{"剧集", "简介"};
 
@@ -246,11 +237,13 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
      */
     private int currentVideoSourcePosition;
 
+    private boolean canDownload = false;
+
     /**/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Vitamio.isInitialized(this);
+        Vitamio.isInitialized(this.getApplication());
         setContentView(R.layout.activity_video_play);
         SysApplication.getInstance().addActivity(this);
         appData = (Data) this.getApplicationContext();
@@ -460,6 +453,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
                 }
             } else {
                 EpisodeModel episodeModel = gson.fromJson(json, EpisodeModel.class);
+                canDownload = episodeModel.isCanDownload();
                 episodeContent.addAll(episodeModel.getContent());
                 videoSiteId = String.valueOf(episodeModel.getSiteId());
                 isVipVideo = episodeContent.get(episodeNum - 1).isVIP();
@@ -483,6 +477,12 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         }
         videoView.setVideoURI(Uri.parse(path));
         mProgressBar.setVisibility(View.VISIBLE);
+        //是否显示下载按钮
+        if (canDownload) {
+            videoDownloadBt.setVisibility(View.VISIBLE);
+        } else {
+            videoDownloadBt.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -586,6 +586,21 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         String timeString = String.format("%02d:", lastHour) + String.format("%02d:", lastMinute) + String.format("%02d", lastSecond);
         return timeString;
 
+    }
+    @Override
+    protected void attachBaseContext(Context newBase)
+    {
+        super.attachBaseContext(new ContextWrapper(newBase)
+        {
+            @Override
+            public Object getSystemService(String name)
+            {
+                if (Context.AUDIO_SERVICE.equals(name))
+                    return getApplicationContext().getSystemService(name);
+
+                return super.getSystemService(name);
+            }
+        });
     }
 
     @Override
@@ -736,12 +751,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     }
 
-    /**
-     * 添加微信
-     */
-    public void addWeiXin() {
-        //跳转到一个全屏的webView界面
-    }
 
     @Override
     public void onSeekComplete(MediaPlayer mp) {
@@ -788,6 +797,33 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     }
 
     private void addToDownload() {
+        //path就是播放地址
+//        DownloadManager.getInstance().startDownload(
+//                url, label,
+//                "/sdcard/xUtils/" + label + ".aar", true, false, null);
+//
+        //开启一个新的选择界面，包含所有的下载选择框
+
+        ArrayList<String> pathList = new ArrayList<>();
+        ArrayList<String> nameList = new ArrayList<>();
+        int episodeCount = 0;
+        for (int i = 0;i < episodeContent.size();i++)
+        {
+            //这个playUrl是要重新解析的
+            pathList.add(episodeContent.get(i).getPlayUrl());
+            nameList.add(episodeContent.get(i).getName());
+        }
+        episodeCount = episodeContent.size();
+
+        Intent intent = new Intent();
+        intent.setClass(this.getApplication(),downloadEpisodeActivity.class);
+        intent.putStringArrayListExtra("downloadUrls",pathList);
+        intent.putExtra("episodeCount",episodeCount);
+        intent.putExtra("videoName",contentEntity.get(0).getName());
+        intent.putExtra("siteId",Integer.parseInt(videoSiteId));
+        intent.putStringArrayListExtra("episodeNameList",nameList);
+        startActivity(intent);
+
 
     }
 

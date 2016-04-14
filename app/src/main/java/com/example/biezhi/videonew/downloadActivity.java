@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,7 +22,6 @@ import com.example.biezhi.videonew.DownloadManager.DownloadInfo;
 import com.example.biezhi.videonew.DownloadManager.DownloadManager;
 import com.example.biezhi.videonew.DownloadManager.DownloadState;
 import com.example.biezhi.videonew.DownloadManager.DownloadViewHolder;
-import com.rey.material.widget.ProgressView;
 
 import org.xutils.common.Callback;
 import org.xutils.ex.DbException;

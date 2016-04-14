@@ -4,11 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -32,12 +28,6 @@ import com.example.biezhi.videonew.DataModel.SearchModel;
 import com.example.biezhi.videonew.DataModel.VideoModel;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
-import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
