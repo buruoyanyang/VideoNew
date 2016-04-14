@@ -250,6 +250,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Vitamio.isInitialized(this);
         setContentView(R.layout.activity_video_play);
         SysApplication.getInstance().addActivity(this);
         appData = (Data) this.getApplicationContext();
@@ -319,7 +320,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     }
 
     private void initPlayer() {
-        Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
         videoView.setOnPreparedListener(this);
         videoView.setOnInfoListener(this);
@@ -462,6 +462,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
                 EpisodeModel episodeModel = gson.fromJson(json, EpisodeModel.class);
                 episodeContent.addAll(episodeModel.getContent());
                 videoSiteId = String.valueOf(episodeModel.getSiteId());
+                isVipVideo = episodeContent.get(episodeNum - 1).isVIP();
                 //getPlayUrl.episode就是1 2 3 4 5 集
                 getPlayUrl.setValue(Integer.parseInt(videoSiteId), episodeNum, screenWidth, screenHeight);
                 getPlayUrl.ua = "iPhone";
@@ -487,6 +488,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void getAfterUrl(AfterUrlMessage afterUrlMessage) {
+        isVipVideo = episodeContent.get(episodeNum - 1).isVIP();
         getPlayUrl.setValue(Integer.parseInt(videoSiteId), episodeNum, screenWidth, screenHeight);
         getPlayUrl.ua = "iPhone";
         getPlayUrl.originPlayUrl = episodeContent.get(episodeNum - 1).getPlayUrl();
@@ -716,6 +718,12 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             } else if (!userIsVip && appData.getUserName() != "") {
                 //通知用户添加微信
                 videoView.pause();
+                if (appData.getSourcePage() != "AddWeiXin") {
+                    startActivity(new Intent(videoPlay.this, addWeiXinActivity.class));
+                }
+                appData.setSourcePage("VideoPlay");
+
+
             } else {
                 //提示登录
                 videoView.pause();
@@ -726,6 +734,13 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             mProgressBar.setVisibility(View.INVISIBLE);
         }
 
+    }
+
+    /**
+     * 添加微信
+     */
+    public void addWeiXin() {
+        //跳转到一个全屏的webView界面
     }
 
     @Override
@@ -767,6 +782,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             appData.setSourcePage("VideoPlay");
             startActivity(new Intent(videoPlay.this, downloadActivity.class));
             finish();
+        } else {
+            finish();
         }
     }
 
@@ -805,12 +822,11 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         appData.setVideoName(episodeContent.get(episodeNum - 1).getName());
         isFullScreen = true;
         //把当前视频的videoId以及EpisodeId对应存起来
-        List<Map<String,String>> list = new ArrayList<>();
-        for (int i = 0;i < episodeContent.size();i++)
-        {
-            Map<String,String> map = new HashMap<>();
-            map.put("episodeId",episodeContent.get(i).getId()+"");
-            map.put("videoId",currentVideo);
+        List<Map<String, String>> list = new ArrayList<>();
+        for (int i = 0; i < episodeContent.size(); i++) {
+            Map<String, String> map = new HashMap<>();
+            map.put("episodeId", episodeContent.get(i).getId() + "");
+            map.put("videoId", currentVideo);
             list.add(map);
         }
         appData.setVideoEpisode(list);

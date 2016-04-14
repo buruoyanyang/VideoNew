@@ -31,6 +31,9 @@ import com.example.biezhi.videonew.CustomerClass.ImageService;
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.CateModel;
 import com.example.biezhi.videonew.DataModel.LoginModel;
+import com.example.biezhi.videonew.MessageBox.AfterUrlMessage;
+import com.example.biezhi.videonew.MessageBox.EpisodeMessage;
+import com.example.biezhi.videonew.MessageBox.TestMessage;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -39,6 +42,9 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.umeng.analytics.MobclickAgent;
 
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -66,11 +72,11 @@ public class initActivity extends AppCompatActivity {
     private final static String loginMessage = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Message";   //登录信息保存路径
     private final static String ALBUM_PATH = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Images";      //图片保存路径
     BitmapCut bitmapCut;
-    private static String deviceId;
-    private static String userName;
-    private static String userPwd;
-    private static boolean userIsVip;
-    private static boolean isExUser;
+    private String deviceId;
+    private String userName;
+    private String userPwd;
+    private boolean userIsVip;
+    private boolean isExUser;
 
 
     @Override
@@ -79,6 +85,7 @@ public class initActivity extends AppCompatActivity {
         setContentView(R.layout.activity_init);
         SysApplication.getInstance().addActivity(this);
         appData = (Data) this.getApplicationContext();
+        EventBus.getDefault().register(this);
         //创建默认的ImageLoader配置参数
         ImageLoaderConfiguration configuration = ImageLoaderConfiguration
                 .createDefault(this);
@@ -86,10 +93,12 @@ public class initActivity extends AppCompatActivity {
         //Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(configuration);
         initApp();
+        /***/
+        appData.setWeixinId("yingjj1616");
+        /***/
     }
 
     private void initApp() {
-        getResourcesFromDefault();
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         appData.setDeviceId(tm.getDeviceId());
         deviceId = appData.getDeviceId();
@@ -98,7 +107,9 @@ public class initActivity extends AppCompatActivity {
         userIsVip = false;
         isExUser = false;
         bitmapCut = new BitmapCut();
+        getResourcesFromDefault();
     }
+
 
     private void getResourcesFromDefault() {
 
@@ -130,43 +141,32 @@ public class initActivity extends AppCompatActivity {
             netWorkInfo.show();
         } else {
             //请求各个分类
-            new Thread(new getTabulation()).start();
+            EventBus.getDefault().post(new AfterUrlMessage());
             //验证账号使用情况
-            new Thread(new trackToServer()).start();
+
         }
     }
 
-    /**
-     * 请求验证接口
-     */
-    private static class trackToServer implements Runnable {
-        @Override
-        public void run() {
-            GetServer getServer = new GetServer();
-            getServer.getUrl = "http://115.29.190.54:12345/mLogin.aspx?tel=" + userName + "&password=" + userPwd + "&idfa=" + deviceId;
-            getServer.aesSecret = "C169F435FEA3530E";
-            getServer.getInfoFromServer();
-            String json = getServer.getInfoFromServer();
-            if (json.length() < 10) {
-                //说明账号已经存在异常
-                //通知用户账号异常，登陆已经失效，请重新登陆
-                Message msg = Message.obtain();
-                msg.what = 3;
-                trackOK.sendMessage(msg);
-            }
+    //验证账号使用
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void trackToServer(TestMessage testMessage) {
+        GetServer getServer = new GetServer();
+        getServer.getUrl = "http://115.29.190.54:12345/mLogin.aspx?tel=" + appData.getUserName() + "&password=" + appData.getUserPwd() + "&idfa=" + appData.getDeviceId();
+//        getServer.aesSecret = "C169F435FEA3530E";
+        getServer.aesSecret = "dd358748fcabdda1";
+//        getServer.getInfoFromServer();
+        String json = getServer.getTrachFromServer();
+        if (json.length() < 10) {
+            //账号异常，登陆失效
+            userName = "";
+            userPwd = "";
+            userIsVip = false;
+            appData.setUserName(userName);
+            appData.setUserPwd(userPwd);
+            appData.setUserVip(userIsVip);
         }
     }
 
-    private static Handler trackOK = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 3) {
-                userName = "";
-                userPwd = "";
-                userIsVip = false;
-            }
-        }
-    };
 
     /**
      * 获取当前网络状态
@@ -221,7 +221,9 @@ public class initActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(str);
                     String responseData = jsonObject.optString("responseData");
                     //解密
+                    //getServer.aesSecret = "C169F435FEA3530E";
                     byte[] tempResult = AES.Decrypt(responseData, "dd358748fcabdda1");
+//                    byte[] tempResult = AES.Decrypt(responseData, "C169F435FEA3530E");
                     responseData = new String(tempResult, "UTF-8");
                     if (responseData.length() > 200) {
                         responseData = responseData.split("\\},\\{")[0];
@@ -238,6 +240,7 @@ public class initActivity extends AppCompatActivity {
                     userName = tel;
                     userPwd = password;
                     userIsVip = vip;
+                    EventBus.getDefault().post(new TestMessage("track"));
                 } catch (Exception ex) {
                     appData.setHtmlString("");
                     appData.setUserName("");
@@ -252,124 +255,69 @@ public class initActivity extends AppCompatActivity {
         appData.setSourcePage("INIT");
     }
 
-    //异步请求分类，同时请求图片
-    protected class getTabulation implements Runnable {
-        @Override
-        public void run() {
-            GetServer getServer = new GetServer();
-            getServer.getUrl = "http://www.biezhi360.cn:99/category.aspx?appid=" + appData.getAppid() + "&version=" + appData.getVersion();
-            getServer.aesSecret = "C169F435FEA3530E";
-            String json = getServer.getInfoFromServer();
-            if (json.length() < 100) {
-                //网络请求异常或者其他错误
-                switch (json) {
-                    case "0":
-                        //服务器连接失败
-                        break;
-                    case "1":
-                        //io读写错误
-                        break;
-                    case "2":
-                        //解密错误
-                        break;
-                }
-            } else {
-                //用Gson处理json
-                final Gson gson = new Gson();
-                CateModel cateModel = gson.fromJson(json, CateModel.class);
-                List<CateModel.ContentEntity> contentEntities = cateModel.getContent();
-                for (int i = 0; i < contentEntities.size(); i++) {
-                    CateModel.ContentEntity contentEntity = contentEntities.get(i);
-                    urlList.add(contentEntity.getCover());
-                    cateIdList.add(String.valueOf(contentEntity.getCateId()));
-                    Bitmap loadedImage;
-                    nameList.add(contentEntity.getName());
-                    try {
-                        byte data[] = ImageService.getImage(urlList.get(i));
-                        loadedImage = bitmapCut.setBitmapSize(BitmapFactory.decodeByteArray(data, 0, data.length), screenHeight / 6, screenWidth * 2 / 5);
-                        bitmapList.add(loadedImage);
-                    } catch (Exception e) {
-                        Resources resources = getResources();
-                        loadedImage = BitmapFactory.decodeResource(resources, R.drawable.item_bg);
-                        loadedImage = bitmapCut.setBitmapSize(loadedImage, screenHeight / 6, screenWidth * 2 / 5);
-                        bitmapList.add(loadedImage);
-                    }
-//                    ImageSize imageSize = new ImageSize(screenWidth / 3,screenHeight / 7);
-                    //使用imageloader加载图片
-//                    ImageLoader.getInstance().loadImage(contentEntity.getCover(), new SimpleImageLoadingListener() {
-//
-//                        @Override
-//                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                            super.onLoadingComplete(imageUri, view, loadedImage);
-//                            if (loadedImage == null) {
-//                                Resources resources = getResources();
-//                                loadedImage = BitmapFactory.decodeResource(resources, R.drawable.item_bg);
-//                            }
-//                            loadedImage = bitmapCut.setBitmapSize(loadedImage, screenHeight / 7, screenWidth / 3);
-//                            bitmapList.add(loadedImage);
-//                            urlList.add(contentEntity.getCover());
-//                            cateIdList.add(String.valueOf(contentEntity.getCateId()));
-//                            nameList.add(contentEntity.getName());
-//                        }
-//                    });
-
-
-                }
-                //处理完成通知主线程可以跳转了
-                Message message = Message.obtain();
-                message.what = 1;
-                initNetOK.sendMessage(message);
+    //请求分类信息
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void getTabulation(AfterUrlMessage afterUrlMessage) {
+        GetServer getServer = new GetServer();
+        getServer.getUrl = "http://www.biezhi360.cn:99/category.aspx?appid=" + appData.getAppid() + "&version=" + appData.getVersion();
+        getServer.aesSecret = "C169F435FEA3530E";
+        String json = getServer.getInfoFromServer();
+        if (json.length() < 100) {
+            switch (json) {
+                case "0":
+                    //服务器连接失败
+                    break;
+                case "1":
+                    //io读写错误
+                    break;
+                case "2":
+                    //解密错误
+                    break;
             }
+        } else {
+            Gson gson = new Gson();
+            CateModel cateModel = gson.fromJson(json, CateModel.class);
+            List<CateModel.ContentEntity> contentEntities = cateModel.getContent();
+            for (int i = 0; i < contentEntities.size(); i++) {
+                CateModel.ContentEntity contentEntity = contentEntities.get(i);
+                urlList.add(contentEntity.getCover());
+                cateIdList.add(String.valueOf(contentEntity.getCateId()));
+                Bitmap loadedImage;
+                nameList.add(contentEntity.getName());
+                try {
+                    byte data[] = ImageService.getImage(urlList.get(i));
+                    loadedImage = bitmapCut.setBitmapSize(BitmapFactory.decodeByteArray(data, 0, data.length), screenHeight / 6, screenWidth * 2 / 5);
+                    bitmapList.add(loadedImage);
+                } catch (Exception e) {
+                    Resources resources = getResources();
+                    loadedImage = BitmapFactory.decodeResource(resources, R.drawable.item_bg);
+                    loadedImage = bitmapCut.setBitmapSize(loadedImage, screenHeight / 6, screenWidth * 2 / 5);
+                    bitmapList.add(loadedImage);
+                }
+            }
+            //通知主线程 修改ui
+            EventBus.getDefault().post(new EpisodeMessage(null));
         }
     }
 
-
-    private Handler initNetOK = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-
-//                int width = screenHeight / 7;
-//                int height = screenWidth / 3;
-//                //使用glide加载图片
-//                for (int i = 0; i < nameList.size(); i++) {
-//                    ImageView imageView = new ImageView(initActivity.this);
-//                    Glide.with(initActivity.this)
-//                            .load(urlList.get(i))
-//                            .placeholder(R.drawable.item_bg)
-//                            .into(imageView);
-//                }
-
-//                保存图片到本地
-
-//                for (int i = 0; i < bitmapList.size(); i++) {
-//                    Bitmap tempBit = bitmapList.get(i);
-//                    try {
-//                        saveFile(tempBit, nameList.get(i));
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-                for (int i = 0; i < bitmapList.size(); i++) {
-                    saveImageToGallery(initActivity.this, bitmapList.get(i), nameList.get(i) + ".jpg", "BieZhi");
-                }
-
-                appData.setNameList(nameList);
-                appData.setImageUrlFromInitView(urlList);
-                appData.setCateIdList(cateIdList);
-                appData.setBitmapList(bitmapList);
-                appData.setExUser(isExUser);
-                appData.setUserName(userName);
-                appData.setUserPwd(userPwd);
-                appData.setUserVip(userIsVip);
-
-                startActivity(new Intent(initActivity.this, defaultActivity.class));
-                //销毁页面
-//                onDestroy();
-            }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void initNetOK(EpisodeMessage episodeMessage) {
+        for (int i = 0; i < bitmapList.size(); i++) {
+            saveImageToGallery(initActivity.this, bitmapList.get(i), nameList.get(i) + ".jpg", "BieZhi");
         }
-    };
 
+        appData.setNameList(nameList);
+        appData.setImageUrlFromInitView(urlList);
+        appData.setCateIdList(cateIdList);
+        appData.setBitmapList(bitmapList);
+        appData.setExUser(isExUser);
+        appData.setUserName(userName);
+        appData.setUserPwd(userPwd);
+        appData.setUserVip(userIsVip);
+
+        startActivity(new Intent(initActivity.this, defaultActivity.class));
+        finish();
+    }
 
     /**
      * 保存图片到本地
@@ -451,5 +399,11 @@ public class initActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         MobclickAgent.onPause(this);
+    }
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

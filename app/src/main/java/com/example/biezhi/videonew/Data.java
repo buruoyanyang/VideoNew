@@ -79,6 +79,8 @@ public class Data extends Application {
 
     List<Map<String, String>> videoEpisode = new ArrayList<>();
 
+    String weixinId = "";
+
     boolean exUser = false;
 
     public void setWidth(int _width) {
@@ -319,6 +321,14 @@ public class Data extends Application {
 
     public List<Map<String, String>> getVideoEpisode() {
         return videoEpisode;
+    }
+    public void  setWeixinId(String _weixinId)
+    {
+        weixinId = _weixinId;
+    }
+    public String getWeixinId()
+    {
+        return weixinId;
     }
 
     @Override

@@ -378,7 +378,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
 
     private void initPlayer() {
-        Vitamio.initialize(videoPlay.this);
+//        Vitamio.initialize(videoPlay.this);
         videoView = (VideoView) findViewById(R.id.video_surface);
         videoView.setOnPreparedListener(this);
         videoView.setOnInfoListener(this);

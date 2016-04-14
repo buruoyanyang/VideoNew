@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,8 +30,20 @@ import android.widget.Toast;
 
 
 import com.example.biezhi.videonew.CustomerClass.Constants;
+import com.example.biezhi.videonew.CustomerClass.GetPlayUrl;
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
+import com.example.biezhi.videonew.DataModel.EpisodeModel;
+import com.example.biezhi.videonew.DataModel.VideoInfoModel;
+import com.example.biezhi.videonew.MessageBox.TestMessage;
+import com.example.biezhi.videonew.MessageBox.VideoEpisodeMessage;
+import com.example.biezhi.videonew.MessageBox.VideoSourceMessage;
+import com.example.biezhi.videonew.NetWorkServer.GetServer;
+import com.google.gson.Gson;
 import com.wang.avi.AVLoadingIndicatorView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -164,9 +177,14 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     Data appData;
 
     /**
-     * 屏幕长度
+     * 屏幕的宽
      */
     private int screenWidth;
+
+    /**
+     * 屏幕的高
+     */
+    private int screenHeight;
 
     /**
      * 是否显示control
@@ -188,6 +206,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Vitamio.isInitialized(this);
         setContentView(R.layout.activity_full_screen_play);
 //        SysApplication.getInstance().addActivity(this);
         initClass();
@@ -198,6 +217,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
      * 初始化类
      */
     private void initClass() {
+        EventBus.getDefault().register(this);
         appData = (Data) this.getApplicationContext();
         avloadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.avloadingIndicatorView);
         episodeList = (ListView) findViewById(R.id.episode_list);
@@ -249,6 +269,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                         appData.setSourcePage("FullScreen");
                         appData.setCurrentPosition((int) videoView.getCurrentPosition());
                         startActivity(new Intent(fullScreenPlay.this, videoPlay.class));
+
                     }
                 }
             }
@@ -274,7 +295,8 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         });
         playOrPause.setOnClickListener(this);
         video_seekBar.setOnSeekBarChangeListener(new SeekBarChangeListener());
-        screenWidth = appData.getHeight();
+        screenWidth = appData.getWidth();
+        screenHeight = appData.getHeight();
         isShow = true;
         isLocked = false;
         initList();
@@ -287,15 +309,93 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                 R.layout.episode_item, new String[]{"episodeName"},
                 new int[]{R.id.episode_text}
         );
-        //设置行间距
         episodeList.setAdapter(adapter);
+        episodeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //展示菊花
+                avloadingIndicatorView.setVisibility(View.VISIBLE);
+                String videoId = appData.getVideoEpisode().get(position).get("videoId");
+                String episodeId = appData.getVideoEpisode().get(position).get("episodeId");
+                //请求网络
+                EventBus.getDefault().post(new VideoEpisodeMessage(videoId, episodeId, position + 1));
+            }
+        });
+
+    }
+
+    /**
+     * 获取播放地址
+     * @param videoEpisodeMessage
+     */
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void getPlayUrl(VideoEpisodeMessage videoEpisodeMessage) {
+        if (videoEpisodeMessage.getVideoId() != null) {
+            GetServer getServer = new GetServer();
+            getServer.getUrl = "http://115.29.190.54:99/Video.aspx?videoid=" + videoEpisodeMessage.getVideoId() + "&appid=" + appData.getAppid() + "&version=" + appData.getVersion();
+            getServer.aesSecret = "dd358748fcabdda1";
+            String json = getServer.getInfoFromServer();
+            if (json.length() < 10) {
+                switch (json) {
+                    case "0":
+                        break;
+                    case "1":
+                        break;
+                    case "2":
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                Gson gson = new Gson();
+                VideoInfoModel videoInfoModel = gson.fromJson(json, VideoInfoModel.class);
+                getServer.getUrl = "http://115.29.190.54:99/Episode.aspx?videoid=" + videoEpisodeMessage.getVideoId() + "&siteid=" + videoInfoModel.getContent().get(0).getId() + "&appid=" + appData.getAppid() + "&version=" + appData.getVersion();
+                json = getServer.getInfoFromServer();
+                if (json.length() < 10) {
+                    switch (json) {
+                        case "0":
+                            break;
+                        case "1":
+                            break;
+                        case "2":
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    EpisodeModel episodeModel = gson.fromJson(json, EpisodeModel.class);
+                    GetPlayUrl getPlayUrl = new GetPlayUrl();
+                    getPlayUrl.setValue(episodeModel.getSiteId(), videoEpisodeMessage.getEpisode(), screenWidth, screenHeight);
+                    getPlayUrl.ua = "iPhone";
+                    getPlayUrl.originPlayUrl = episodeModel.getContent().get(videoEpisodeMessage.getEpisode() - 1).getPlayUrl();
+                    getPlayUrl.quality = "normal";
+                    path = getPlayUrl.getUrl();
+                    //通知主线程修改播放器
+                    appData.setVideoName(episodeModel.getContent().get(videoEpisodeMessage.getEpisode() -1).getName());
+                    EventBus.getDefault().post(new TestMessage("URL_OK"));
+                }
+            }
+        }
+    }
+
+    /**
+     * 重新设置播放器，播放
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void playUrlOK(TestMessage testMessage)
+    {
+        if (videoView.isPlaying()) {
+            videoView.stopPlayback();
+        }
+        videoView.setVideoURI(Uri.parse(path));
+        //修改标题
+        video_title.setText(appData.getVideoName());
     }
 
     /**
      * 播放器初始化
      */
     private void initPlayer() {
-        Vitamio.initialize(fullScreenPlay.this);
         videoView = (VideoView) findViewById(R.id.video_fullScreen_view);
         videoView.setVideoLayout(2, 0);
         videoView.setVideoURI(Uri.parse(path));
@@ -335,6 +435,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
             video_title.setVisibility(View.INVISIBLE);
             fullscreen_back.setVisibility(View.INVISIBLE);
             videoSelectTv.setVisibility(View.INVISIBLE);
+            episodeList.setVisibility(View.INVISIBLE);
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                     if (isShow) {
@@ -370,6 +471,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                         fullscreen_back.setVisibility(View.INVISIBLE);
                         video_lockButton.setVisibility(View.INVISIBLE);
                         videoSelectTv.setVisibility(View.INVISIBLE);
+                        episodeList.setVisibility(View.INVISIBLE);
                         isShow = !isShow;
                     }
                     break;
@@ -441,6 +543,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         try {
             if (null != this.videoView) {
                 //提前标志为false,防止视频停止时，线程仍旧在运行
@@ -612,6 +715,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         //隐藏按钮和标题
         fullscreen_back.setVisibility(View.INVISIBLE);
         video_title.setVisibility(View.INVISIBLE);
+        videoSelectTv.setVisibility(View.INVISIBLE);
         video_seekBar.setMax((int) videoView.getDuration());
         video_seekBar.setProgress(currentTime);
         videoView.seekTo(currentTime);
