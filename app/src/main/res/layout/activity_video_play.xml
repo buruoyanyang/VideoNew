@@ -40,7 +40,9 @@
                     android:layout_centerVertical="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/video_play"
-                    android:id="@+id/video_playOrPause"/>
+                    android:id="@+id/video_playOrPause"
+                    android:paddingTop="13dp"
+                    android:paddingLeft="13dp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,14 +51,26 @@
                     android:layout_centerVertical="true"
                     android:id="@+id/video_currentTime"
                     android:layout_toRightOf="@+id/video_playOrPause"
-                    android:textColor="@color/cube_mints_white"/>
+                    android:textColor="@color/cube_mints_white"
+                    android:paddingTop="13dp"
+                    android:paddingLeft="13dp"/>
                 <SeekBar
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     style="@style/MediaController_SeekBar"
                     android:layout_toRightOf="@+id/video_currentTime"
                     android:id="@+id/video_seekBar"
-                    android:layout_toLeftOf="@+id/video_totalTime"/>
+                    android:layout_toLeftOf="@+id/video_totalTime"
+                    android:maxHeight="13dp"
+                    android:minHeight="13dp"
+                    android:paddingTop="13dp"/>
+                <!--<com.rey.material.widget.Slider-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--style="@style/Material.Widget.Slider"-->
+                    <!--android:layout_toRightOf="@+id/video_currentTime"-->
+                    <!--android:id="@+id/video_seekBar"-->
+                    <!--android:layout_toLeftOf="@+id/video_totalTime"/>-->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -65,7 +79,8 @@
                     android:id="@+id/video_totalTime"
                     android:layout_centerVertical="true"
                     android:textColor="@color/cube_mints_white"
-                    android:layout_toLeftOf="@+id/fullscreen_button"/>
+                    android:layout_toLeftOf="@+id/fullscreen_button"
+                    android:paddingTop="13dp"/>
                 <ImageButton
                     android:layout_width="35dp"
                     android:layout_height="35dp"
@@ -75,7 +90,9 @@
                     android:id="@+id/fullscreen_button"
                     android:src="@drawable/full_screen"
                     android:scaleType="fitXY"
-                    android:alpha="0.7"/>
+                    android:alpha="0.7"
+                    android:paddingTop="13dp"
+                    android:paddingLeft="13dp"/>
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
