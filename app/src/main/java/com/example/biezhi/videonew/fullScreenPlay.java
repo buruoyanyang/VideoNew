@@ -2,6 +2,7 @@ package com.example.biezhi.videonew;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.AudioManager;
@@ -283,11 +284,13 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                     video_control.setVisibility(View.INVISIBLE);
                     fullscreen_back.setVisibility(View.INVISIBLE);
                     video_title.setVisibility(View.INVISIBLE);
+                    videoSelectTv.setVisibility(View.INVISIBLE);
                 } else {
                     video_lockButton.setImageResource(R.drawable.unlock);
                     video_title.setVisibility(View.VISIBLE);
                     video_control.setVisibility(View.VISIBLE);
                     fullscreen_back.setVisibility(View.VISIBLE);
+                    videoSelectTv.setVisibility(View.VISIBLE);
                 }
                 isLocked = !isLocked;
 
@@ -457,7 +460,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                     break;
                 case MotionEvent.ACTION_DOWN:
                     //显示或者不显示标题
-                    Log.e("123", "123");
+//                    Log.e("123", "123");
                     if (isShow) {
                         video_title.setVisibility(View.VISIBLE);
                         video_control.setVisibility(View.VISIBLE);
@@ -945,5 +948,21 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         }
         return false;
     }
+    @Override
+    protected void attachBaseContext(Context newBase)
+    {
+        super.attachBaseContext(new ContextWrapper(newBase)
+        {
+            @Override
+            public Object getSystemService(String name)
+            {
+                if (Context.AUDIO_SERVICE.equals(name))
+                    return getApplicationContext().getSystemService(name);
+
+                return super.getSystemService(name);
+            }
+        });
+    }
+
 
 }

@@ -262,6 +262,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         bitmapResize = new BitmapResize();
         videoSourceTv = (TextView) findViewById(R.id.video_sourceLabel);
         videoDownloadBt = (ImageButton) findViewById(R.id.video_download);
+        videoDownloadBt.setVisibility(View.INVISIBLE);
         videoFavoriteBt = (ImageButton) findViewById(R.id.video_favorate);
         videoSourceRl = (RelativeLayout) findViewById(R.id.video_source);
         sourceButtonsId = new int[]{R.id.source_1, R.id.source_2, R.id.source_3, R.id.source_4, R.id.source_5};
@@ -479,7 +480,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         mProgressBar.setVisibility(View.VISIBLE);
         //是否显示下载按钮
         if (canDownload) {
-            videoDownloadBt.setVisibility(View.VISIBLE);
+            videoDownloadBt.setVisibility(View.INVISIBLE);
         } else {
             videoDownloadBt.setVisibility(View.INVISIBLE);
         }
@@ -832,13 +833,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     }
 
-    private void episodeButtonClicked() {
-
-    }
-
-    private void videoCommentButtonClicked() {
-
-    }
 
     private void gotoFullScreen() {
 
@@ -871,6 +865,10 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     }
 
     private List<HashMap<String, Object>> getData() {
+        //先清除
+        vipArray.clear();
+        episodeNameArray.clear();
+        episodeNumArray.clear();
         ArrayList<HashMap<String, Object>> list = new ArrayList<>();
         for (int i = 0; i < episodeContent.size(); i++) {
             if (episodeContent.get(i).isVIP()) {

@@ -296,7 +296,7 @@ public class downloadActivity extends AppCompatActivity {
                             Log.e("已完成","跳转播放链接");
                             Log.e("播放地址",downloadInfo.getFileSavePath());
                             appData.setVideoVip(false);
-                            appData.setPlayUrl(downloadInfo.getFileSavePath());
+                            appData.setPlayUrl(downloadInfo.getFileSavePath()+"/"+downloadInfo.getLabel());
                             appData.setCurrentPosition(0);
                             appData.setVideoName(label.getText().toString());
                             appData.setSourcePage("Download");

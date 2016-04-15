@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:id="@+id/download_episodeList"
         android:layout_above="@+id/download_okButton"
-        android:background="@drawable/download_item">
+        android:background="@color/md_grey_200">
     </ListView>
     <Button
         android:layout_width="match_parent"

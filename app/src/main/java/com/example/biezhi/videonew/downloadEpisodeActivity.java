@@ -84,6 +84,12 @@ public class downloadEpisodeActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void getDownloadUrl(TestMessage testMessage) {
+        episodeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(downloadEpisodeActivity.this.getApplication(),"正在解析下载地址，请稍等",Toast.LENGTH_LONG).show();
+            }
+        });
         GetPlayUrl getPlayUrl = new GetPlayUrl();
         for (int i = 0; i < pathList.size(); i++) {
             getPlayUrl.setValue(siteId, i + 1, appData.getWidth(), appData.getHeight());
@@ -102,9 +108,8 @@ public class downloadEpisodeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    DownloadManager.getInstance().startDownload(downloadUrlList.get(position), nameList.get(position), appDir.getAbsolutePath(), true, false, null);
+                    DownloadManager.getInstance().startDownload(downloadUrlList.get(position), nameList.get(position) + ".mp4", appDir.getAbsolutePath(), true, false, null);
                     episodeList.setSelection(position);
-
                     Toast.makeText(downloadEpisodeActivity.this.getApplication(), "添加下载成功！", Toast.LENGTH_SHORT).show();
                 } catch (DbException ex) {
                     //添加下载失败
