@@ -2,6 +2,34 @@
 <items version="2" >
 
     <item
+        jar="/Users/xiaofeng/.gradle/caches/modules-2/files-2.1/com.squareup.leakcanary/leakcanary-watcher/1.4-beta2/6a920fb0d14e5e3b36e37cf33b1eeef2bcce4c92/leakcanary-watcher-1.4-beta2.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="6a920fb0d14e5e3b36e37cf33b1eeef2bcce4c92">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/leakcanary-watcher-1.4-beta2-fe68171edec094cf0c3fb27af6e0607f6d1754a3.jar" />
+    </item>
+    <item
+        jar="/Users/xiaofeng/.gradle/caches/modules-2/files-2.1/com.squareup.leakcanary/leakcanary-analyzer/1.4-beta2/449777cd466ac0a16f7e8d0dc508e70e2cdd13a9/leakcanary-analyzer-1.4-beta2.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="449777cd466ac0a16f7e8d0dc508e70e2cdd13a9">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/leakcanary-analyzer-1.4-beta2-4309a17dd766e8690e31f9339b66ba2b092ff0aa.jar" />
+    </item>
+    <item
+        jar="/Users/xiaofeng/.gradle/caches/modules-2/files-2.1/com.squareup.haha/haha/2.0.2/fd65b84d12d6adc77ec0e4fcaca623fc391d8679/haha-2.0.2.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="fd65b84d12d6adc77ec0e4fcaca623fc391d8679">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/haha-2.0.2-3e9de8e457a7094ba2b8d21d991fc57e52f758c0.jar" />
+    </item>
+    <item
+        jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/com.squareup.leakcanary/leakcanary-android/1.4-beta2/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="9c8472f8e10502af60d0f63ea11eed68bdf690c2">
+        <dex dex="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/pre-dexed/debug/classes-dd8adfa1e915e32897b5924ed6b784f7dce36a71.jar" />
+    </item>
+    <item
         jar="/Users/xiaofeng/Desktop/VideoNew/app/build/intermediates/exploded-aar/VideoNew/vitamio/unspecified/jars/classes.jar"
         jumboMode="false"
         revision="23.0.2"

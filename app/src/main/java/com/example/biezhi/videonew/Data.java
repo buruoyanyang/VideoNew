@@ -1,8 +1,12 @@
 package com.example.biezhi.videonew;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 
+
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import org.xutils.x;
 
@@ -335,6 +339,12 @@ public class Data extends Application {
     public void onCreate() {
         super.onCreate();
         x.Ext.init(this);
+        mRefWatcher = LeakCanary.install(this);
+    }
+    private RefWatcher mRefWatcher;
+    public static RefWatcher getRefWatcher(Context context) {
+        Data application = (Data) context.getApplicationContext();
+        return application.mRefWatcher;
     }
 
 }

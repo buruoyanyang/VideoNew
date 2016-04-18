@@ -43,6 +43,8 @@ import com.example.biezhi.videonew.MessageBox.VideoSourceMessage;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 import com.rey.material.widget.TabPageIndicator;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -243,6 +245,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         Vitamio.isInitialized(this.getApplication());
         setContentView(R.layout.activity_video_play);
         SysApplication.getInstance().addActivity(this);
@@ -549,6 +553,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     }
 
 
+
+
     private class SeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
 
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -617,12 +623,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         if (v == videoFavoriteBt) {
             addToFavorite();
         }
-//        if (v == videoEpisodeButton) {
-//            episodeButtonClicked();
-//        }
-//        if (v == videoCommentButton) {
-//            videoCommentButtonClicked();
-//        }
         if (v == fullScreenButton) {
             gotoFullScreen();
         }
@@ -767,6 +767,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         }
         seekBarAutoFlag = false;
         setContentView(R.layout.view_null);
+        RefWatcher refWatcher = Data.getRefWatcher(this);
+        refWatcher.watch(this);
     }
 
     private void backToCateList() {
