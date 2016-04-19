@@ -61,7 +61,7 @@ public class cateList extends AppCompatActivity {
     private void initClass() {
         appData = (Data) this.getApplicationContext();
         SysApplication.getInstance().addActivity(this);
-        bitmapList = appData.getBitmapList();
+//        bitmapList = appData.getBitmapList();
         nameList = appData.getNameList();
         width = appData.getWidth();
         height = appData.getHeight();

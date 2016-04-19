@@ -35,6 +35,8 @@ import com.example.biezhi.videonew.CustomerClass.GetPlayUrl;
 import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.EpisodeModel;
 import com.example.biezhi.videonew.DataModel.VideoInfoModel;
+import com.example.biezhi.videonew.MessageBox.SeekBarChangeMessage;
+import com.example.biezhi.videonew.MessageBox.SeekBarChangedMessage;
 import com.example.biezhi.videonew.MessageBox.TestMessage;
 import com.example.biezhi.videonew.MessageBox.VideoEpisodeMessage;
 import com.example.biezhi.videonew.MessageBox.VideoSourceMessage;
@@ -329,6 +331,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
 
     /**
      * 获取播放地址
+     *
      * @param videoEpisodeMessage
      */
     @Subscribe(threadMode = ThreadMode.ASYNC)
@@ -374,7 +377,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
                     getPlayUrl.quality = "normal";
                     path = getPlayUrl.getUrl();
                     //通知主线程修改播放器
-                    appData.setVideoName(episodeModel.getContent().get(videoEpisodeMessage.getEpisode() -1).getName());
+                    appData.setVideoName(episodeModel.getContent().get(videoEpisodeMessage.getEpisode() - 1).getName());
                     EventBus.getDefault().post(new TestMessage("URL_OK"));
                 }
             }
@@ -385,8 +388,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
      * 重新设置播放器，播放
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void playUrlOK(TestMessage testMessage)
-    {
+    public void playUrlOK(TestMessage testMessage) {
         if (videoView.isPlaying()) {
             videoView.stopPlayback();
         }
@@ -565,32 +567,61 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
 
     }
 
+
     /**
      * 滑动条变化线程
      */
-    private Runnable changeSeekBar = new Runnable() {
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            // 增加对异常的捕获，防止在判断mediaPlayer.isPlaying的时候，报IllegalStateException异常
-            try {
-                while (seekBarAutoFlag) {
-                    /*
-                     * mediaPlayer不为空且处于正在播放状态时，使进度条滚动。
-                     * 通过指定类名的方式判断mediaPlayer防止状态发生不一致
-                     */
-
-                    if (null != fullScreenPlay.this.videoView
-                            && fullScreenPlay.this.videoView.isPlaying()) {
-//                        videoSeekBar.setProgress(mediaPlayer.getCurrentPosition());
-                        video_seekBar.setProgress((int) videoView.getCurrentPosition());
-                    }
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void changeSeekBarMessage(SeekBarChangeMessage seek) {
+        while (seekBarAutoFlag) {
+            if (this.videoView != null && this.videoView.isPlaying()) {
+//                video_seekBar.setProgress((int) videoView.getCurrentPosition());
+                //发送一个消息
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception ex) {
+                } finally {
+                    EventBus.getDefault().post(new SeekBarChangedMessage());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+//                EventBus.getDefault().post(new SeekBarChangedMessage());
+
             }
         }
-    };
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void changSeekBar(SeekBarChangedMessage seek) {
+        video_seekBar.setProgress((int) videoView.getCurrentPosition());
+    }
+
+
+//    /**
+//     * 滑动条变化线程
+//     */
+//    private Runnable changeSeekBar = new Runnable() {
+//        @Override
+//        public void run() {
+//            // TODO Auto-generated method stub
+//            // 增加对异常的捕获，防止在判断mediaPlayer.isPlaying的时候，报IllegalStateException异常
+//            try {
+//                while (seekBarAutoFlag) {
+//                    /*
+//                     * mediaPlayer不为空且处于正在播放状态时，使进度条滚动。
+//                     * 通过指定类名的方式判断mediaPlayer防止状态发生不一致
+//                     */
+//
+//                    if (null != fullScreenPlay.this.videoView
+//                            && fullScreenPlay.this.videoView.isPlaying()) {
+////                        videoSeekBar.setProgress(mediaPlayer.getCurrentPosition());
+//                        video_seekBar.setProgress((int) videoView.getCurrentPosition());
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    };
 
     /**
      * 控件点击事件
@@ -722,7 +753,7 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         video_seekBar.setMax((int) videoView.getDuration());
         video_seekBar.setProgress(currentTime);
         videoView.seekTo(currentTime);
-        new Thread(changeSeekBar).start();
+        EventBus.getDefault().post(new SeekBarChangeMessage());
         videoView.start();
     }
 
@@ -948,14 +979,12 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
         }
         return false;
     }
+
     @Override
-    protected void attachBaseContext(Context newBase)
-    {
-        super.attachBaseContext(new ContextWrapper(newBase)
-        {
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(new ContextWrapper(newBase) {
             @Override
-            public Object getSystemService(String name)
-            {
+            public Object getSystemService(String name) {
                 if (Context.AUDIO_SERVICE.equals(name))
                     return getApplicationContext().getSystemService(name);
 

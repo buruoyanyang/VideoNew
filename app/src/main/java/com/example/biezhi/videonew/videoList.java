@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.SparseArray;
@@ -23,11 +21,17 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.biezhi.videonew.CustomerClass.BitmapCut;
 import com.example.biezhi.videonew.CustomerClass.BitmapResize;
-import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.SearchModel;
 import com.example.biezhi.videonew.DataModel.VideoModel;
+import com.example.biezhi.videonew.MessageBox.AfterUrlMessage;
+import com.example.biezhi.videonew.MessageBox.PlayUrlMessage;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,8 +62,8 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
     List<SearchModel.ContentEntity> searchContentEntityList;
     Boolean has_next;
     BitmapCut bitmapCut;
-    static int screenWidth;
-    static int screenHeight;
+    int screenWidth;
+    int screenHeight;
     PtrClassicFrameLayout ptrFrame;
     GridViewWithHeaderAndFooter mGridView;
     LoadMoreGridViewContainer loadMoreContainer;
@@ -76,13 +80,13 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_list);
+        EventBus.getDefault().register(this);
         initClass();
         initVideo();
     }
 
     private void initClass() {
         appData = (Data) this.getApplicationContext();
-        SysApplication.getInstance().addActivity(this);
         inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mGridView = (GridViewWithHeaderAndFooter) findViewById(R.id.load_more_grid_view);
         titleText = (TextView) findViewById(R.id.title_appName);
@@ -116,7 +120,8 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
                         //异步请求网络
                         isLoadMore = false;
                         currentPageNum = 1;
-                        new Thread(new getVideoList()).start();
+//                        new Thread(new getVideoList()).start();
+                        EventBus.getDefault().post(new PlayUrlMessage());
                     }
                 }, 1000);
             }
@@ -135,7 +140,8 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
                 //处理加载更多函数
                 isLoadMore = true;
                 currentPageNum++;
-                new Thread(new getVideoList()).start();
+//                new Thread(new getVideoList()).start();
+                EventBus.getDefault().post(new PlayUrlMessage());
             }
         });
 //        defaultAdapter gridViewAdapter = new defaultAdapter();
@@ -146,7 +152,8 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
         //todo 请求数据，加载图片
         //http://115.29.190.54:99/Videos.aspx?page=0&cat=26&size=30&order=2&district=0&kind=0&appid=74&version=1.0
         //dd358748fcabdda1
-        new Thread(new getVideoList()).start();
+//        new Thread(new getVideoList()).start();
+        EventBus.getDefault().post(new PlayUrlMessage());
     }
 
     @Override
@@ -165,92 +172,89 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
         if (mGridView.getAdapter() != null) {
             mGridView.setAdapter(null);
         }
+        EventBus.getDefault().unregister(this);
     }
 
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void getVideoList(PlayUrlMessage playUrlMessage)
+    {
+        GetServer getServer = new GetServer();
+        if (appData.sourcePage == "Search") {
+            getServer.getUrl = "http://115.29.190.54:99/search.aspx?keyword=" + appData.getSearchVideo()
+                    + "&page=" + currentPageNum + "&size=" + defaultPageSize + "&appid=" + defaultAppid + "&version=" + defaultVersion;
+        } else {
+            getServer.getUrl = "http://www.biezhi360.cn:99/Videos.aspx?page=" + currentPageNum + "&cat=" +
+                    appData.getClickedCateId() + "&size=" + defaultPageSize + "&order=" + defaultOrder +
+                    "&district=" + defaultDistrict + "&kind=" + defaultKind + "&appid=" + defaultAppid + "&version=" + defaultVersion;
+        }
+        getServer.aesSecret = "dd358748fcabdda1";
+        String json = getServer.getInfoFromServer();
+        if (json.length() < 10) {
+            //网络请求异常或者其他错误
+            switch (json) {
+                case "0":
+                    //服务器连接失败
+                    break;
+                case "1":
+                    //io读写错误
+                    break;
+                case "2":
+                    //解密错误
+                    break;
+                default:
+                    break;
+            }
 
-    protected class getVideoList implements Runnable {
-        @Override
-        public void run() {
-            GetServer getServer = new GetServer();
+        } else {
+            final Gson gson = new Gson();
             if (appData.sourcePage == "Search") {
-                getServer.getUrl = "http://115.29.190.54:99/search.aspx?keyword=" + appData.getSearchVideo()
-                        + "&page=" + currentPageNum + "&size=" + defaultPageSize + "&appid=" + defaultAppid + "&version=" + defaultVersion;
-            } else {
-                getServer.getUrl = "http://www.biezhi360.cn:99/Videos.aspx?page=" + currentPageNum + "&cat=" +
-                        appData.getClickedCateId() + "&size=" + defaultPageSize + "&order=" + defaultOrder +
-                        "&district=" + defaultDistrict + "&kind=" + defaultKind + "&appid=" + defaultAppid + "&version=" + defaultVersion;
-            }
-            getServer.aesSecret = "dd358748fcabdda1";
-            String json = getServer.getInfoFromServer();
-            if (json.length() < 10) {
-                //网络请求异常或者其他错误
-                switch (json) {
-                    case "0":
-                        //服务器连接失败
-                        break;
-                    case "1":
-                        //io读写错误
-                        break;
-                    case "2":
-                        //解密错误
-                        break;
-                    default:
-                        break;
-                }
-
-            } else {
-                final Gson gson = new Gson();
-                if (appData.sourcePage == "Search") {
-                    SearchModel searchModel = gson.fromJson(json, SearchModel.class);
-                    if (isLoadMore) {
-                        searchContentEntityList.addAll(searchModel.getContent());
-                    } else {
-                        searchContentEntityList = searchModel.getContent();
-                    }
-                    has_next = Boolean.valueOf(searchModel.getHas_next());
+                SearchModel searchModel = gson.fromJson(json, SearchModel.class);
+                if (isLoadMore) {
+                    searchContentEntityList.addAll(searchModel.getContent());
                 } else {
-                    VideoModel videoModel = gson.fromJson(json, VideoModel.class);
-                    //获取所有的list
-                    if (isLoadMore) {
-                        channelsEntityList.addAll(videoModel.getChannels());
-                        contentEntityList.addAll(videoModel.getContent());
-                    } else {
-                        channelsEntityList = videoModel.getChannels();
-                        contentEntityList = videoModel.getContent();
-                    }
-                    has_next = Boolean.valueOf(videoModel.getHas_next());
+                    searchContentEntityList = searchModel.getContent();
                 }
-                Message message = Message.obtain();
-                message.what = 1;
-                //通知准备修改ui
-                getListOk.sendMessage(message);
+                has_next = Boolean.valueOf(searchModel.getHas_next());
+            } else {
+                VideoModel videoModel = gson.fromJson(json, VideoModel.class);
+                //获取所有的list
+                if (isLoadMore) {
+                    channelsEntityList.addAll(videoModel.getChannels());
+                    contentEntityList.addAll(videoModel.getContent());
+                } else {
+                    channelsEntityList = videoModel.getChannels();
+                    contentEntityList = videoModel.getContent();
+                }
+                has_next = Boolean.valueOf(videoModel.getHas_next());
             }
+//            Message message = Message.obtain();
+//            message.what = 1;
+//            //通知准备修改ui
+//            getListOk.sendMessage(message);
+
         }
+        EventBus.getDefault().post(new AfterUrlMessage());
     }
 
 
-    private Handler getListOk = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                //想将所有的video加上默认的背景
-                //准备异步加载图片
-                final GridViewAdapter gridViewAdapter = new GridViewAdapter();
-                mGridView.setAdapter(gridViewAdapter);
-                //先将所有的名字和页面加载出来，然后在来加载videoBitmap 解决
-                //然后重新异步加载所有的图片 解决
-                //添加菊花动画 解决
-                // TODO: 16/3/2 图片错位 解决
-                ptrFrame.refreshComplete();
-                loadMoreContainer.loadMoreFinish(false, has_next);
-                if (isLoadMore) {
-                    mGridView.setSelection((currentPageNum - 1) * 30 - 3);
-                } else {
-                    mGridView.setSelection(0);
-                }
-            }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getListOK(AfterUrlMessage afterUrlMessage)
+    {
+        final GridViewAdapter gridViewAdapter = new GridViewAdapter();
+        mGridView.setAdapter(gridViewAdapter);
+        //先将所有的名字和页面加载出来，然后在来加载videoBitmap 解决
+        //然后重新异步加载所有的图片 解决
+        //添加菊花动画 解决
+        // TODO: 16/3/2 图片错位 已经解决
+        ptrFrame.refreshComplete();
+        loadMoreContainer.loadMoreFinish(false, has_next);
+        if (isLoadMore) {
+            mGridView.setSelection((currentPageNum - 1) * 30 - 3);
+        } else {
+            mGridView.setSelection(0);
         }
-    };
+    }
+
 
     private class GridViewAdapter extends BaseAdapter {
         @Override

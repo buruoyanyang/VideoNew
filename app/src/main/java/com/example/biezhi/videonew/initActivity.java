@@ -302,19 +302,18 @@ public class initActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void initNetOK(EpisodeMessage episodeMessage) {
+        List<String> list = new ArrayList<>();
         for (int i = 0; i < bitmapList.size(); i++) {
-            saveImageToGallery(initActivity.this, bitmapList.get(i), nameList.get(i) + ".jpg", "BieZhi");
+            list.add(saveImageToGallery(initActivity.this, bitmapList.get(i), nameList.get(i) + ".jpg", "BieZhi") + "/"+nameList.get(i) + ".jpg");
         }
-
         appData.setNameList(nameList);
-        appData.setImageUrlFromInitView(urlList);
+        appData.setImageUrlFromInitView(list);
         appData.setCateIdList(cateIdList);
         appData.setBitmapList(bitmapList);
         appData.setExUser(isExUser);
         appData.setUserName(userName);
         appData.setUserPwd(userPwd);
         appData.setUserVip(userIsVip);
-
         startActivity(new Intent(initActivity.this, defaultActivity.class));
         finish();
     }
@@ -326,32 +325,35 @@ public class initActivity extends AppCompatActivity {
      * @param bmp      被保存图片
      * @param fileName 文件名
      */
-    public static void saveImageToGallery(Context context, Bitmap bmp, String fileName, String dirName) {
+    public static String saveImageToGallery(Context context, Bitmap bmp, String fileName, String dirName) {
+        //只有在图片不存在的情况下才将图片写入本地
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), dirName);
         String path = appDir.getAbsolutePath();
         if (!appDir.exists()) {
             appDir.mkdir();
         }
-
         File file = new File(appDir, fileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // 其次把文件插入到系统图库
-        try {
-            MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                    file.getAbsolutePath(), fileName, null);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (!file.exists()) {
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // 其次把文件插入到系统图库
+            try {
+                MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                        file.getAbsolutePath(), fileName, null);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         // 最后通知图库更新
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
+        return path;
     }
 
     @Override
@@ -400,9 +402,9 @@ public class initActivity extends AppCompatActivity {
         super.onPause();
         MobclickAgent.onPause(this);
     }
+
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }

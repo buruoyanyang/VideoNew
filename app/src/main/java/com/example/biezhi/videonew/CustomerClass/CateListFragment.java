@@ -3,6 +3,8 @@ package com.example.biezhi.videonew.CustomerClass;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
 import com.example.biezhi.videonew.Data;
 import com.example.biezhi.videonew.R;
 import com.example.biezhi.videonew.videoList;
@@ -47,8 +50,13 @@ public class CateListFragment extends Fragment {
     List<String> cateIdList = new ArrayList<>();
 
     List<String> urlList = new ArrayList<>();
+
     Context superContext;
     private LayoutInflater inflater;
+    int screenHeight;
+    int screenWidth;
+    BitmapDrawable holdBD;
+    Bitmap holdBM;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,13 +88,18 @@ public class CateListFragment extends Fragment {
 //                e.printStackTrace();
 //            }
 //        }
+//        bitmapPath = appData.getImageUrlFromInitView();
         bitmapList = appData.getBitmapList();
+        screenHeight = appData.getHeight();
+        screenWidth = appData.getWidth();
         cateIdList = appData.getCateIdList();
         nameList = appData.getNameList();
         urlList = appData.getImageUrlFromInitView();
         width = appData.getWidth();
         height = appData.getHeight();
         sourcePage = appData.getSourcePage();
+        holdBM = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.item_bg), screenHeight / 6, screenWidth * 2 / 5, false);
+        holdBD = new BitmapDrawable(holdBM);
         inflater = (LayoutInflater) superContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         gridView = (GridView) contextView.findViewById(R.id.cate_list);
 
@@ -106,12 +119,12 @@ public class CateListFragment extends Fragment {
     private class GridViewAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return bitmapList.size();
+            return urlList.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return bitmapList.get(position);
+            return urlList.get(position);
         }
 
         @Override
@@ -133,6 +146,17 @@ public class CateListFragment extends Fragment {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+            /****/
+//            Glide.with(superContext)
+//                    .load(urlList.get(position))
+//                    .override(screenHeight / 6, screenWidth * 2 / 5)
+//                    .centerCrop()
+//                    .placeholder(holdBD)
+//                    .crossFade(100)
+//                    .error(holdBD)
+//                    .into(holder.imageView);
+            /****/
+
             holder.imageView.setImageBitmap(bitmapList.get(position));
             holder.textView.setText(nameList.get(position));
 //            holder.progressBar.setVisibility(View.INVISIBLE);

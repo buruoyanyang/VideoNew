@@ -63,7 +63,7 @@ public class defaultActivity extends FragmentActivity {
     private ImageButton downloadButton;
     private ImageButton cacheButton;
     private ImageButton searchButton;
-    Data appData;
+   Data appData;
     private static String deviceId = "";
 
     @Override
@@ -145,7 +145,6 @@ public class defaultActivity extends FragmentActivity {
             file.delete();
 
     }
-
     private String saveInfoToGallery(String fileName, String dirName, String writeFile) {
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), dirName);

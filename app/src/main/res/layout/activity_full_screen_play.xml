@@ -56,13 +56,15 @@
         android:layout_alignParentBottom="true"
         android:id="@+id/video_control">
         <ImageButton
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="#00000000"
             android:layout_centerVertical="true"
             android:scaleType="fitXY"
             android:src="@drawable/video_play"
-            android:id="@+id/video_playOrPause"/>
+            android:id="@+id/video_playOrPause"
+            android:paddingTop="13dp"
+            android:paddingLeft="13dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,13 +72,17 @@
             android:textSize="15dp"
             android:layout_centerVertical="true"
             android:id="@+id/video_currentTime"
-            android:layout_toRightOf="@+id/video_playOrPause"/>
+            android:layout_toRightOf="@+id/video_playOrPause"
+            android:paddingTop="13dp"/>
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="50dp"
             style="@style/MediaController_SeekBar"
             android:layout_toRightOf="@+id/video_currentTime"
             android:id="@+id/video_seekBar"
+            android:maxHeight="13dp"
+            android:minHeight="13dp"
+            android:paddingTop="13dp"
             android:layout_toLeftOf="@+id/video_totalTime"/>
         <TextView
             android:layout_width="wrap_content"
@@ -85,7 +91,8 @@
             android:textSize="15dp"
             android:id="@+id/video_totalTime"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            android:paddingTop="13dp"/>
     </RelativeLayout>
     <FrameLayout android:id="@+id/operation_volume_brightness"
         android:visibility="invisible" android:layout_centerInParent="true"
