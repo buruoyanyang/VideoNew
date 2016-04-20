@@ -32,14 +32,12 @@ import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.Constants;
 import com.example.biezhi.videonew.CustomerClass.GetPlayUrl;
-import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.EpisodeModel;
 import com.example.biezhi.videonew.DataModel.VideoInfoModel;
 import com.example.biezhi.videonew.MessageBox.SeekBarChangeMessage;
 import com.example.biezhi.videonew.MessageBox.SeekBarChangedMessage;
 import com.example.biezhi.videonew.MessageBox.TestMessage;
 import com.example.biezhi.videonew.MessageBox.VideoEpisodeMessage;
-import com.example.biezhi.videonew.MessageBox.VideoSourceMessage;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -48,9 +46,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -205,6 +201,15 @@ public class fullScreenPlay extends Activity implements MediaPlayer.OnInfoListen
     private boolean isLocked = false;
 
     private boolean isShowEpisode = false;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (appData.getExsit()) {
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

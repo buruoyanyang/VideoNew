@@ -28,6 +28,15 @@ public class loginActivity extends AppCompatActivity {
     private ImageButton backButton;
     Data appData;
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (appData.getExsit()) {
+            finish();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

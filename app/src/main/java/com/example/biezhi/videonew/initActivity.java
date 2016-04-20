@@ -36,9 +36,6 @@ import com.example.biezhi.videonew.MessageBox.EpisodeMessage;
 import com.example.biezhi.videonew.MessageBox.TestMessage;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import com.umeng.analytics.MobclickAgent;
 
 
@@ -83,17 +80,11 @@ public class initActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
-        SysApplication.getInstance().addActivity(this);
         appData = (Data) this.getApplicationContext();
         EventBus.getDefault().register(this);
-        //创建默认的ImageLoader配置参数
-        ImageLoaderConfiguration configuration = ImageLoaderConfiguration
-                .createDefault(this);
-
-        //Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(configuration);
         initApp();
         /***/
+        //todo 获取服务的微信号
         appData.setWeixinId("yingjj1616");
         /***/
     }
@@ -117,7 +108,6 @@ public class initActivity extends AppCompatActivity {
         getSdCard();
         //todo 判断保存的账号密码是否有限
         //请求验证接口
-
         //获取屏幕大小
         if (Integer.valueOf(android.os.Build.VERSION.SDK) > 13) {
             Display display = getWindowManager().getDefaultDisplay();
@@ -180,7 +170,7 @@ public class initActivity extends AppCompatActivity {
         NetworkInfo.State wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
         if (mobile == NetworkInfo.State.CONNECTED && wifi == NetworkInfo.State.DISCONNECTED) {
             netInfo = true;
-            Toast.makeText(this, "当前是3G/4G网络，请注意流量哦o(>﹏<)o", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "当前是3G/4G网络，请注意流量哦", Toast.LENGTH_SHORT).show();
         } else netInfo = wifi == NetworkInfo.State.CONNECTED;
         return netInfo;
     }
@@ -361,9 +351,8 @@ public class initActivity extends AppCompatActivity {
         if (KeyCode == KeyEvent.KEYCODE_BACK) {
             if (isFirst) {
                 isFirst = false;
-                Toast.makeText(this, "再按一次返回就退出了哟o(>﹏<)o", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "再按一次返回就退出了哟", Toast.LENGTH_SHORT).show();
             } else {
-                SysApplication.getInstance().exit();
             }
         } else {
             isFirst = true;
@@ -373,19 +362,15 @@ public class initActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_init, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }

@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.widget.DrawerLayout;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -63,8 +64,16 @@ public class defaultActivity extends FragmentActivity {
     private ImageButton downloadButton;
     private ImageButton cacheButton;
     private ImageButton searchButton;
-   Data appData;
+    Data appData;
     private static String deviceId = "";
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (appData.getExsit()) {
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +154,7 @@ public class defaultActivity extends FragmentActivity {
             file.delete();
 
     }
+
     private String saveInfoToGallery(String fileName, String dirName, String writeFile) {
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), dirName);
@@ -290,6 +300,25 @@ public class defaultActivity extends FragmentActivity {
         public int getCount() {
             return TITLE.length;
         }
+    }
+
+    boolean isFirst = true;
+
+    @Override
+    public boolean onKeyDown(int KeyCode, KeyEvent event) {
+        if (KeyCode == KeyEvent.KEYCODE_BACK) {
+            if (isFirst) {
+                isFirst = false;
+                Toast.makeText(this, "再按一次返回就退出了哟", Toast.LENGTH_SHORT).show();
+            } else {
+                appData.setExsit(true);
+                finish();
+            }
+        } else {
+            appData.setExsit(false);
+            isFirst = true;
+        }
+        return false;
     }
 
 }

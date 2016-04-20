@@ -77,6 +77,14 @@ public class videoList extends AppCompatActivity implements View.OnClickListener
     ImageButton download_button;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (appData.getExsit()) {
+            finish();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_list);

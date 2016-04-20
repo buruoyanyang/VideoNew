@@ -85,7 +85,10 @@ public class Data extends Application {
 
     String weixinId = "";
 
+    //用户异常
     boolean exUser = false;
+
+    boolean isExsit = false;
 
     public void setWidth(int _width) {
         width = _width;
@@ -323,6 +326,7 @@ public class Data extends Application {
         videoEpisode = _videoEpisode;
     }
 
+
     public List<Map<String, String>> getVideoEpisode() {
         return videoEpisode;
     }
@@ -333,6 +337,16 @@ public class Data extends Application {
     public String getWeixinId()
     {
         return weixinId;
+    }
+
+    public void setExsit(boolean _isExsit)
+    {
+        isExsit = _isExsit;
+    }
+
+    public boolean getExsit()
+    {
+        return isExsit;
     }
 
     @Override

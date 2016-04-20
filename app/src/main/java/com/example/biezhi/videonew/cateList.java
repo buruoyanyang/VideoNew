@@ -47,6 +47,15 @@ public class cateList extends AppCompatActivity {
 
     private LayoutInflater inflater;
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (appData.getExsit()) {
+            finish();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

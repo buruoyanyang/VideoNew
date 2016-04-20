@@ -44,7 +44,6 @@ import com.example.biezhi.videonew.MessageBox.VideoSourceMessage;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.google.gson.Gson;
 import com.rey.material.widget.TabPageIndicator;
-import com.squareup.haha.perflib.Main;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -243,6 +242,15 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     private int currentVideoSourcePosition;
 
     private boolean canDownload = false;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (appData.getExsit()) {
+            finish();
+        }
+    }
 
     /**/
     @Override
@@ -925,7 +933,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 //跳转到登陆界面
-                startActivity(new Intent(videoPlay.this,loginActivity.class));
+                startActivity(new Intent(videoPlay.this, loginActivity.class));
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
