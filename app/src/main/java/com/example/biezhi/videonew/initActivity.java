@@ -10,11 +10,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.MediaStore;
+
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,7 +25,6 @@ import android.widget.Toast;
 import com.example.biezhi.videonew.CustomerClass.AES;
 import com.example.biezhi.videonew.CustomerClass.BitmapCut;
 import com.example.biezhi.videonew.CustomerClass.ImageService;
-import com.example.biezhi.videonew.CustomerClass.SysApplication;
 import com.example.biezhi.videonew.DataModel.CateModel;
 import com.example.biezhi.videonew.DataModel.LoginModel;
 import com.example.biezhi.videonew.MessageBox.AfterUrlMessage;
@@ -47,7 +43,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -58,16 +53,16 @@ import java.util.List;
 public class initActivity extends AppCompatActivity {
 
 
-    static int screenWidth;
-    static int screenHeight;
+    int screenWidth;
+    int screenHeight;
     Data appData;
     List<String> nameList = new ArrayList<>();        //分类名list
     List<String> urlList = new ArrayList<>();         //地址list
     List<String> cateIdList = new ArrayList<>();      //cateIdList
     List<Bitmap> bitmapList = new ArrayList<>();      //图片list
-    boolean isFirst = true; //第一次点击
-    private final static String loginMessage = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Message";   //登录信息保存路径
-    private final static String ALBUM_PATH = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Images";      //图片保存路径
+    boolean isFirst = true; //第一次点击退出
+//    private final static String loginMessage = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Message";   //登录信息保存路径
+//    private final static String ALBUM_PATH = Environment.getExternalStorageDirectory() + "/BiezhiVideo/Images";      //图片保存路径
     BitmapCut bitmapCut;
     private String deviceId;
     private String userName;
@@ -165,7 +160,7 @@ public class initActivity extends AppCompatActivity {
      */
     private boolean checkNetWork() {
         boolean netInfo;
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo.State mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState();
         NetworkInfo.State wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState();
         if (mobile == NetworkInfo.State.CONNECTED && wifi == NetworkInfo.State.DISCONNECTED) {
@@ -187,7 +182,6 @@ public class initActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-            SysApplication.getInstance().exit();
         }
     };
 
@@ -202,6 +196,7 @@ public class initActivity extends AppCompatActivity {
                 try {
                     InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                    inputStreamReader.close();
                     String str = "";
                     String mimeTypeLine;
                     while ((mimeTypeLine = bufferedReader.readLine()) != null) {
@@ -294,7 +289,7 @@ public class initActivity extends AppCompatActivity {
     public void initNetOK(EpisodeMessage episodeMessage) {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < bitmapList.size(); i++) {
-            list.add(saveImageToGallery(initActivity.this, bitmapList.get(i), nameList.get(i) + ".jpg", "BieZhi") + "/"+nameList.get(i) + ".jpg");
+            list.add(saveImageToGallery(bitmapList.get(i), nameList.get(i) + ".jpg", "BieZhi") + "/"+nameList.get(i) + ".jpg");
         }
         appData.setNameList(nameList);
         appData.setImageUrlFromInitView(list);
@@ -311,11 +306,10 @@ public class initActivity extends AppCompatActivity {
     /**
      * 保存图片到本地
      *
-     * @param context  上下文
      * @param bmp      被保存图片
      * @param fileName 文件名
      */
-    public static String saveImageToGallery(Context context, Bitmap bmp, String fileName, String dirName) {
+    public String saveImageToGallery(Bitmap bmp, String fileName, String dirName) {
         //只有在图片不存在的情况下才将图片写入本地
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), dirName);
@@ -334,15 +328,15 @@ public class initActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             // 其次把文件插入到系统图库
-            try {
-                MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                        file.getAbsolutePath(), fileName, null);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                MediaStore.Images.Media.insertImage(context.getContentResolver(),
+//                        file.getAbsolutePath(), fileName, null);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
         }
         // 最后通知图库更新
-        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
+//        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
         return path;
     }
 
@@ -352,7 +346,6 @@ public class initActivity extends AppCompatActivity {
             if (isFirst) {
                 isFirst = false;
                 Toast.makeText(this, "再按一次返回就退出了哟", Toast.LENGTH_SHORT).show();
-            } else {
             }
         } else {
             isFirst = true;

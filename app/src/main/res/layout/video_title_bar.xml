@@ -22,7 +22,7 @@
             android:text="别致影音"
             android:textSize="20dp"
             android:gravity="center"
-            android:id="@+id/title_appName"/>
+            android:id="@+id/title_appName" />
         <ImageButton
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -45,7 +45,8 @@
             android:src="@drawable/cache_icon"
             android:scaleType="fitXY"
             android:id="@+id/title_cache"
-            android:layout_toLeftOf="@+id/title_help_textView1" />
+            android:layout_toLeftOf="@+id/title_help_textView1"
+            android:visibility="gone"/>
         <TextView
             android:layout_width="10dp"
             android:layout_height="1dp"
@@ -59,7 +60,8 @@
             android:src="@drawable/download_icon"
             android:scaleType="fitXY"
             android:id="@+id/title_download"
-            android:layout_toLeftOf="@+id/title_help_textView2" />
+            android:layout_toLeftOf="@+id/title_help_textView2"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

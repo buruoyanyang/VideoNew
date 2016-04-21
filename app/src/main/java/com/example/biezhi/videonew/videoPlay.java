@@ -95,7 +95,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     /**
      * 是否处于全屏状态
      */
-    private boolean isFullScreen = false;
+//    private boolean isFullScreen = false;
 
 
     /**
@@ -132,7 +132,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     /**
      * video的CateId
      */
-    private String videoCateId;
+//    private String videoCateId;
 
     /**
      * episode信息
@@ -147,12 +147,12 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     /**
      * 视频的episodeId
      */
-    private String episodeId;
+//    private String episodeId;
 
     /**
      * 当前视频的播放地址
      */
-    private String currentVideoPlayUrl;
+//    private String currentVideoPlayUrl;
 
     private String videoSiteId;
 
@@ -256,8 +256,6 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         Vitamio.isInitialized(this.getApplication());
         setContentView(R.layout.activity_video_play);
 //        SysApplication.getInstance().addActivity(this);
@@ -298,13 +296,13 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         currentVideo = appData.getClickedVideoID();
         contentEntity = new ArrayList<>();
         videoIntro = " ";
-        videoCateId = "";
+//        videoCateId = "";
         videoTimeString = "";
         videoTotalString = "";
         episodeContent = new ArrayList<>();
         isVipVideo = false;
-        episodeId = "";
-        currentVideoPlayUrl = "";
+//        episodeId = "";
+//        currentVideoPlayUrl = "";
         videoSiteId = "";
         getPlayUrl = new GetPlayUrl();
         episodeNum = 1;
@@ -451,7 +449,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
             Gson gson = new Gson();
             VideoInfoModel videoInfoModel = gson.fromJson(json, VideoInfoModel.class);
             contentEntity.addAll(videoInfoModel.getContent());
-            videoCateId = String.valueOf(videoInfoModel.getCateId());
+//            videoCateId = String.valueOf(videoInfoModel.getCateId());
             videoIntro = videoInfoModel.getIntro();
             videoSiteId = String.valueOf(contentEntity.get(0).getId());
             getServer.getUrl = "http://115.29.190.54:99/Episode.aspx?videoid=" + currentVideo + "&siteid=" + contentEntity.get(0).getId() + "&appid=" + appId + "&version=" + appVersion;
@@ -718,10 +716,54 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
                 appData.setSourcePage("VideoPlay");
 //                startActivity(new Intent(videoPlay.this, videoList.class));
                 finish();
+//                onFinish();
             }
         }
         return false;
 
+    }
+
+    public void onFinish()
+    {
+        finish();
+        videoView.setOnPreparedListener(null);
+        videoView.setOnInfoListener(null);
+        videoView.setOnErrorListener(null);
+        videoView.setOnBufferingUpdateListener(null);
+        videoView.setOnCompletionListener(null);
+        videoView.setOnSeekCompleteListener(null);
+        videoView.setOnTouchListener(null);
+        //移除seekbar
+        video_seekBar = null;
+        //progressbar
+        mProgressBar = null;
+        videoPlayOrPauseButton.setOnClickListener(null);
+        videoPlayOrPauseButton = null;
+        titleBackIb.setOnClickListener(null);
+        titleBackIb = null;
+        titleNameTv = null;
+        episodeContent.clear();
+        episodeContent = null;
+        episodeNumArray.clear();
+        episodeNumArray = null;
+        sourceDataLs.clear();
+        sourceDataLs = null;
+        contentEntity.clear();
+        contentEntity = null;
+        fullScreenButton.setOnClickListener(null);
+        fullScreenButton = null;
+        video_control = null;
+        video_currentTime = null;
+        video_totalTime = null;
+        vipArray.clear();
+        vipArray = null;
+        EventBus.getDefault().unregister(this);
+        if (videoView != null) {
+            videoView.stopPlayback();
+            videoView = null;
+        }
+        seekBarAutoFlag = false;
+        setContentView(R.layout.view_null);
     }
 
     @Override
@@ -967,7 +1009,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         appData.setPlayUrl(path);
         appData.setCurrentPosition(currentPosition);
         appData.setVideoName(episodeContent.get(episodeNum - 1).getName());
-        isFullScreen = true;
+//        isFullScreen = true;
         //把当前视频的videoId以及EpisodeId对应存起来
         List<Map<String, String>> list = new ArrayList<>();
         for (int i = 0; i < episodeContent.size(); i++) {
