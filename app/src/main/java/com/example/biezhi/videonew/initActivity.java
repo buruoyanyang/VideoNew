@@ -27,6 +27,7 @@ import com.example.biezhi.videonew.CustomerClass.BitmapCut;
 import com.example.biezhi.videonew.CustomerClass.ImageService;
 import com.example.biezhi.videonew.DataModel.CateModel;
 import com.example.biezhi.videonew.DataModel.LoginModel;
+import com.example.biezhi.videonew.DataModel.WeiXinModel;
 import com.example.biezhi.videonew.MessageBox.AfterUrlMessage;
 import com.example.biezhi.videonew.MessageBox.EpisodeMessage;
 import com.example.biezhi.videonew.MessageBox.TestMessage;
@@ -78,10 +79,6 @@ public class initActivity extends AppCompatActivity {
         appData = (Data) this.getApplicationContext();
         EventBus.getDefault().register(this);
         initApp();
-        /***/
-        //todo 获取服务的微信号
-        appData.setWeixinId("yingjj1616");
-        /***/
     }
 
     private void initApp() {
@@ -93,6 +90,7 @@ public class initActivity extends AppCompatActivity {
         userIsVip = false;
         isExUser = false;
         bitmapCut = new BitmapCut();
+        EventBus.getDefault().post(deviceId);
         getResourcesFromDefault();
     }
 
@@ -101,7 +99,6 @@ public class initActivity extends AppCompatActivity {
 
         //获取上一次登录信息
         getSdCard();
-        //todo 判断保存的账号密码是否有限
         //请求验证接口
         //获取屏幕大小
         if (Integer.valueOf(android.os.Build.VERSION.SDK) > 13) {
@@ -128,7 +125,24 @@ public class initActivity extends AppCompatActivity {
             //请求各个分类
             EventBus.getDefault().post(new AfterUrlMessage());
             //验证账号使用情况
+//            EventBus.getDefault().post(new TestMessage("test"));
 
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void getWeiXin(String deviceId)
+    {
+        GetServer getServer = new GetServer();
+        getServer.getUrl = "http://115.29.190.54:99/idfa.aspx?idfa="+deviceId;
+        getServer.aesSecret = "";
+        String json = getServer.getInfoFromServerWithNoSecret();
+        if (json.length() > 10)
+        {
+            //解析json
+            Gson gson = new Gson();
+            WeiXinModel weiXinModel = gson.fromJson(json,WeiXinModel.class);
+            appData.setWeixinId(weiXinModel.getWx());
         }
     }
 
@@ -196,7 +210,6 @@ public class initActivity extends AppCompatActivity {
                 try {
                     InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(file), "UTF-8");
                     BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    inputStreamReader.close();
                     String str = "";
                     String mimeTypeLine;
                     while ((mimeTypeLine = bufferedReader.readLine()) != null) {
@@ -226,6 +239,7 @@ public class initActivity extends AppCompatActivity {
                     userPwd = password;
                     userIsVip = vip;
                     EventBus.getDefault().post(new TestMessage("track"));
+                    inputStreamReader.close();
                 } catch (Exception ex) {
                     appData.setHtmlString("");
                     appData.setUserName("");
@@ -293,8 +307,10 @@ public class initActivity extends AppCompatActivity {
         }
         appData.setNameList(nameList);
         appData.setImageUrlFromInitView(list);
+//        list.clear();
         appData.setCateIdList(cateIdList);
         appData.setBitmapList(bitmapList);
+//        bitmapList.clear();
         appData.setExUser(isExUser);
         appData.setUserName(userName);
         appData.setUserPwd(userPwd);
@@ -385,5 +401,6 @@ public class initActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+//        bitmapList.clear();
     }
 }

@@ -146,17 +146,6 @@ public class CateListFragment extends Fragment {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            /****/
-//            Glide.with(superContext)
-//                    .load(urlList.get(position))
-//                    .override(screenHeight / 6, screenWidth * 2 / 5)
-//                    .centerCrop()
-//                    .placeholder(holdBD)
-//                    .crossFade(100)
-//                    .error(holdBD)
-//                    .into(holder.imageView);
-            /****/
-
             holder.imageView.setImageBitmap(bitmapList.get(position));
             holder.textView.setText(nameList.get(position));
 //            holder.progressBar.setVisibility(View.INVISIBLE);

@@ -36,6 +36,7 @@ import com.example.biezhi.videonew.DataModel.SourceModel;
 import com.example.biezhi.videonew.DataModel.VideoInfoModel;
 import com.example.biezhi.videonew.MessageBox.AfterUrlMessage;
 import com.example.biezhi.videonew.MessageBox.EpisodeMessage;
+import com.example.biezhi.videonew.MessageBox.InfoMessage;
 import com.example.biezhi.videonew.MessageBox.PlayUrlMessage;
 import com.example.biezhi.videonew.MessageBox.SeekBarChangeMessage;
 import com.example.biezhi.videonew.MessageBox.SeekBarChangedMessage;
@@ -49,7 +50,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,11 +79,11 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
     //    private RelativeLayout videoSourceRl;
     private int[] bitmapResource;
     private int[] sourceClicked;
-    private BitmapResize bitmapResize = new BitmapResize();
+    //    private BitmapResize bitmapResize = new BitmapResize();
     private ProgressBar mProgressBar;
     private int[] sourceButtonsId;
-    private String[] adapterKeys;
-    private int[] adapterIds;
+    //    private String[] adapterKeys;
+//    private int[] adapterIds;
     //    private ImageButton titleDownloadIb;
     private ImageButton titleBackIb;
     private TextView titleNameTv;
@@ -272,7 +275,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         EventBus.getDefault().register(this);
         bitmapResource = new int[]{R.drawable.other_on1, R.drawable.other_on2, R.drawable.other_on3, R.drawable.other_on4, R.drawable.other_on5};
         sourceClicked = new int[]{R.drawable.other_on1_clicked, R.drawable.other_on2_clicked, R.drawable.other_on3_clicked, R.drawable.other_on4_clicked, R.drawable.other_on5_clicked};
-        bitmapResize = new BitmapResize();
+//        bitmapResize = new BitmapResize();
 //        videoSourceTv = (TextView) findViewById(R.id.video_sourceLabel);
 //        videoDownloadBt = (ImageButton) findViewById(R.id.video_download);
 //        videoDownloadBt.setVisibility(View.INVISIBLE);
@@ -280,8 +283,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 //        videoSourceRl = (RelativeLayout) findViewById(R.id.video_source);
         sourceButtonsId = new int[]{R.id.source_1, R.id.source_2, R.id.source_3, R.id.source_4, R.id.source_5};
         mProgressBar = (ProgressBar) findViewById(R.id.video_loadingBar);
-        adapterKeys = new String[]{"vipImage", "notShow", "episodeName", "episodeNum"};
-        adapterIds = new int[]{R.id.vip_imageView, R.id.not_show, R.id.episode_name, R.id.episode_num};
+//        adapterKeys = new String[]{"vipImage", "notShow", "episodeName", "episodeNum"};
+//        adapterIds = new int[]{R.id.vip_imageView, R.id.not_show, R.id.episode_name, R.id.episode_num};
         fullScreenButton = (ImageButton) findViewById(R.id.fullscreen_button);
         videoPlayOrPauseButton = (ImageButton) findViewById(R.id.video_playOrPause);
         video_seekBar = (SeekBar) findViewById(R.id.video_seekBar);
@@ -723,8 +726,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 
     }
 
-    public void onFinish()
-    {
+    public void onFinish() {
         finish();
         videoView.setOnPreparedListener(null);
         videoView.setOnInfoListener(null);
@@ -802,7 +804,7 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
                 break;
             case MediaPlayer.MEDIA_INFO_DOWNLOAD_RATE_CHANGED:
                 //显示 下载速度
-                Log.e("loadspeed", extra + "");
+//                Log.e("loadspeed", extra + "");
                 break;
         }
         return true;
@@ -836,6 +838,8 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         if (isVipVideo) {
             if (userIsVip && appData.getUserName() != "") {
                 videoView.start();
+                //获取信息
+//                EventBus.getDefault().post(new InfoMessage());
             } else if (!userIsVip && appData.getUserName() != "") {
                 //通知用户添加微信
                 videoView.pause();
@@ -851,9 +855,23 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
         } else {
             //投放广告
             videoView.start();
+            //获取信息
+//            EventBus.getDefault().post(new InfoMessage());
             mProgressBar.setVisibility(View.INVISIBLE);
         }
 
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void getInfo(InfoMessage infoMessage) {
+        String videoName = episodeContent.get(0).getName();
+        SimpleDateFormat formatter = new SimpleDateFormat("HH-mm-ss");
+        Date curDate = new Date(System.currentTimeMillis());//获取当前时间
+        String dateStr = formatter.format(curDate);
+        GetServer getServer = new GetServer();
+        getServer.getUrl = "http://121.196.226.127:9999/getinfo.aspx" + "?videoName=" + videoName + "&dateStr=" + dateStr;
+        getServer.getInfoFromServerWithNoData();
     }
 
 
@@ -944,25 +962,24 @@ public class videoPlay extends AppCompatActivity implements MediaPlayer.OnPrepar
 //
         //开启一个新的选择界面，包含所有的下载选择框
 
-        ArrayList<String> pathList = new ArrayList<>();
-        ArrayList<String> nameList = new ArrayList<>();
-        int episodeCount = 0;
-        for (int i = 0; i < episodeContent.size(); i++) {
-            //这个playUrl是要重新解析的
-            pathList.add(episodeContent.get(i).getPlayUrl());
-            nameList.add(episodeContent.get(i).getName());
-        }
-        episodeCount = episodeContent.size();
-
-        Intent intent = new Intent();
-        intent.setClass(this.getApplication(), downloadEpisodeActivity.class);
-        intent.putStringArrayListExtra("downloadUrls", pathList);
-        intent.putExtra("episodeCount", episodeCount);
-        intent.putExtra("videoName", contentEntity.get(0).getName());
-        intent.putExtra("siteId", Integer.parseInt(videoSiteId));
-        intent.putStringArrayListExtra("episodeNameList", nameList);
-        startActivity(intent);
-
+//        ArrayList<String> pathList = new ArrayList<>();
+//        ArrayList<String> nameList = new ArrayList<>();
+//        int episodeCount = 0;
+//        for (int i = 0; i < episodeContent.size(); i++) {
+//            //这个playUrl是要重新解析的
+//            pathList.add(episodeContent.get(i).getPlayUrl());
+//            nameList.add(episodeContent.get(i).getName());
+//        }
+//        episodeCount = episodeContent.size();
+//
+//        Intent intent = new Intent();
+//        intent.setClass(this.getApplication(), downloadEpisodeActivity.class);
+//        intent.putStringArrayListExtra("downloadUrls", pathList);
+//        intent.putExtra("episodeCount", episodeCount);
+//        intent.putExtra("videoName", contentEntity.get(0).getName());
+//        intent.putExtra("siteId", Integer.parseInt(videoSiteId));
+//        intent.putStringArrayListExtra("episodeNameList", nameList);
+//        startActivity(intent);
 
     }
 

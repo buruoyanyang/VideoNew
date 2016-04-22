@@ -9,12 +9,13 @@
         android:layout_height="50dp"
         android:background="#c7c0c0">
         <ImageButton
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:background="#00000000"
             android:src="@drawable/icon"
             android:scaleType="fitXY"
-            android:id="@+id/title_icon" />
+            android:id="@+id/title_icon"
+            android:layout_centerVertical="true"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
@@ -22,10 +23,11 @@
             android:text="别致影音"
             android:textSize="20dp"
             android:gravity="center"
-            android:id="@+id/title_appName" />
+            android:id="@+id/title_appName"
+            android:textColor="@color/md_grey_850"/>
         <ImageButton
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="#00000000"

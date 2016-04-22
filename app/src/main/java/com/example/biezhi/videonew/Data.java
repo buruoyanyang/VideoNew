@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import org.xutils.x;
+//import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -352,7 +352,7 @@ public class Data extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        x.Ext.init(this);
+//        x.Ext.init(this);
         mRefWatcher = LeakCanary.install(this);
     }
     private RefWatcher mRefWatcher;

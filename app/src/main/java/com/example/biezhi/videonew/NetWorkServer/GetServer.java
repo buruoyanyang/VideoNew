@@ -28,6 +28,28 @@ public class GetServer {
     private final Gson gson = new Gson();
 
 
+    public String getInfoFromServerWithNoSecret()
+    {
+        Request request = new Request.Builder().url(getUrl).build();
+        Response response;
+        try {
+
+
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                serverIsOnline = false;
+                return "0";
+            } else {
+                return response.body().string();
+            }
+        }
+        catch (Exception ignored)
+        {
+
+        }
+        return "3";
+    }
+
     public String getInfoFromServerWithNoData() {
         Request request = new Request.Builder().url(getUrl).build();
         Response response;

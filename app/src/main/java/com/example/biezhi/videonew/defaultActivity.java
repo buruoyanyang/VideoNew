@@ -23,9 +23,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.CateListFragment;
+import com.example.biezhi.videonew.MessageBox.AfterUrlMessage;
+import com.example.biezhi.videonew.MessageBox.TestMessage;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
 import com.rey.material.widget.TabPageIndicator;
 
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -79,13 +85,18 @@ public class defaultActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
+        EventBus.getDefault().register(this);
         appData = (Data) this.getApplicationContext();
         initClass();
         if (appData.sourcePage == "Login") {
             initFromLogin();
         }
-        if (appData.sourcePage == "INIT") {
+        else if (appData.sourcePage == "INIT") {
             initFromLogin();
+        }
+        else
+        {
+            initFromOthers();
         }
         //ViewPager的adapter
         FragmentPagerAdapter adapter = new TabPageIndicatorAdapter(getSupportFragmentManager());
@@ -114,35 +125,59 @@ public class defaultActivity extends FragmentActivity {
 
     }
 
-    private void initFromLogin() {
-        if (appData.getUserName() != "") {
-            //对侧边菜单进行初始化
+    private void initFromOthers()
+    {
+        if (appData.getUserName() != "")
+        {
             SimpleAdapter adapter = new SimpleAdapter(
                     defaultActivity.this,
                     getDataWithUser(),
                     R.layout.drawlayout_item, new String[]{"img", "name"},
                     new int[]{R.id.drawer_layout_image, R.id.drawer_layout_text}
             );
-
-
             left_menuList.setDividerHeight(10);
             left_menuList.setAdapter(adapter);
-            //同时将信息写入本地文件
-            saveInfoToGallery("UI", "BieZhi", appData.getHtmlString());
-            appData.setHtmlString("");
-            //同时通知服务器用户已经登录
-            new Thread(new trackToServer()).start();
+            EventBus.getDefault().post(new TestMessage("test"));
+        }
+    }
+    private void initFromLogin() {
+        if (appData.getUserName() != "") {
+            //通知服务器登陆，进行二次验证
+            EventBus.getDefault().post(new TestMessage("test"));
         }
     }
 
-    private static class trackToServer implements Runnable {
-        @Override
-        public void run() {
-            GetServer getServer = new GetServer();
-            getServer.getUrl = "http://115.29.190.54:12345/mLogin.aspx?tel=18580434396&password=123456&idfa=" + deviceId;
-            getServer.aesSecret = "C169F435FEA3530E";
-            getServer.getInfoFromServer();
+
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void trackToServer(TestMessage testMessage) {
+        GetServer getServer = new GetServer();
+        getServer.getUrl = "http://115.29.190.54:12345/mLogin.aspx?tel=" + appData.getUserName() + "&password=" + appData.getUserPwd() + "&idfa=" + appData.getDeviceId();
+        getServer.aesSecret = "dd358748fcabdda1";
+        String json = getServer.getTrachFromServer();
+        if (json.length() < 10) {
+            //账号异常，登陆失效
+            appData.setUserName("");
+            appData.setUserPwd("");
+            appData.setUserVip(false);
         }
+        //通知修改登陆信息ui
+        EventBus.getDefault().post(new AfterUrlMessage());
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void initFromLogin(AfterUrlMessage afterUrlMessage)
+    {
+        SimpleAdapter adapter = new SimpleAdapter(
+                defaultActivity.this,
+                getDataWithUser(),
+                R.layout.drawlayout_item, new String[]{"img", "name"},
+                new int[]{R.id.drawer_layout_image, R.id.drawer_layout_text}
+        );
+        left_menuList.setDividerHeight(10);
+        left_menuList.setAdapter(adapter);
+        //同时将信息写入本地文件
+        saveInfoToGallery("UI", "BieZhi", appData.getHtmlString());
+//        appData.setHtmlString("");
     }
 
     private void deleteInfoFromGallery(String fileName, String dirName) {
@@ -320,37 +355,11 @@ public class defaultActivity extends FragmentActivity {
         }
         return false;
     }
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
