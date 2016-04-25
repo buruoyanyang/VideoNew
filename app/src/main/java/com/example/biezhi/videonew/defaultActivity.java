@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.biezhi.videonew.CustomerClass.CateListFragment;
+import com.example.biezhi.videonew.CustomerClass.RecomListFragment;
 import com.example.biezhi.videonew.MessageBox.AfterUrlMessage;
 import com.example.biezhi.videonew.MessageBox.TestMessage;
 import com.example.biezhi.videonew.NetWorkServer.GetServer;
@@ -322,8 +323,27 @@ public class defaultActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment = new CateListFragment();
-            return fragment;
+            if(position ==1) {
+                Fragment fragment = new CateListFragment();
+                return fragment;
+            }
+            else
+            {
+                Fragment fragment = new RecomListFragment();
+                ArrayList<String> hotIdList = new ArrayList<>();
+                hotIdList.add("382");
+                hotIdList.add("354");
+                hotIdList.add("36");
+                hotIdList.add("381");
+                hotIdList.add("320");
+                hotIdList.add("42");
+                hotIdList.add("379");
+                hotIdList.add("268");
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("hotIds", hotIdList);
+                fragment.setArguments(bundle);
+                return fragment;
+            }
         }
 
         @Override

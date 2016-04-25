@@ -6,7 +6,7 @@
     tools:context="com.example.biezhi.videonew.recomList"
     android:orientation="vertical">
     <in.srain.cube.views.ptr.PtrClassicFrameLayout
-        android:id="@+id/ptr_refresh"
+        android:id="@+id/ptr_refresh_recom"
         xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
